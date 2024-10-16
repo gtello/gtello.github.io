@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>First on Gabriel Tello</title>
+    <link>http://localhost:1313/es/tags/first/</link>
+    <description>Recent content in First on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-EC</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Wed, 16 Oct 2024 09:51:00 -0500</lastBuildDate>
+    <atom:link href="http://localhost:1313/es/tags/first/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mi post</title>
+      <link>http://localhost:1313/es/posts/mypost/</link>
+      <pubDate>Wed, 16 Oct 2024 09:51:00 -0500</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>http://localhost:1313/es/posts/mypost/</guid>
+      <description>&lt;h1 id=&#34;titulo&#34;&gt;Titulo&lt;/h1&gt;&#xA;&lt;p&gt;Este es mi post:&lt;/p&gt;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;hi&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;end&lt;/p&gt;&#xA;&lt;h2 id=&#34;title-2&#34;&gt;Title 2&lt;/h2&gt;&#xA;&lt;p&gt;Another post&lt;/p&gt;&#xA;&lt;h3 id=&#34;title-3&#34;&gt;Title 3&lt;/h3&gt;&#xA;&lt;p&gt;skjdfsd&lt;/p&gt;&#xA;&lt;h5 id=&#34;title-4&#34;&gt;Title 4&lt;/h5&gt;</description>
+      <content:encoded><![CDATA[<h1 id="titulo">Titulo</h1>
+<p>Este es mi post:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hi&#39;</span><span class="p">)</span></span></span></code></pre></div><p>end</p>
+<h2 id="title-2">Title 2</h2>
+<p>Another post</p>
+<h3 id="title-3">Title 3</h3>
+<p>skjdfsd</p>
+<h5 id="title-4">Title 4</h5>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

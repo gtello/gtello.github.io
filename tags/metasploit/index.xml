@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Metasploit on Gabriel Tello</title>
+    <link>https://gtello.github.io/tags/metasploit/</link>
+    <description>Recent content in Metasploit on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Fri, 18 Oct 2024 09:15:00 +0000</lastBuildDate>
+    <atom:link href="https://gtello.github.io/tags/metasploit/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Eternal Machine (EternalBlue)</title>
+      <link>https://gtello.github.io/writeups/eternalblue/</link>
+      <pubDate>Fri, 18 Oct 2024 09:15:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/eternalblue/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;This is a step-by-step guide presented in a professional report format about a pentest performed on a Windows 7 machine.&#xD;&#xA;&lt;h2 id=&#34;executive-summary&#34;&gt;Executive Summary&lt;/h2&gt;&#xA;&lt;p&gt;During the penetration test, it was discovered that the Eternal machine (Windows 7) was vulnerable to the EternalBlue exploit (&lt;a href=&#34;https://nvd.nist.gov/vuln/detail/cve-2017-0144&#34;&gt;CVE-2017-0144&lt;/a&gt;). This exploit allows an unauthenticated attacker to remotely execute arbitrary code and gain full control of the system. The vulnerability was used to compromise the Eternal machine, which allowed access to sensitive data and other systems on the network. This report details the exploitation process, findings, and recommendations to mitigate this vulnerability.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+This is a step-by-step guide presented in a professional report format about a pentest performed on a Windows 7 machine.
+<h2 id="executive-summary">Executive Summary</h2>
+<p>During the penetration test, it was discovered that the Eternal machine (Windows 7) was vulnerable to the EternalBlue exploit (<a href="https://nvd.nist.gov/vuln/detail/cve-2017-0144">CVE-2017-0144</a>). This exploit allows an unauthenticated attacker to remotely execute arbitrary code and gain full control of the system. The vulnerability was used to compromise the Eternal machine, which allowed access to sensitive data and other systems on the network. This report details the exploitation process, findings, and recommendations to mitigate this vulnerability.</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>A network scan was performed using the nmap tool to identify open ports and services on the machine.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image1.png" alt="nmap command" />
+</div>
+<em>Figure 1:</em> Nmap command and results</center>
+<h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows 7 x64 SP 1</td>
+          <td style="text-align: left">192.168.1.167</td>
+          <td style="text-align: left">135, 139, 445, 49152-49158</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="vulnerability-verification">Vulnerability Verification</h3>
+<p>The SMB service running on port 445 on a Windows 7 machine indicates a potential vulnerability to the EternalBlue exploit. An additional scan with an nmap script revealed that the system was indeed vulnerable to CVE-2017-0144 (EternalBlue).</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image2.png" alt="nmap confirmation" />
+</div>
+<center><em>Figure 2:</em> EternalBlue vulnerability confirmation</center>
+<h2 id="exploitation">Exploitation</h2>
+<p>The Metasploit framework was used to exploit the vulnerability. The EternalBlue module was selected and configured.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image3.png" alt="exploit configuration" />
+</div>
+<center><em>Figure 3:</em> Exploit configuration</center>
+<p>A reverse shell payload was configured, allowing a remote connection with full system control. The exploit provided SYSTEM privileges, so no additional elevation was needed.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image4.png" alt="exploit execution" />
+</div>
+<center><em>Figure 4:</em> Exploit execution results</center>
+<h2 id="post-exploitation">Post-Exploitation</h2>
+<p>Once the meterpreter session was established, post-exploitation activities were carried out.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image5.png" alt="user enumeration" />
+</div>
+<center><em>Figure 5:</em> User enumeration</center>
+<h3 id="credential-extraction">Credential Extraction</h3>
+<p>The Mimikatz tool was used through the kiwi module to extract credentials such as passwords and hashes from the Windows operating system.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image6.png" alt="mimikatz execution" />
+</div>
+<center><em>Figure 6:</em> Mimikatz execution</center>
+<p>The SAM (Security Account Manager) file stores password hashes for local users on a Windows system. Using the <code>kiwi_cmd lsadump::sam</code> command in meterpreter, the SAM file containing the NTLM hashes of local users&rsquo; passwords was extracted.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image7.png" alt="local user hash dump" />
+</div>
+<center><em>Figure 7:</em> Local user hash dump</center>
+<h2 id="using-encrypted-credentials">Using Encrypted Credentials</h2>
+<p>Once the password hashes were obtained, the Pass The Hash (PTH) technique was used to access other system resources without needing to know the plaintext passwords. This method allows authentication and lateral movement between Windows systems using only the password hash.<br>
+The <code>crackmapexec</code> tool was used to remotely authenticate to other systems or services on the network using a user&rsquo;s hash.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image8.png" alt="crackmapexec execution" />
+</div>
+<center><em>Figure 8:</em> CrackMapExec execution</center>
+<h3 id="persistence">Persistence</h3>
+<p>Persistence allows maintaining access to a compromised system even if it is restarted, enabling reconnection in the future without having to repeat the initial exploitation process.<br>
+In this case, a persistence script was configured using the <code>windows/local/persistence_service</code> module, which generates and loads an executable on the remote host and then turns it into a persistent service.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image9.png" alt="persistence execution" />
+</div>
+<center><em>Figure 9:</em> Persistence service execution</center>
+<p>When this module is executed, meterpreter installs a service on the compromised system that establishes an outbound reverse shell connection every time the system is restarted. This means that even if the attacker loses the initial connection, they can regain access without re-exploiting the system, as long as the system is powered on and the attacker is listening on the configured port.</p>
+<h3 id="persistence-check">Persistence Check</h3>
+<p>To verify that persistence was successfully executed, the open meterpreter sessions were closed.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image10.png" alt="session closure" />
+</div>
+<center><em>Figure 10:</em> Session closure</center>
+<p>A resource script was created to automate repetitive tasks in Metasploit, making it easier to reconnect to the compromised machine by simply running the script.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image11.png" alt="resource script for metasploit" />
+</div>
+<center><em>Figure 11:</em> Resource script for Metasploit</center>
+<p>Once the script was executed, the payload and module were automatically configured, leading to a reconnection to the machine, confirming that persistence worked correctly.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image12.png" alt="resource script execution" />
+</div>
+<center><em>Figure 12:</em> Resource script execution</center>
+<h3 id="persistence-cleanup">Persistence Cleanup</h3>
+<p>To clean up the attacked system, the created service named lsass1 was closed and deleted using <code>sc.exe</code> commands, ensuring the removal of the persistence service from the system. Additionally, <code>taskkill.exe</code> was used to forcibly terminate the associated process <code>sdvj.exe</code>, which was linked to the persistence payload.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image13.png" alt="persistence cleanup" />
+</div>
+<center><em>Figure 13:</em> Persistence cleanup</center>
+<p>After completing these steps, the Meterpreter session was securely closed, confirming the termination of the connection. This ensured that all artifacts of the persistence mechanism were removed, leaving no unauthorized access points on the system.</p>
+<h2 id="flags">Flags</h2>
+<p>A search for flags was carried out using the <code>search</code> command in meterpreter, and the <code>type</code> command was used to display their contents.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/eternalblue/image14.png" alt="type command execution" />
+</div>
+<center><em>Figure 14:</em> Type command execution</center>
+<p>Thus, the two flags were found, which are:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Flag</th>
+          <th style="text-align: left">Hash</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">flag1.txt</td>
+          <td style="text-align: left">0ef3b7d488b11e3e800f547a0765da8e</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">flag2.txt</td>
+          <td style="text-align: left">a63c1c39c0c7fd570053343451667939</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="tools-used">Tools Used</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Nmap</td>
+          <td style="text-align: left">Used for the initial system scan and to identify open ports and services on the target.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Metasploit</td>
+          <td style="text-align: left">Used to exploit the EternalBlue vulnerability (CVE-2017-0144) with a reverse shell payload.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Mimikatz/kiwi</td>
+          <td style="text-align: left">Used within Meterpreter to extract Windows system credential hashes.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">CrackMapExec and PTH</td>
+          <td style="text-align: left">Allowed lateral movement in the machine without needing plaintext passwords, using only hashes.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Persistence with Metasploit</td>
+          <td style="text-align: left">Persistence configuration using the windows/local/persistence_service module to ensure continuous access.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>The EternalBlue vulnerability exploited on the Eternal machine shows serious security flaws in its infrastructure, allowing an unauthenticated attacker to gain full control of the system. Once the system was compromised, credentials were captured, access to additional resources was gained, and persistence was set up, demonstrating how easily lateral movements and prolonged access can be maintained without detection.</p>
+<h2 id="recommendations">Recommendations</h2>
+<p>To mitigate this vulnerability, it is recommended to disable the SMBv1 protocol to prevent future EternalBlue-type exploits. In cases like this, it is important to isolate critical systems in protected network segments using VLANs and robust firewall configurations, as well as restricting SMB traffic on port 445 to only what is necessary, while continuously monitoring suspicious connections.</p>
+<p>It is suggested to implement IDS/IPS solutions to detect exploitation attempts and use a SIEM to consolidate and analyze logs, to facilitate early threat detection.</p>
+<p>Finally, it is recommended to migrate from Windows 7 to a more recent version, such as Windows 10, to benefit from enhanced security and continuous support.</p>
+</div>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

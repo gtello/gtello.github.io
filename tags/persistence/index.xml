@@ -26,7 +26,7 @@ This is a step-by-step guide presented in a professional report format about a p
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image1.png" alt="nmap command" />
 </div>
-<em>Figure 1:</em> Nmap command and results</center>
+<center><em>Figure 1:</em> Nmap command and results</center>
 <h3 id="reconnaissance-results">Reconnaissance Results</h3>
 <table>
   <thead>

@@ -78,7 +78,7 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
   <img src="/images/posts/eternalblue/image7.png" alt="dump de hashes de usuarios locales" />
 </div>
 <center><em>Figura 7:</em> Dump de hashes de usuarios locales</center>
-<h2 id="uso-de-credenciales-cifradas">Uso de credenciales cifradas</h2>
+<h3 id="uso-de-credenciales-cifradas">Uso de credenciales cifradas</h3>
 <p>Una vez obtenidos los hashes de contraseñas, se utilizó la técnica de Pass The Hash (PTH) para acceder a otros recursos del sistema sin necesidad de conocer las contraseñas en texto plano. Este método permite autenticarse y moverse lateralmente entre sistemas Windows, utilizando únicamente el hash de la contraseña.
 Se utilizó la herramienta <code>crackmapexec</code> para autenticarse remotamente en otros sistemas o servicios de la red usando el hash de un usuario.</p>
 <div style="text-align: center;">

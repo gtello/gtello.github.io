@@ -15,7 +15,7 @@
 
 <title>Eternal Machine (EternalBlue) | Gabriel Tello</title>
 <meta name="title" content="Eternal Machine (EternalBlue)" />
-<meta name="description" content="Report on the Eternal machine." />
+<meta name="description" content="A pentest report on the Eternal machine." />
 <meta name="keywords" content="eternalblue,windows,metasploit,mimikatz,reverse-shell,persistence,pentesting,writeup," />
 
 
@@ -42,7 +42,7 @@
 
 
 <meta property="og:title" content="Eternal Machine (EternalBlue)" />
-<meta property="og:description" content="Report on the Eternal machine." />
+<meta property="og:description" content="A pentest report on the Eternal machine." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://gtello.github.io/writeups/eternalblue/" />
 
@@ -56,15 +56,15 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://gtello.github.io/images/social_card_bg_hu15077769756751802080.webp"/>
 <meta name="twitter:title" content="Eternal Machine (EternalBlue)"/>
-<meta name="twitter:description" content="Report on the Eternal machine."/>
+<meta name="twitter:description" content="A pentest report on the Eternal machine."/>
 <meta name="twitter:site" content="@example"/>
 
 
 
 <meta itemprop="name" content="Eternal Machine (EternalBlue)">
-<meta itemprop="description" content="Report on the Eternal machine."><meta itemprop="datePublished" content="2024-10-18T09:15:00+00:00" />
+<meta itemprop="description" content="A pentest report on the Eternal machine."><meta itemprop="datePublished" content="2024-10-18T09:15:00+00:00" />
 <meta itemprop="dateModified" content="2024-10-18T09:15:00+00:00" />
-<meta itemprop="wordCount" content="960">
+<meta itemprop="wordCount" content="959">
 
 <meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu15077769756751802080.webp"/>
 
@@ -208,7 +208,7 @@ This is a step-by-step guide presented in a professional report format about a p
   <img src="/images/posts/eternalblue/image7.png" alt="local user hash dump" />
 </div>
 <center><em>Figure 7:</em> Local user hash dump</center>
-<h2 id="using-encrypted-credentials">Using Encrypted Credentials</h2>
+<h3 id="using-encrypted-credentials">Using Encrypted Credentials</h3>
 <p>Once the password hashes were obtained, the Pass The Hash (PTH) technique was used to access other system resources without needing to know the plaintext passwords. This method allows authentication and lateral movement between Windows systems using only the password hash.<br>
 The <code>crackmapexec</code> tool was used to remotely authenticate to other systems or services on the network using a user&rsquo;s hash.</p>
 <div style="text-align: center;">
@@ -249,9 +249,9 @@ In this case, a persistence script was configured using the <code>windows/local/
 <h2 id="flags">Flags</h2>
 <p>A search for flags was carried out using the <code>search</code> command in meterpreter, and the <code>type</code> command was used to display their contents.</p>
 <div style="text-align: center;">
-  <img src="/images/posts/eternalblue/image14.png" alt="type command execution" />
+  <img src="/images/posts/eternalblue/image14.png" alt="flags found" />
 </div>
-<center><em>Figure 14:</em> Type command execution</center>
+<center><em>Figure 14:</em> Flags found</center>
 <p>Thus, the two flags were found, which are:</p>
 <table>
   <thead>

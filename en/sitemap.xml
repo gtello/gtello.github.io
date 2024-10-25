@@ -52,6 +52,19 @@
                 href="https://gtello.github.io/writeups/"
                 />
   </url><url>
+    <loc>https://gtello.github.io/writeups/academy/</loc>
+    <lastmod>2024-10-24T21:22:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/writeups/academy/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/writeups/academy/"
+                />
+  </url><url>
     <loc>https://gtello.github.io/tags/ftp/</loc>
     <lastmod>2024-10-24T21:22:00+00:00</lastmod>
     <xhtml:link
@@ -89,19 +102,6 @@
                 rel="alternate"
                 hreflang="en-US"
                 href="https://gtello.github.io/tags/linux/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/writeups/academy/</loc>
-    <lastmod>2024-10-24T21:22:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/writeups/academy/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/writeups/academy/"
                 />
   </url><url>
     <loc>https://gtello.github.io/tags/pentesting/</loc>

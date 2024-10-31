@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>SOC on Gabriel Tello</title>
+    <link>http://localhost:1313/tags/soc/</link>
+    <description>Recent content in SOC on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Thu, 10 Oct 2024 16:10:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/soc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Implementing Wazuh &#43; SOAR (Shuffle)</title>
+      <link>http://localhost:1313/projects/wazuh/</link>
+      <pubDate>Thu, 10 Oct 2024 16:10:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>http://localhost:1313/projects/wazuh/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;This project aims to showcase the setup and integration of &lt;a href=&#34;https://wazuh.com/&#34;&gt;Wazuh&lt;/a&gt; with &lt;a href=&#34;https://github.com/Shuffle/Shuffle&#34;&gt;Shuffle&lt;/a&gt; in a professional environment to enhance security operations. In here, I&amp;rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.&lt;/p&gt;&#xA;&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;&#xA;&lt;p&gt;To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.&lt;/p&gt;&#xA;&lt;div style=&#34;text-align: center;&#34;&gt;&#xD;&#xA;  &lt;img src=&#34;http://localhost:1313/images/posts/wazuh/ec2-specs.png&#34; alt=&#34;EC2 Specs&#34; /&gt;&#xD;&#xA;&lt;/div&gt;&#xD;&#xA;&lt;center&gt;EC2 Instance Specs&lt;/center&gt;&#xD;&#xA;&lt;p&gt;Once our server is up-to-date we run the following command to install Wazuh:&#xA;&lt;code&gt;curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh &amp;amp;&amp;amp; sudo bash ./wazuh-install.sh -a&lt;/code&gt;&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>This project aims to showcase the setup and integration of <a href="https://wazuh.com/">Wazuh</a> with <a href="https://github.com/Shuffle/Shuffle">Shuffle</a> in a professional environment to enhance security operations. In here, I&rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.</p>
+<h2 id="installation">Installation</h2>
+<p>To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/wazuh/ec2-specs.png" alt="EC2 Specs" />
+</div>
+<center>EC2 Instance Specs</center>
+<p>Once our server is up-to-date we run the following command to install Wazuh:
+<code>curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh &amp;&amp; sudo bash ./wazuh-install.sh -a</code></p>
+<p>This will take care of the setup and configuration of all core components. The process begins by checking system requirements and installing essential dependencies. Next, the script configures Wazuh’s security by generating certificates for the root, admin, indexer, Filebeat, and dashboard components, ensuring secure data handling across the ecosystem.</p>
+<p>Once dependencies and configurations are set, the script sequentially installs and starts key Wazuh services: the Wazuh Indexer for data storage, the Wazuh Manager for threat detection, Filebeat for log forwarding, and the Wazuh Dashboard for monitoring. The dashboard is accessible at <code>https://&lt;wazuh-dashboard-ip&gt;:443</code> with default login credentials provided at the end of the installation.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/wazuh/wazuh-setup-loading.png" alt="Wazuh Setup" />
+</div>
+<center>Wazuh Setup</center>
+<p>Once we access our Wazuh dashboard for the first time, we&rsquo;ll move on to deploying our Wazuh agent.</p>
+<h2 id="agent-deployment">Agent deployment</h2>
+<h3 id="step-by-step-setup">Step-by-Step Setup</h3>
+<ol>
+<li><strong>Install Wazuh</strong>: Walk through the installation process, including repository setup and configuration.</li>
+<li><strong>Configuration</strong>: Overview of key settings configured in <code>ossec.conf</code>, such as enabling modules (e.g., rootkit detection, file integrity monitoring).</li>
+<li><strong>Agent Deployment</strong>: Methods for installing Wazuh agents on endpoints (Windows, Linux, macOS).</li>
+<li><strong>Testing and Validation</strong>: How we verified the installation and checked agent connectivity.</li>
+</ol>
+<h2 id="2-customizing-wazuh-for-the-environment">2. Customizing Wazuh for the Environment</h2>
+<ul>
+<li><strong>Alerting Rules</strong>: Explanation of custom rules and thresholds tailored to specific needs.</li>
+<li><strong>Log Sources</strong>: List of integrated log sources (e.g., firewall, cloud services, application logs).</li>
+<li><strong>Dashboards</strong>: Key Wazuh dashboards used for monitoring and alert analysis.</li>
+</ul>
+<h2 id="3-fine-tuning-alerts">3. Fine-tuning Alerts</h2>
+<ul>
+<li><strong>Alert Filtering</strong>: Configuring filters to reduce noise and focus on high-priority alerts.</li>
+<li><strong>Alert Escalation</strong>: How critical alerts are routed or escalated within the organization.</li>
+</ul>
+<hr>
+<h1 id="soar-with-shuffle">SOAR with Shuffle</h1>
+<h2 id="1-installation-and-configuration">1. Installation and Configuration</h2>
+<ul>
+<li><strong>Shuffle Installation</strong>: Steps for setting up Shuffle (Docker-based or native installation).</li>
+<li><strong>Connector Setup</strong>: Overview of essential connectors (e.g., Wazuh, Slack, email) and authentication methods.</li>
+</ul>
+<h2 id="2-building-automation-workflows">2. Building Automation Workflows</h2>
+<h3 id="key-workflows-implemented">Key Workflows Implemented</h3>
+<ol>
+<li><strong>Alert Triage</strong>: Automating initial alert triage with Wazuh data.</li>
+<li><strong>Incident Response</strong>: Workflow example for automatic containment actions (e.g., quarantining an endpoint).</li>
+<li><strong>Notification &amp; Escalation</strong>: How alerts are sent to relevant teams via Slack or email based on severity.</li>
+</ol>
+<h3 id="workflow-diagrams">Workflow Diagrams</h3>
+<ul>
+<li><strong>Diagram Format</strong>: Include diagrams of workflows showing the sequence of actions triggered by specific alert types.</li>
+</ul>
+<h2 id="3-testing-and-validation">3. Testing and Validation</h2>
+<ul>
+<li><strong>Scenario Testing</strong>: Testing various security incidents to ensure workflows respond accurately.</li>
+<li><strong>Outcome Measurement</strong>: Metrics used to measure workflow effectiveness (e.g., mean time to respond, false positives reduced).</li>
+</ul>
+<hr>
+<h1 id="challenges-faced">Challenges Faced</h1>
+<h2 id="technical-challenges">Technical Challenges</h2>
+<ul>
+<li><strong>Compatibility Issues</strong>: Describe any software conflicts or hardware limitations encountered.</li>
+<li><strong>Scalability</strong>: Adjustments made to scale Wazuh and Shuffle across multiple sites.</li>
+</ul>
+<h2 id="operational-challenges">Operational Challenges</h2>
+<ul>
+<li><strong>User Training</strong>: Challenges in training the team to use Wazuh and understand automated workflows.</li>
+<li><strong>Alert Tuning</strong>: Time invested in adjusting alert thresholds to reduce false positives.</li>
+</ul>
+<hr>
+<h1 id="results-and-outcomes">Results and Outcomes</h1>
+<h2 id="key-metrics">Key Metrics</h2>
+<ul>
+<li><strong>Incident Response Time</strong>: Improvements in time-to-response after implementation.</li>
+<li><strong>Alert Reduction</strong>: Decrease in false positives or noisy alerts after tuning.</li>
+</ul>
+<h2 id="business-impact">Business Impact</h2>
+<ul>
+<li><strong>Increased Efficiency</strong>: Reduction in manual work and faster incident resolution.</li>
+<li><strong>Enhanced Security Posture</strong>: Specific examples of incidents prevented or mitigated through automation.</li>
+</ul>
+<hr>
+<h1 id="future-improvements">Future Improvements</h1>
+<ul>
+<li><strong>Workflow Expansion</strong>: Potential for additional workflows (e.g., phishing detection, advanced threat intel integration).</li>
+<li><strong>Continuous Monitoring</strong>: Plans to continually assess and improve system performance.</li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>A successful integration of Wazuh and Shuffle significantly enhanced our security operations, reduced response times, and automated incident response. This project highlights the steps, tools, and strategies employed to achieve these outcomes.</p>
+<div>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

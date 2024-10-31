@@ -12,7 +12,7 @@
     <lastBuildDate>Thu, 24 Oct 2024 21:22:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Ftp</title>
+      <title>FTP</title>
       <link>https://gtello.github.io/tags/ftp/</link>
       <pubDate>Thu, 24 Oct 2024 21:22:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/tags/ftp/</guid>
@@ -20,7 +20,7 @@
       <content:encoded><![CDATA[]]></content:encoded>
     </item>
     <item>
-      <title>Hash-Cracking</title>
+      <title>Hash Cracking</title>
       <link>https://gtello.github.io/tags/hash-cracking/</link>
       <pubDate>Thu, 24 Oct 2024 21:22:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/tags/hash-cracking/</guid>
@@ -52,7 +52,15 @@
       <content:encoded><![CDATA[]]></content:encoded>
     </item>
     <item>
-      <title>Reverse-Shell</title>
+      <title>Red Team</title>
+      <link>https://gtello.github.io/tags/red-team/</link>
+      <pubDate>Thu, 24 Oct 2024 21:22:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/tags/red-team/</guid>
+      <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
+    </item>
+    <item>
+      <title>Reverse Shell</title>
       <link>https://gtello.github.io/tags/reverse-shell/</link>
       <pubDate>Thu, 24 Oct 2024 21:22:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/tags/reverse-shell/</guid>

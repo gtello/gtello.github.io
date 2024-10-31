@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="http://localhost:1313/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/images/favicon-16x16.png" />
+<link rel="manifest" href="http://localhost:1313/images/site.webmanifest" />
+
+<link rel="shortcut icon" href="http://localhost:1313/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#4385BE" />
+
+
+<title>Implementing Wazuh &#43; SOAR (Shuffle) | Gabriel Tello</title>
+<meta name="title" content="Implementing Wazuh &#43; SOAR (Shuffle)" />
+<meta name="description" content="TODO" />
+<meta name="keywords" content="wazuh,SIEM,SOC,SOAR,AWS,blue team,project," />
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Implementing Wazuh &#43; SOAR (Shuffle)" />
+<meta property="og:description" content="TODO" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/projects/wazuh/" />
+
+<meta property="og:image" content="http://localhost:1313/images/social_card_bg_hu16353194561760848521.webp"/><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2024-10-10T16:10:00+00:00" />
+<meta property="article:modified_time" content="2024-10-30T16:10:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="fb:admins" content="0000000000" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://localhost:1313/images/social_card_bg_hu16353194561760848521.webp"/>
+<meta name="twitter:title" content="Implementing Wazuh &#43; SOAR (Shuffle)"/>
+<meta name="twitter:description" content="TODO"/>
+<meta name="twitter:site" content="@example"/>
+
+
+
+<meta itemprop="name" content="Implementing Wazuh &#43; SOAR (Shuffle)">
+<meta itemprop="description" content="TODO"><meta itemprop="datePublished" content="2024-10-10T16:10:00+00:00" />
+<meta itemprop="dateModified" content="2024-10-30T16:10:00+00:00" />
+<meta itemprop="wordCount" content="626">
+
+<meta itemprop="image" content="http://localhost:1313/images/social_card_bg_hu16353194561760848521.webp"/>
+
+
+<meta itemprop="keywords" content="wazuh,SIEM,SOC,SOAR,AWS,blue team,project," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  
+  <link href="/style.min.css" rel="stylesheet">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
+    <link href="/toc.min.css" rel="stylesheet">
+  
+
+  
+</head>
+
+<body>
+  <header><a class="skip-link" href="#main-content">Skip to main content</a>
+
+<a href="/" class="title"><h1>Gabriel Tello</h1></a>
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/posts/">Posts</a>
+
+  <a href="/projects/">Projects</a>
+
+  <a href="/writeups/">Write-ups</a>
+
+<a href='http://localhost:1313/index.xml'>RSS</a>
+
+
+
+
+
+
+
+  
+    
+    
+      <a class="disabled" role="link" aria-disabled="true">Español</a>
+    
+  
+
+</nav>
+</header>
+  <main id="main-content">
+
+<h1>Implementing Wazuh &#43; SOAR (Shuffle)</h1>
+<p class="byline" style="color: gray; font-size: 0.9rem">
+  Published on:
+  <time datetime='10/10/2024, 04:10 PM' pubdate>
+    10/10/2024, 04:10 PM
+  </time>
+   
+    | Last updated on:
+    <time datetime='10/30/2024, 04:10 PM'>
+      10/30/2024, 04:10 PM
+    </time>
+  
+  
+  |
+  <span>700</span> 
+  words
+  |
+  <span>3</span>
+  <span>mins</span>
+</p>
+
+
+
+<article class="article">
+  <aside class="sidebar">
+    <div class="toc-container">
+      <div style="font-weight: bold; margin-bottom: 0.4rem">Table of Contents</div>
+      <div class="toc"></div>
+    </div>
+  </aside>
+
+  <content class="content">
+    <div style="text-align: justify;">
+<p>This project aims to showcase the setup and integration of <a href="https://wazuh.com/">Wazuh</a> with <a href="https://github.com/Shuffle/Shuffle">Shuffle</a> in a professional environment to enhance security operations. In here, I&rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.</p>
+<h2 id="installation">Installation</h2>
+<p>To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/wazuh/ec2-specs.png" alt="EC2 Specs" />
+</div>
+<center>EC2 Instance Specs</center>
+<p>Once our server is up-to-date we run the following command to install Wazuh:
+<code>curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh &amp;&amp; sudo bash ./wazuh-install.sh -a</code></p>
+<p>This will take care of the setup and configuration of all core components. The process begins by checking system requirements and installing essential dependencies. Next, the script configures Wazuh’s security by generating certificates for the root, admin, indexer, Filebeat, and dashboard components, ensuring secure data handling across the ecosystem.</p>
+<p>Once dependencies and configurations are set, the script sequentially installs and starts key Wazuh services: the Wazuh Indexer for data storage, the Wazuh Manager for threat detection, Filebeat for log forwarding, and the Wazuh Dashboard for monitoring. The dashboard is accessible at <code>https://&lt;wazuh-dashboard-ip&gt;:443</code> with default login credentials provided at the end of the installation.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/wazuh/wazuh-setup-loading.png" alt="Wazuh Setup" />
+</div>
+<center>Wazuh Setup</center>
+<p>Once we access our Wazuh dashboard for the first time, we&rsquo;ll move on to deploying our Wazuh agent.</p>
+<h2 id="agent-deployment">Agent deployment</h2>
+<h3 id="step-by-step-setup">Step-by-Step Setup</h3>
+<ol>
+<li><strong>Install Wazuh</strong>: Walk through the installation process, including repository setup and configuration.</li>
+<li><strong>Configuration</strong>: Overview of key settings configured in <code>ossec.conf</code>, such as enabling modules (e.g., rootkit detection, file integrity monitoring).</li>
+<li><strong>Agent Deployment</strong>: Methods for installing Wazuh agents on endpoints (Windows, Linux, macOS).</li>
+<li><strong>Testing and Validation</strong>: How we verified the installation and checked agent connectivity.</li>
+</ol>
+<h2 id="2-customizing-wazuh-for-the-environment">2. Customizing Wazuh for the Environment</h2>
+<ul>
+<li><strong>Alerting Rules</strong>: Explanation of custom rules and thresholds tailored to specific needs.</li>
+<li><strong>Log Sources</strong>: List of integrated log sources (e.g., firewall, cloud services, application logs).</li>
+<li><strong>Dashboards</strong>: Key Wazuh dashboards used for monitoring and alert analysis.</li>
+</ul>
+<h2 id="3-fine-tuning-alerts">3. Fine-tuning Alerts</h2>
+<ul>
+<li><strong>Alert Filtering</strong>: Configuring filters to reduce noise and focus on high-priority alerts.</li>
+<li><strong>Alert Escalation</strong>: How critical alerts are routed or escalated within the organization.</li>
+</ul>
+<hr>
+<h1 id="soar-with-shuffle">SOAR with Shuffle</h1>
+<h2 id="1-installation-and-configuration">1. Installation and Configuration</h2>
+<ul>
+<li><strong>Shuffle Installation</strong>: Steps for setting up Shuffle (Docker-based or native installation).</li>
+<li><strong>Connector Setup</strong>: Overview of essential connectors (e.g., Wazuh, Slack, email) and authentication methods.</li>
+</ul>
+<h2 id="2-building-automation-workflows">2. Building Automation Workflows</h2>
+<h3 id="key-workflows-implemented">Key Workflows Implemented</h3>
+<ol>
+<li><strong>Alert Triage</strong>: Automating initial alert triage with Wazuh data.</li>
+<li><strong>Incident Response</strong>: Workflow example for automatic containment actions (e.g., quarantining an endpoint).</li>
+<li><strong>Notification &amp; Escalation</strong>: How alerts are sent to relevant teams via Slack or email based on severity.</li>
+</ol>
+<h3 id="workflow-diagrams">Workflow Diagrams</h3>
+<ul>
+<li><strong>Diagram Format</strong>: Include diagrams of workflows showing the sequence of actions triggered by specific alert types.</li>
+</ul>
+<h2 id="3-testing-and-validation">3. Testing and Validation</h2>
+<ul>
+<li><strong>Scenario Testing</strong>: Testing various security incidents to ensure workflows respond accurately.</li>
+<li><strong>Outcome Measurement</strong>: Metrics used to measure workflow effectiveness (e.g., mean time to respond, false positives reduced).</li>
+</ul>
+<hr>
+<h1 id="challenges-faced">Challenges Faced</h1>
+<h2 id="technical-challenges">Technical Challenges</h2>
+<ul>
+<li><strong>Compatibility Issues</strong>: Describe any software conflicts or hardware limitations encountered.</li>
+<li><strong>Scalability</strong>: Adjustments made to scale Wazuh and Shuffle across multiple sites.</li>
+</ul>
+<h2 id="operational-challenges">Operational Challenges</h2>
+<ul>
+<li><strong>User Training</strong>: Challenges in training the team to use Wazuh and understand automated workflows.</li>
+<li><strong>Alert Tuning</strong>: Time invested in adjusting alert thresholds to reduce false positives.</li>
+</ul>
+<hr>
+<h1 id="results-and-outcomes">Results and Outcomes</h1>
+<h2 id="key-metrics">Key Metrics</h2>
+<ul>
+<li><strong>Incident Response Time</strong>: Improvements in time-to-response after implementation.</li>
+<li><strong>Alert Reduction</strong>: Decrease in false positives or noisy alerts after tuning.</li>
+</ul>
+<h2 id="business-impact">Business Impact</h2>
+<ul>
+<li><strong>Increased Efficiency</strong>: Reduction in manual work and faster incident resolution.</li>
+<li><strong>Enhanced Security Posture</strong>: Specific examples of incidents prevented or mitigated through automation.</li>
+</ul>
+<hr>
+<h1 id="future-improvements">Future Improvements</h1>
+<ul>
+<li><strong>Workflow Expansion</strong>: Potential for additional workflows (e.g., phishing detection, advanced threat intel integration).</li>
+<li><strong>Continuous Monitoring</strong>: Plans to continually assess and improve system performance.</li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>A successful integration of Wazuh and Shuffle significantly enhanced our security operations, reduced response times, and automated incident response. This project highlights the steps, tools, and strategies employed to achieve these outcomes.</p>
+<div>
+  </content>
+  <p>
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/wazuh/">#Wazuh</a>&nbsp;&nbsp;
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/siem/">#SIEM</a>&nbsp;&nbsp;
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/soc/">#SOC</a>&nbsp;&nbsp;
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/soar/">#SOAR</a>&nbsp;&nbsp;
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/aws/">#AWS</a>&nbsp;&nbsp;
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/blue-team/">#Blue Team</a>&nbsp;&nbsp;
+    
+      <a class="blog-tags" href="http://localhost:1313/tags/project/">#Project</a>&nbsp;&nbsp;
+    
+  </p>
+
+</article>
+
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="gtello/gtello.github.io"
+        data-repo-id="R_kgDONAQNkQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDONAQNkc4CjaoW"
+        data-mapping='og:title'
+        data-strict="0"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position='top'
+        data-theme='preferred_color_scheme'
+        data-lang='en'
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <p>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reply%20to%20"Implementing%20Wazuh%20%2b%20SOAR%20%28Shuffle%29"'>
+      Reply to this post by email ↪
+    </a>
+  </p>
+
+
+
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  cornerOffset: 32,
+  diameter: 48,
+  backgroundColor: "var(--flexoki-dark-blue)",
+  textColor: "var(--flexoki-50)",
+  showWhenScrollTopIs: 512, 
+})</script>
+
+
+
+  </main>
+  <footer><small>
+  <a href="https://github.com/gtello">Gabriel Tello</a> © 2024 | Made with <a href="https://github.com/Pagliacii/hugo-bearberry">Bear Berry</a>
+</small>
+</footer>
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
+    
+    <script src="/js/toc.min.js"></script>
+  
+
+    
+</body>
+
+</html>

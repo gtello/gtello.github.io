@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Cms on Gabriel Tello</title>
+    <link>https://gtello.github.io/tags/cms/</link>
+    <description>Recent content in Cms on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Thu, 31 Oct 2024 16:00:00 +0000</lastBuildDate>
+    <atom:link href="https://gtello.github.io/tags/cms/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bolt Machine</title>
+      <link>https://gtello.github.io/writeups/bolt/</link>
+      <pubDate>Thu, 31 Oct 2024 16:00:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/bolt/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;This is a step-by-step guide presented in a professional report format covering a penetration test conducted on a Debian machine.&#xD;&#xA;&lt;h2 id=&#34;executive-summary&#34;&gt;Executive Summary&lt;/h2&gt;&#xA;&lt;p&gt;This report describes a security assessment in which several critical vulnerabilities were identified and exploited on the Bolt machine. During reconnaissance, exposed services were found, including a Bolt CMS error and a PHP information page. These discoveries led to the extraction of sensitive credentials and the exploitation of a vulnerability that provided access to important system files.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+This is a step-by-step guide presented in a professional report format covering a penetration test conducted on a Debian machine.
+<h2 id="executive-summary">Executive Summary</h2>
+<p>This report describes a security assessment in which several critical vulnerabilities were identified and exploited on the Bolt machine. During reconnaissance, exposed services were found, including a Bolt CMS error and a PHP information page. These discoveries led to the extraction of sensitive credentials and the exploitation of a vulnerability that provided access to important system files.</p>
+<p>Additionally, an NFS shared resource containing a password-protected file was detected. Using brute force techniques, the file was successfully cracked, and an SSH key was obtained, allowing access to the system as an identified user. Finally, a misconfiguration allowed privilege escalation, granting root access and complete control over the machine.</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>A network scan was conducted using nmap to identify open ports and services on the machine.</p>
+<p><img alt="nmap Result" src="/images/posts/bolt/image1.png"></p>
+<center><em>Figure 1:</em> nmap result</center>
+<h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Debian</td>
+          <td style="text-align: left">192.168.138.132</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="exploitation">Exploitation</h2>
+<p>The nmap scan showed that ports 80 and 8080 were open, so they were investigated in the browser. An error page for Bolt CMS was found.</p>
+<p><img alt="Bolt Installation Error" src="/images/posts/bolt/image2.png"></p>
+<center><em>Figure 2:</em> Bolt installation error</center>
+<p>A PHP information page was exposed on port 8080, and directory brute-forcing was performed on both ports.</p>
+<p><img alt="PHP Info Page" src="/images/posts/bolt/image3.png"></p>
+<center><em>Figure 3:</em> PHP information page</center>
+<p><img alt="Directory Brute Force" src="/images/posts/bolt/image4.png"></p>
+<center><em>Figure 4:</em> Directory brute force on port 80</center>
+<p>Inside the <code>/app</code> directory, a <code>config.yml</code> file containing SQLite credentials was found.</p>
+<p><img alt="Exposed Credentials" src="/images/posts/bolt/image5.png"></p>
+<center><em>Figure 5:</em> Exposed credentials in config.yml file</center>
+<p>Brute-forcing results on directories for port 8080 returned a single result, the <code>/dev</code> directory.</p>
+<p><img alt="BoltWire" src="/images/posts/bolt/image6.png"></p>
+<center><em>Figure 6:</em> BoltWire homepage</center>
+<p>We interacted with the BoltWire page but found nothing of interest. Vulnerabilities were researched online, and a <a href="https://www.exploit-db.com/exploits/48411">local file inclusion (LFI)</a> vulnerability was tested.</p>
+<p><img alt="LFI" src="/images/posts/bolt/image7.png"></p>
+<center><em>Figure 7:</em> Local file inclusion</center>
+<p>The <code>/etc/passwd</code> file could be examined due to the LFI, revealing a potential user, <code>jeanpaul</code>.</p>
+<p>Simultaneously, port 2049 (NFS) was enumerated. Using the <code>showmount -e</code> command revealed that the <code>/srv/nfs</code> directory was shared with specific IP ranges.</p>
+<p>A local directory <code>/mnt/dev</code> was created as a mount point. The shared NFS resource <code>/srv/nfs</code> was then mounted onto this directory using the <code>mount</code> command. Navigating to <code>/mnt/dev</code> revealed a file named <code>save.zip</code>.</p>
+<p><img alt="NFS Enumeration" src="/images/posts/bolt/image8.png"></p>
+<center><em>Figure 8:</em> NFS Enumeration</center>
+<p>The zip file was password-protected, so the <code>fcrackzip</code> tool was used with a password dictionary (<code>rockyou.txt</code>) to attempt to crack the password for <code>save.zip</code>. The command succeeded, revealing the password <code>java101</code>.</p>
+<p>Next, <code>save.zip</code> was unzipped using <code>sudo unzip</code>, and the discovered password was entered. This extracted three files: <code>flag1.txt</code>, <code>id_rsa</code>, and <code>todo.txt</code>.</p>
+<p>The <code>flag1.txt</code> file contained a hash string, while <code>todo.txt</code> included instructions related to site management and a recommendation to continue programming in Java. This file was signed by <code>jp</code>, which could refer to the previously identified user <code>jeanpaul</code>.</p>
+<p>As a result, the <code>id_rsa</code> file was used to connect to the machine as the user <code>jeanpaul</code>, using the credentials found so far.</p>
+<p><img alt="Zip File Crack" src="/images/posts/bolt/image9.png"></p>
+<center><em>Figure 9:</em> Zip file crack</center>
+<p>The password previously found in the configuration file was indeed correct for user <code>jeanpaul</code>. Once inside the machine, privilege escalation was attempted.</p>
+<p><img alt="Log in" src="/images/posts/bolt/image10.png"></p>
+<center><em>Figure 10:</em> Log in as user jeanpaul</center>
+<h3 id="privilege-escalation">Privilege Escalation</h3>
+<p>Using the command <code>sudo -l</code>, it was observed that the current user could run the <code>zip</code> command as root without a password. A privilege escalation technique from <a href="https://gtfobins.github.io/gtfobins/zip/#sudo">GTFObins</a> was used, providing methods to exploit binaries with special sudo permissions. In this case, the <code>zip</code> binary was used to execute commands with elevated privileges.</p>
+<p>The process began by creating a temporary file using the command <code>TF=$(mktemp -u)</code>, which generated a unique file name without physically creating the file, storing it in the <code>TF</code> variable. Then, <code>zip</code> was executed with superuser privileges using the command <code>sudo zip $TF /etc/hosts -T -TT 'sh #'</code>. Here, <code>zip</code> was configured to execute the <code>sh</code> command interpreter, using <code>/etc/hosts</code> as a dummy file to meet the binary&rsquo;s requirements. The <code>-T</code> and <code>-TT</code> options allowed <code>sh</code> to run with elevated privileges. Finally, the temporary file was deleted with <code>sudo rm $TF</code> to clear any traces of the attack. This sequence allowed root access to the machine.</p>
+<p><img alt="Root Escalation" src="/images/posts/bolt/image11.png"></p>
+<center><em>Figure 11:</em> Root escalation</center>
+<h2 id="tools-used">Tools Used</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">nmap</td>
+          <td style="text-align: left">Used for network scanning and detecting open ports and services on the target machine.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">fcrackzip</td>
+          <td style="text-align: left">Tool used to perform a brute-force attack on zip files.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">wfuzz</td>
+          <td style="text-align: left">Used for brute-forcing web directories, discovering sensitive paths.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">GTFObins</td>
+          <td style="text-align: left">Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>The security assessment on the Bolt machine revealed critical vulnerabilities that allowed full system access, from credential extraction to privilege escalation to root. These issues stemmed mainly from misconfigurations, exposure of sensitive information, and lack of security updates. Although these vulnerabilities were successfully exploited, implementing the suggested recommendations can mitigate similar risks in the future and strengthen the machine&rsquo;s overall security.</p>
+<h2 id="recommendations">Recommendations</h2>
+<p>It is recommended to update and patch the server software and applications, such as Bolt CMS, to protect against known vulnerabilities. Restrict access to sensitive information by disabling or limiting system information pages like <code>phpinfo()</code> that expose critical details to potential attackers. Secure files and configurations by storing credentials securely and encrypted, and implement access policies that limit the visibility of sensitive files like <code>config.yml</code>. Strengthen NFS configurations to restrict access to shared resources through stricter settings, ensuring only authorized users can access them. Review sudo permissions to prevent users from running potentially exploitable binaries, such as <code>zip</code> in this case, with root privileges. Improve SSH key management by implementing measures to protect private keys and restricting SSH access to trusted users.</p>
+</div>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

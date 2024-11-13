@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en-US">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
   <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="http://localhost:1313/images/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/images/favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/images/favicon-16x16.png" />
-<link rel="manifest" href="http://localhost:1313/images/site.webmanifest" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="https://gtello.github.io/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://gtello.github.io/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://gtello.github.io/images/favicon-16x16.png" />
+<link rel="manifest" href="https://gtello.github.io/images/site.webmanifest" />
 
-<link rel="shortcut icon" href="http://localhost:1313/images/favicon.ico" />
+<link rel="shortcut icon" href="https://gtello.github.io/images/favicon.ico" />
 <meta name="msapplication-TileColor" content="#4385BE" />
 
 
-<title>Implementing Wazuh &#43; SOAR (Shuffle) | Gabriel Tello</title>
-<meta name="title" content="Implementing Wazuh &#43; SOAR (Shuffle)" />
-<meta name="description" content="TODO" />
-<meta name="keywords" content="wazuh,SIEM,SOC,SOAR,AWS,blue team,project," />
+<title>Implementing Wazuh (SIEM) | Gabriel Tello</title>
+<meta name="title" content="Implementing Wazuh (SIEM)" />
+<meta name="description" content="A comprehensive guide on implementing Wazuh as a SIEM solution. This project covers step-by-step installation, configuration, agent deployment, vulnerability management, alerting, integration with Microsoft Teams, and validation testing using Atomic Red Team to enhance security operations." />
+<meta name="keywords" content="wazuh,SIEM,SOC,AWS,blue team,purple team,project," />
 
 
 
@@ -41,41 +41,44 @@
 
 
 
-<meta property="og:title" content="Implementing Wazuh &#43; SOAR (Shuffle)" />
-<meta property="og:description" content="TODO" />
+<meta property="og:title" content="Implementing Wazuh (SIEM)" />
+<meta property="og:description" content="A comprehensive guide on implementing Wazuh as a SIEM solution. This project covers step-by-step installation, configuration, agent deployment, vulnerability management, alerting, integration with Microsoft Teams, and validation testing using Atomic Red Team to enhance security operations." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="http://localhost:1313/projects/wazuh/" />
+<meta property="og:url" content="https://gtello.github.io/projects/wazuh/" />
 
-<meta property="og:image" content="http://localhost:1313/images/social_card_bg_hu16353194561760848521.webp"/><meta property="article:section" content="projects" />
-<meta property="article:published_time" content="2024-10-10T16:10:00+00:00" />
-<meta property="article:modified_time" content="2024-10-30T16:10:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="og:image" content="https://gtello.github.io/images/social_card_bg_hu11353603875517265053.webp"/><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2024-11-13T15:10:00+00:00" />
+<meta property="article:modified_time" content="2024-11-13T15:10:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
 <meta property="fb:admins" content="0000000000" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="http://localhost:1313/images/social_card_bg_hu16353194561760848521.webp"/>
-<meta name="twitter:title" content="Implementing Wazuh &#43; SOAR (Shuffle)"/>
-<meta name="twitter:description" content="TODO"/>
+<meta name="twitter:image" content="https://gtello.github.io/images/social_card_bg_hu11353603875517265053.webp"/>
+<meta name="twitter:title" content="Implementing Wazuh (SIEM)"/>
+<meta name="twitter:description" content="A comprehensive guide on implementing Wazuh as a SIEM solution. This project covers step-by-step installation, configuration, agent deployment, vulnerability management, alerting, integration with Microsoft Teams, and validation testing using Atomic Red Team to enhance security operations."/>
 <meta name="twitter:site" content="@example"/>
 
 
 
-<meta itemprop="name" content="Implementing Wazuh &#43; SOAR (Shuffle)">
-<meta itemprop="description" content="TODO"><meta itemprop="datePublished" content="2024-10-10T16:10:00+00:00" />
-<meta itemprop="dateModified" content="2024-10-30T16:10:00+00:00" />
-<meta itemprop="wordCount" content="626">
+<meta itemprop="name" content="Implementing Wazuh (SIEM)">
+<meta itemprop="description" content="A comprehensive guide on implementing Wazuh as a SIEM solution. This project covers step-by-step installation, configuration, agent deployment, vulnerability management, alerting, integration with Microsoft Teams, and validation testing using Atomic Red Team to enhance security operations."><meta itemprop="datePublished" content="2024-11-13T15:10:00+00:00" />
+<meta itemprop="dateModified" content="2024-11-13T15:10:00+00:00" />
+<meta itemprop="wordCount" content="1276">
 
-<meta itemprop="image" content="http://localhost:1313/images/social_card_bg_hu16353194561760848521.webp"/>
+<meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu11353603875517265053.webp"/>
 
 
-<meta itemprop="keywords" content="wazuh,SIEM,SOC,SOAR,AWS,blue team,project," />
+<meta itemprop="keywords" content="wazuh,SIEM,SOC,AWS,blue team,purple team,project," />
 
 <meta name="referrer" content="no-referrer-when-downgrade" />
 
   
   <link href="/style.min.css" rel="stylesheet">
 
+  
+    
+    <link href="/syntax.min.css" rel="stylesheet">
   
 
   
@@ -102,43 +105,37 @@
 
   <a href="/writeups/">Write-ups</a>
 
-<a href='http://localhost:1313/index.xml'>RSS</a>
-
-
-
+<a href='https://gtello.github.io/index.xml'>RSS</a>
 
 
 
 
   
-    
-    
-      <a class="disabled" role="link" aria-disabled="true">Español</a>
-    
+
+
+
+
+  
+    <a href="https://gtello.github.io/es/projects/wazuh/">Español</a>
   
 
 </nav>
 </header>
   <main id="main-content">
 
-<h1>Implementing Wazuh &#43; SOAR (Shuffle)</h1>
+<h1>Implementing Wazuh (SIEM)</h1>
 <p class="byline" style="color: gray; font-size: 0.9rem">
   Published on:
-  <time datetime='10/10/2024, 04:10 PM' pubdate>
-    10/10/2024, 04:10 PM
+  <time datetime='11/13/2024, 03:10 PM' pubdate>
+    11/13/2024, 03:10 PM
   </time>
-   
-    | Last updated on:
-    <time datetime='10/30/2024, 04:10 PM'>
-      10/30/2024, 04:10 PM
-    </time>
   
   
   |
-  <span>700</span> 
+  <span>1300</span> 
   words
   |
-  <span>3</span>
+  <span>6</span>
   <span>mins</span>
 </p>
 
@@ -154,113 +151,197 @@
 
   <content class="content">
     <div style="text-align: justify;">
-<p>This project aims to showcase the setup and integration of <a href="https://wazuh.com/">Wazuh</a> with <a href="https://github.com/Shuffle/Shuffle">Shuffle</a> in a professional environment to enhance security operations. In here, I&rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.</p>
+<p>This project aims to showcase the setup and integration of <a href="https://wazuh.com/">Wazuh</a> in a professional environment to enhance security operations. Here, I&rsquo;ll guide you through the installation, agent management, alert configuration, integration with Microsoft Teams, and finally, testing with Atomic Red Team for validation.</p>
 <h2 id="installation">Installation</h2>
-<p>To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.</p>
-<div style="text-align: center;">
-  <img src="/images/posts/wazuh/ec2-specs.png" alt="EC2 Specs" />
-</div>
-<center>EC2 Instance Specs</center>
-<p>Once our server is up-to-date we run the following command to install Wazuh:
-<code>curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh &amp;&amp; sudo bash ./wazuh-install.sh -a</code></p>
-<p>This will take care of the setup and configuration of all core components. The process begins by checking system requirements and installing essential dependencies. Next, the script configures Wazuh’s security by generating certificates for the root, admin, indexer, Filebeat, and dashboard components, ensuring secure data handling across the ecosystem.</p>
+<p>To host our Wazuh server, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.</p>
+<p><img alt="EC2 Specs" src="/images/posts/wazuh/ec2-specs.png"> <center><b>EC2 Instance Specs</b></center></p>
+<p>Once our server is up-to-date we run the following command to install Wazuh:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh <span class="o">&amp;&amp;</span> sudo bash ./wazuh-install.sh -a</span></span></code></pre></div><p>This will take care of the setup and configuration of all core components. The process begins by checking system requirements and installing essential dependencies. Next, the script configures Wazuh’s security by generating certificates for the root, admin, indexer, Filebeat, and dashboard components, ensuring secure data handling across the ecosystem.</p>
 <p>Once dependencies and configurations are set, the script sequentially installs and starts key Wazuh services: the Wazuh Indexer for data storage, the Wazuh Manager for threat detection, Filebeat for log forwarding, and the Wazuh Dashboard for monitoring. The dashboard is accessible at <code>https://&lt;wazuh-dashboard-ip&gt;:443</code> with default login credentials provided at the end of the installation.</p>
-<div style="text-align: center;">
-  <img src="/images/posts/wazuh/wazuh-setup-loading.png" alt="Wazuh Setup" />
-</div>
-<center>Wazuh Setup</center>
-<p>Once we access our Wazuh dashboard for the first time, we&rsquo;ll move on to deploying our Wazuh agent.</p>
+<p><img alt="Wazuh Setup" src="/images/posts/wazuh/wazuh-setup-loading.png"> <center><b>Wazuh Setup</b></center></p>
+<p>When we log in to our Wazuh dashboard for the first time, we should begin by setting up groups to make agent management easier.</p>
+<p>To create agent groups from the Wazuh dashboard:</p>
+<ol>
+<li>Navigate to <strong>Management</strong> &gt; <strong>Groups</strong> and click the <strong>Add new group</strong> button.</li>
+<li>Enter a name for the agent group and click on the <strong>Save new group</strong> button.</li>
+</ol>
+<p><img alt="Agent group" src="/images/posts/wazuh/agent-group.gif"> <center><b>Adding a new group</b></center></p>
+<p>Now we&rsquo;ll move on to deploying our agents.</p>
 <h2 id="agent-deployment">Agent deployment</h2>
-<h3 id="step-by-step-setup">Step-by-Step Setup</h3>
-<ol>
-<li><strong>Install Wazuh</strong>: Walk through the installation process, including repository setup and configuration.</li>
-<li><strong>Configuration</strong>: Overview of key settings configured in <code>ossec.conf</code>, such as enabling modules (e.g., rootkit detection, file integrity monitoring).</li>
-<li><strong>Agent Deployment</strong>: Methods for installing Wazuh agents on endpoints (Windows, Linux, macOS).</li>
-<li><strong>Testing and Validation</strong>: How we verified the installation and checked agent connectivity.</li>
-</ol>
-<h2 id="2-customizing-wazuh-for-the-environment">2. Customizing Wazuh for the Environment</h2>
+<p>To add a new agent we&rsquo;ll click on the burger menu and go to <strong>Endpoints Summary</strong>, and click on <strong>Deploy new agent</strong>. Simply follow the wizard&rsquo;s instructions to deploy an agent:</p>
+<p><img alt="Wazuh Agent Setup" src="/images/posts/wazuh/wazuh-agent-setup.png"> <center><b>Adding a new agent</b></center></p>
+<p>If you&rsquo;re setting up a Wazuh agent on an AWS EC2 instance and experiencing connectivity issues, check your Security Group settings applied to your instance and ensure the Security Group attached to your Wazuh manager instance allows inbound traffic on these ports:</p>
 <ul>
-<li><strong>Alerting Rules</strong>: Explanation of custom rules and thresholds tailored to specific needs.</li>
-<li><strong>Log Sources</strong>: List of integrated log sources (e.g., firewall, cloud services, application logs).</li>
-<li><strong>Dashboards</strong>: Key Wazuh dashboards used for monitoring and alert analysis.</li>
+<li><strong>1514/TCP</strong> – Agent communication</li>
+<li><strong>1515/TCP</strong> – Agent registration</li>
+<li><strong>55000/TCP</strong> – API access</li>
 </ul>
-<h2 id="3-fine-tuning-alerts">3. Fine-tuning Alerts</h2>
+<p><img alt="First agent added" src="/images/posts/wazuh/first-agent-added.png"> <center><b>First agent added</b></center></p>
+<p>For my first agent I added an AWS Lightsail instance I want to keep track of. Now we can move onto further configurations, such as vulnerability and rootkit detection, file integrity monitoring, etc.</p>
+<h2 id="vulnerability-detection">Vulnerability detection</h2>
+<p>As of this publication date, Wazuh ships by default with the vulnerability dectection module toggled on, to confirm check the <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html">config file</a> located at <code>/var/ossec/etc/ossec.conf</code></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="nt">&lt;vulnerability-detection&gt;</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">   <span class="nt">&lt;enabled&gt;</span>yes<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">   <span class="nt">&lt;index-status&gt;</span>yes<span class="nt">&lt;/index-status&gt;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">   <span class="nt">&lt;feed-update-interval&gt;</span>60m<span class="nt">&lt;/feed-update-interval&gt;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="nt">&lt;/vulnerability-detection&gt;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="nt">&lt;indexer&gt;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">   <span class="nt">&lt;enabled&gt;</span>yes<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">   <span class="nt">&lt;hosts&gt;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">      <span class="nt">&lt;host&gt;</span>https://0.0.0.0:9200<span class="nt">&lt;/host&gt;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">   <span class="nt">&lt;/hosts&gt;</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">   <span class="nt">&lt;ssl&gt;</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">      <span class="nt">&lt;certificate_authorities&gt;</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">         <span class="nt">&lt;ca&gt;</span>/etc/filebeat/certs/root-ca.pem<span class="nt">&lt;/ca&gt;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">      <span class="nt">&lt;/certificate_authorities&gt;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">      <span class="nt">&lt;certificate&gt;</span>/etc/filebeat/certs/filebeat.pem<span class="nt">&lt;/certificate&gt;</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">      <span class="nt">&lt;key&gt;</span>/etc/filebeat/certs/filebeat-key.pem<span class="nt">&lt;/key&gt;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">   <span class="nt">&lt;/ssl&gt;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="nt">&lt;/indexer&gt;</span></span></span></code></pre></div><p>To check the vulnerabilities detected on our agents, go to <strong>Threat Intelligence</strong> &gt; <strong>Vulnerability Detection</strong>.</p>
+<p><img alt="Vulnerabilities detected" src="/images/posts/wazuh/wazuh-vulns.png"> <center><b>Vulnerabilities detected</b></center></p>
+<h2 id="alerting">Alerting</h2>
+<p>Configuring alerting in Wazuh involves setting up alert thresholds, forwarding alerts to external systems, and managing alert escalation and filtering.</p>
+<h3 id="thresholds">Thresholds</h3>
+<p>Wazuh assigns a severity level (ranging from 0 to 16) to each event based on predefined <a href="https://documentation.wazuh.com/current/user-manual/ruleset/rules/rules-classification.html">rules</a>. By default, Wazuh triggers alerts for events with a severity level of 3 or higher. You can adjust this threshold to control which alerts are generated.</p>
+<p>To modify it, go to the <code>ossec.conf</code> file and locate the <code>&lt;alerts&gt;</code> section and adjust the <code>&lt;log_alert_level&gt;</code> value to the desired threshold.</p>
+<p>For example, to set the minimum alert level to 5:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;alerts&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;log_alert_level&gt;</span>5<span class="nt">&lt;/log_alert_level&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="nt">&lt;/alerts&gt;</span></span></span></code></pre></div><p>After making changes on the config file, restart the Wazuh manager with <code>sudo systemctl restart wazuh-manager</code> to apply the new settings.</p>
+<h3 id="forwarding-alerts">Forwarding Alerts</h3>
+<p>Wazuh can forward alerts to various external systems, such as syslog servers, email addresses, or collaboration platforms like Microsoft Teams.</p>
 <ul>
-<li><strong>Alert Filtering</strong>: Configuring filters to reduce noise and focus on high-priority alerts.</li>
-<li><strong>Alert Escalation</strong>: How critical alerts are routed or escalated within the organization.</li>
+<li>To forward alerts to a syslog server, add a <code>&lt;syslog_output&gt;</code> block in the <code>ossec.conf</code> file:</li>
 </ul>
-<hr>
-<h1 id="soar-with-shuffle">SOAR with Shuffle</h1>
-<h2 id="1-installation-and-configuration">1. Installation and Configuration</h2>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;syslog_output&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;server&gt;</span>192.168.1.241<span class="nt">&lt;/server&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">  <span class="nt">&lt;level&gt;</span>9<span class="nt">&lt;/level&gt;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="nt">&lt;/syslog_output&gt;</span></span></span></code></pre></div><p>This configuration sends alerts with a severity level higher than 9 to the specified syslog server.</p>
 <ul>
-<li><strong>Shuffle Installation</strong>: Steps for setting up Shuffle (Docker-based or native installation).</li>
-<li><strong>Connector Setup</strong>: Overview of essential connectors (e.g., Wazuh, Slack, email) and authentication methods.</li>
+<li>To receive alerts via email, configure the email settings in the <code>&lt;global&gt;</code> section of <code>ossec.conf</code>:</li>
 </ul>
-<h2 id="2-building-automation-workflows">2. Building Automation Workflows</h2>
-<h3 id="key-workflows-implemented">Key Workflows Implemented</h3>
-<ol>
-<li><strong>Alert Triage</strong>: Automating initial alert triage with Wazuh data.</li>
-<li><strong>Incident Response</strong>: Workflow example for automatic containment actions (e.g., quarantining an endpoint).</li>
-<li><strong>Notification &amp; Escalation</strong>: How alerts are sent to relevant teams via Slack or email based on severity.</li>
-</ol>
-<h3 id="workflow-diagrams">Workflow Diagrams</h3>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="nt">&lt;ossec_config&gt;</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  <span class="nt">&lt;global&gt;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="nt">&lt;email_notification&gt;</span>yes<span class="nt">&lt;/email_notification&gt;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="nt">&lt;email_to&gt;</span>me@test.com<span class="nt">&lt;/email_to&gt;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="nt">&lt;smtp_server&gt;</span>mail.test.com<span class="nt">&lt;/smtp_server&gt;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="nt">&lt;email_from&gt;</span>wazuh@test.com<span class="nt">&lt;/email_from&gt;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">  <span class="nt">&lt;/global&gt;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">  <span class="nt">&lt;alerts&gt;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="nt">&lt;email_alert_level&gt;</span>10<span class="nt">&lt;/email_alert_level&gt;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">  <span class="nt">&lt;/alerts&gt;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="nt">&lt;/ossec_config&gt;</span></span></span></code></pre></div><p>This setup sends email alerts for events with a severity level of 10 or higher.</p>
+<h4 id="teams-integration">Teams Integration</h4>
+<p>To integrate Wazuh alerts with Microsoft Teams, we have several options, we can use Teams&rsquo; <a href="https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook">Incoming Webhook</a> utility, <a href="https://zapier.com/">Zapier</a>, <a href="https://www.make.com/en">Make.com</a>, or any other similar platform to send alerts to a Teams channel via a webhook. This involves creating a custom integration script and configuring it in <code>ossec.conf</code>.</p>
+<p>I&rsquo;ll be using <a href="https://github.com/redanthrax/wazuh-teams-integration">this</a> already configured integration with Teams, credits go to 
+
+<a href="https://github.com/redanthrax">@redanthrax</a>.</p>
+<p>Once the integrations are setup on the Wazuh server simply configure it like this:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;integration&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;name&gt;</span>custom-teams<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">  <span class="nt">&lt;level&gt;</span>3<span class="nt">&lt;/level&gt;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">  <span class="nt">&lt;hook_url&gt;</span>{WEBHOOK URL}<span class="nt">&lt;/hook_url&gt;</span> 
+</span></span><span class="line"><span class="ln">5</span><span class="cl">  <span class="nt">&lt;alert_format&gt;</span>json<span class="nt">&lt;/alert_format&gt;</span> 
+</span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="nt">&lt;/integration&gt;</span></span></span></code></pre></div><p>Now we&rsquo;ll be receiving alerts on a Teams channel on every level 3 alert:</p>
+<p><img alt="Teams alert" src="/images/posts/wazuh/teams-alert.png"> <center><b>Teams notification</b></center></p>
+<p>To further extend these alerts, we can implement a SOAR system to automate triaging, create escalation processes, develop playbooks and incident response. We could use another good open-source solution like <a href="https://github.com/shuffle/shuffle/blob/main/.github/install-guide.md">Shuffle</a> for this.</p>
+<h2 id="testing-and-validation">Testing and Validation</h2>
+<p>To validate our Wazuh implementation and ensure alerts are triggered correctly, we’ll use <a href="https://www.atomicredteam.io/">Atomic Red Team</a>, a versatile and open-source framework that allows us to simulate real-world attack techniques mapped to the MITRE ATT&amp;CK framework. Specifically, we’ll use the <a href="https://github.com/redcanaryco/invoke-atomicredteam">Invoke-Atomic</a> PowerShell module, which can run Windows, MacOS and Linux, making it an ideal tool to test all our agents.</p>
+<h3 id="setting-up-atomic-red-team">Setting up Atomic Red Team</h3>
+<p>Let&rsquo;s do some tests on our ubuntu server. First we have to install PowerShell on linux with <code>sudo snap install powershell --classic</code> and then run <code>pwsh</code>. Once inside PowerShell we can proceed to install both the execution framework and the atomics folder, which contains the test definitions; the commands that the execution framework will execute.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">IEX </span><span class="p">(</span><span class="nb">IWR </span><span class="s1">&#39;https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1&#39;</span> <span class="n">-UseBasicParsing</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="nb">Install-AtomicRedTeam</span> <span class="n">-getAtomics</span></span></span></code></pre></div><p>We can now use the <code>Invoke-AtomicTest</code> function to perform controlled security tests. Below are examples of specific MITRE ATT&amp;CK techniques that we can run to test our setup:</p>
 <ul>
-<li><strong>Diagram Format</strong>: Include diagrams of workflows showing the sequence of actions triggered by specific alert types.</li>
+<li>
+<p><strong>Test for Ingress Tool Transfer (T1105)</strong>: Simulates an attempt to transfer files from a remote source to an environment, which could be indicative of malware download or data exfiltration. This activity should trigger alerts if Wazuh is monitoring network activity and file movements appropriately.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1105</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Test for Credential Dumping (T1003)</strong>: Runs a credential dumping simulation to check if Wazuh captures potential credential access events.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1003</span><span class="p">.</span><span class="py">008</span> <span class="c"># OS Credential Dumping: /etc/passwd and /etc/shadow</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Test for Scheduled Task Creation (T1053)</strong>: Uses scheduled tasks to simulate persistence techniques and verify if Wazuh alerts on task creation.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1053</span><span class="p">.</span><span class="py">003</span> <span class="c"># Scheduled Task/Job: Cron</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Test for Command and Scripting Interpreter Execution (T1059)</strong>: Simulates suspicious scripting activity that Wazuh should detect based on your threshold settings.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1059</span><span class="p">.</span><span class="py">004</span> <span class="c"># Command and Scripting Interpreter: Unix Shell</span></span></span></code></pre></div></li>
 </ul>
-<h2 id="3-testing-and-validation">3. Testing and Validation</h2>
-<ul>
-<li><strong>Scenario Testing</strong>: Testing various security incidents to ensure workflows respond accurately.</li>
-<li><strong>Outcome Measurement</strong>: Metrics used to measure workflow effectiveness (e.g., mean time to respond, false positives reduced).</li>
-</ul>
-<hr>
-<h1 id="challenges-faced">Challenges Faced</h1>
-<h2 id="technical-challenges">Technical Challenges</h2>
-<ul>
-<li><strong>Compatibility Issues</strong>: Describe any software conflicts or hardware limitations encountered.</li>
-<li><strong>Scalability</strong>: Adjustments made to scale Wazuh and Shuffle across multiple sites.</li>
-</ul>
-<h2 id="operational-challenges">Operational Challenges</h2>
-<ul>
-<li><strong>User Training</strong>: Challenges in training the team to use Wazuh and understand automated workflows.</li>
-<li><strong>Alert Tuning</strong>: Time invested in adjusting alert thresholds to reduce false positives.</li>
-</ul>
-<hr>
-<h1 id="results-and-outcomes">Results and Outcomes</h1>
-<h2 id="key-metrics">Key Metrics</h2>
-<ul>
-<li><strong>Incident Response Time</strong>: Improvements in time-to-response after implementation.</li>
-<li><strong>Alert Reduction</strong>: Decrease in false positives or noisy alerts after tuning.</li>
-</ul>
-<h2 id="business-impact">Business Impact</h2>
-<ul>
-<li><strong>Increased Efficiency</strong>: Reduction in manual work and faster incident resolution.</li>
-<li><strong>Enhanced Security Posture</strong>: Specific examples of incidents prevented or mitigated through automation.</li>
-</ul>
-<hr>
-<h1 id="future-improvements">Future Improvements</h1>
-<ul>
-<li><strong>Workflow Expansion</strong>: Potential for additional workflows (e.g., phishing detection, advanced threat intel integration).</li>
-<li><strong>Continuous Monitoring</strong>: Plans to continually assess and improve system performance.</li>
-</ul>
-<h1 id="conclusion">Conclusion</h1>
-<p>A successful integration of Wazuh and Shuffle significantly enhanced our security operations, reduced response times, and automated incident response. This project highlights the steps, tools, and strategies employed to achieve these outcomes.</p>
+<h3 id="verifying-alerts-in-wazuh">Verifying Alerts in Wazuh</h3>
+<p>After executing each test, we&rsquo;ll navigate to the Wazuh dashboard to verify the alerts generated. We can see the events corresponding to each Atomic Red Team test under <strong>Threat Intelligence</strong> &gt; <strong>MITRE ATT&amp;CK</strong>.  We can review the details to confirm that the alerts match the configured thresholds as intended.</p>
+<p><img alt="MITRE ATT&amp;CK" src="/images/posts/wazuh/mitre.png"> <center><b>MITRE ATT&amp;CK tests detected</b></center></p>
+<p>By completing the implementation, configuration, and validation of Wazuh, we have created a robust and proactive SIEM setup capable of detecting, alerting, and responding to security events effectively. With integrations for seamless alerting, vulnerability monitoring, and extensive testing using Atomic Red Team, this Wazuh deployment strengthens our organization’s security posture. As threats evolve, this setup can be further customized to meet the dynamic needs of modern security operations, making it a valuable asset in our SOC’s toolkit. This project highlights the power of open-source solutions like Wazuh in building a resilient and adaptable cybersecurity environment.</p>
 <div>
   </content>
   <p>
     
-      <a class="blog-tags" href="http://localhost:1313/tags/wazuh/">#Wazuh</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/wazuh/">#Wazuh</a>&nbsp;&nbsp;
     
-      <a class="blog-tags" href="http://localhost:1313/tags/siem/">#SIEM</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/siem/">#SIEM</a>&nbsp;&nbsp;
     
-      <a class="blog-tags" href="http://localhost:1313/tags/soc/">#SOC</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/soc/">#SOC</a>&nbsp;&nbsp;
     
-      <a class="blog-tags" href="http://localhost:1313/tags/soar/">#SOAR</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/aws/">#AWS</a>&nbsp;&nbsp;
     
-      <a class="blog-tags" href="http://localhost:1313/tags/aws/">#AWS</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/blue-team/">#Blue Team</a>&nbsp;&nbsp;
     
-      <a class="blog-tags" href="http://localhost:1313/tags/blue-team/">#Blue Team</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/purple-team/">#Purple Team</a>&nbsp;&nbsp;
     
-      <a class="blog-tags" href="http://localhost:1313/tags/project/">#Project</a>&nbsp;&nbsp;
+      <a class="blog-tags" href="https://gtello.github.io/tags/project/">#Project</a>&nbsp;&nbsp;
     
   </p>
 
@@ -287,7 +368,7 @@
 
 
   <p>
-    <a href='mailto:gabrieltello10@hotmail.com?subject=Reply%20to%20"Implementing%20Wazuh%20%2b%20SOAR%20%28Shuffle%29"'>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reply%20to%20"Implementing%20Wazuh%20%28SIEM%29"'>
       Reply to this post by email ↪
     </a>
   </p>
@@ -302,6 +383,9 @@
   textColor: "var(--flexoki-50)",
   showWhenScrollTopIs: 512, 
 })</script>
+
+  
+  <script src="/js/copy-code-button.min.js"></script>
 
 
 

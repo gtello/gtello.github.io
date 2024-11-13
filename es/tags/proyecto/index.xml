@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Proyecto on Gabriel Tello</title>
+    <link>http://localhost:1313/es/tags/proyecto/</link>
+    <description>Recent content in Proyecto on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-EC</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Wed, 13 Nov 2024 15:10:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/es/tags/proyecto/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Implementando Wazuh (SIEM)</title>
+      <link>http://localhost:1313/es/projects/wazuh/</link>
+      <pubDate>Wed, 13 Nov 2024 15:10:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>http://localhost:1313/es/projects/wazuh/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Este proyecto tiene como objetivo mostrar la configuración e integración de &lt;a href=&#34;https://wazuh.com/&#34;&gt;Wazuh&lt;/a&gt; en un entorno profesional para mejorar las operaciones de seguridad. Aquí, te guiaré a través de la instalación, gestión de agentes, configuración de alertas, integración con Microsoft Teams y, finalmente, pruebas con Atomic Red Team para su validación.&lt;/p&gt;&#xA;&lt;h2 id=&#34;instalación&#34;&gt;Instalación&lt;/h2&gt;&#xA;&lt;p&gt;Para alojar la configuración, usaremos una instancia EC2 de AWS que ejecuta Ubuntu 24.04. Esta configuración se elige por su flexibilidad, escalabilidad y facilidad de mantenimiento en una infraestructura basada en la nube.&#xA;&lt;img alt=&#34;Especificaciones de EC2&#34; src=&#34;http://localhost:1313/images/posts/wazuh/ec2-specs.png&#34;&gt;&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Este proyecto tiene como objetivo mostrar la configuración e integración de <a href="https://wazuh.com/">Wazuh</a> en un entorno profesional para mejorar las operaciones de seguridad. Aquí, te guiaré a través de la instalación, gestión de agentes, configuración de alertas, integración con Microsoft Teams y, finalmente, pruebas con Atomic Red Team para su validación.</p>
+<h2 id="instalación">Instalación</h2>
+<p>Para alojar la configuración, usaremos una instancia EC2 de AWS que ejecuta Ubuntu 24.04. Esta configuración se elige por su flexibilidad, escalabilidad y facilidad de mantenimiento en una infraestructura basada en la nube.
+<img alt="Especificaciones de EC2" src="/images/posts/wazuh/ec2-specs.png"></p>
+<center><b>Especificaciones de la instancia EC2</b></center>
+<p>Una vez que nuestro servidor esté actualizado, ejecutamos el siguiente comando para instalar Wazuh:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh <span class="o">&amp;&amp;</span> sudo bash ./wazuh-install.sh -a</span></span></code></pre></div><p>Esto se encargará de la configuración e instalación de todos los componentes principales. El proceso comienza verificando los requisitos del sistema e instalando las dependencias esenciales. Luego, el script configura la seguridad de Wazuh generando certificados para los componentes de root, administrador, indexador, Filebeat y panel de control, asegurando el manejo seguro de datos en todo el ecosistema.</p>
+<p>Una vez configuradas las dependencias y configuraciones, el script instala y arranca secuencialmente los servicios clave de Wazuh: el Wazuh Indexer para almacenamiento de datos, el Wazuh Manager para detección de amenazas, Filebeat para el reenvío de logs y el Wazuh Dashboard para monitoreo. El panel es accesible en <code>https://&lt;wazuh-dashboard-ip&gt;:443</code> con las credenciales predeterminadas proporcionadas al final de la instalación.</p>
+<p><img alt="Configuración de Wazuh" src="/images/posts/wazuh/wazuh-setup-loading.png"> <center><b>Configuración de Wazuh</b></center></p>
+<p>Cuando iniciamos sesión en nuestro panel de control de Wazuh por primera vez, debemos comenzar configurando grupos para facilitar la gestión de agentes.</p>
+<p>Para crear grupos de agentes desde el panel de Wazuh:</p>
+<ol>
+<li>Navega a <strong>Management</strong> &gt; <strong>Groups</strong> y haz clic en el botón <strong>Add new group</strong>.</li>
+<li>Introduce un nombre para el grupo de agentes y haz clic en el botón <strong>Save new group</strong>.</li>
+</ol>
+<p><img alt="Grupo de agentes" src="/images/posts/wazuh/agent-group.gif"> <center><b>Agregando un nuevo grupo</b></center></p>
+<p>Ahora pasaremos al despliegue de nuestros agentes.</p>
+<h2 id="despliegue-de-agentes">Despliegue de agentes</h2>
+<p>Para agregar un nuevo agente, hacemos clic en el menú y vamos a <strong>Endpoints Summary</strong> y seleccionamos <strong>Deploy new agent</strong>. Sigue las instrucciones del asistente para desplegar un agente:</p>
+<p><img alt="Configuración del agente Wazuh" src="/images/posts/wazuh/wazuh-agent-setup.png"> <center><b>Agregando un nuevo agente</b></center></p>
+<p>Si estás configurando un agente de Wazuh en una instancia EC2 de AWS y experimentas problemas de conectividad, revisa la configuración del Security Group aplicado a tu instancia y asegúrate de que el Security Group adjunto a tu instancia de Wazuh manager permita el tráfico entrante en estos puertos:</p>
+<ul>
+<li><strong>1514/TCP</strong> – Comunicación del agente</li>
+<li><strong>1515/TCP</strong> – Registro del agente</li>
+<li><strong>55000/TCP</strong> – Acceso API</li>
+</ul>
+<p><img alt="Primer agente añadido" src="/images/posts/wazuh/first-agent-added.png"> <center><b>Primer agente añadido</b></center></p>
+<p>Para mi primer agente añadí una instancia de AWS Lightsail que quiero monitorear. Ahora podemos avanzar a configuraciones adicionales, como detección de vulnerabilidades y rootkits, monitoreo de integridad de archivos, etc.</p>
+<h2 id="detección-de-vulnerabilidades">Detección de vulnerabilidades</h2>
+<p>A la fecha de publicación, Wazuh viene por defecto con el módulo de detección de vulnerabilidades activado. Para confirmarlo, revisa el <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html">archivo de configuración</a> ubicado en <code>/var/ossec/etc/ossec.conf</code></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="nt">&lt;vulnerability-detection&gt;</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">   <span class="nt">&lt;enabled&gt;</span>yes<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">   <span class="nt">&lt;index-status&gt;</span>yes<span class="nt">&lt;/index-status&gt;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">   <span class="nt">&lt;feed-update-interval&gt;</span>60m<span class="nt">&lt;/feed-update-interval&gt;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="nt">&lt;/vulnerability-detection&gt;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="nt">&lt;indexer&gt;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">   <span class="nt">&lt;enabled&gt;</span>yes<span class="nt">&lt;/enabled&gt;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">   <span class="nt">&lt;hosts&gt;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">      <span class="nt">&lt;host&gt;</span>https://0.0.0.0:9200<span class="nt">&lt;/host&gt;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">   <span class="nt">&lt;/hosts&gt;</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">   <span class="nt">&lt;ssl&gt;</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">      <span class="nt">&lt;certificate_authorities&gt;</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">         <span class="nt">&lt;ca&gt;</span>/etc/filebeat/certs/root-ca.pem<span class="nt">&lt;/ca&gt;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">      <span class="nt">&lt;/certificate_authorities&gt;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">      <span class="nt">&lt;certificate&gt;</span>/etc/filebeat/certs/filebeat.pem<span class="nt">&lt;/certificate&gt;</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">      <span class="nt">&lt;key&gt;</span>/etc/filebeat/certs/filebeat-key.pem<span class="nt">&lt;/key&gt;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">   <span class="nt">&lt;/ssl&gt;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="nt">&lt;/indexer&gt;</span></span></span></code></pre></div><p>Para verificar las vulnerabilidades detectadas en nuestros agentes, vamos a <strong>Threat Intelligence</strong> &gt; <strong>Vulnerability Detection</strong>.</p>
+<p><img alt="Vulnerabilidades detectadas" src="/images/posts/wazuh/wazuh-vulns.png"> <center><b>Vulnerabilidades detectadas</b></center></p>
+<h2 id="alertas">Alertas</h2>
+<p>Configurar alertas en Wazuh implica establecer umbrales de alerta, enviar alertas a sistemas externos y gestionar la escalada y filtrado de alertas.</p>
+<h3 id="umbrales">Umbrales</h3>
+<p>Wazuh asigna un nivel de gravedad (de 0 a 16) a cada evento en base a reglas predefinidas. Por defecto, Wazuh activa alertas para eventos con un nivel de gravedad de 3 o superior. Puedes ajustar este umbral para controlar qué alertas se generan.</p>
+<p>Para modificarlo, ve al archivo <code>ossec.conf</code>, ubica la sección <code>&lt;alerts&gt;</code> y ajusta el valor de <code>&lt;log_alert_level&gt;</code> al umbral deseado.</p>
+<p>Por ejemplo, para establecer el nivel mínimo de alerta en 5:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;alerts&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;log_alert_level&gt;</span>5<span class="nt">&lt;/log_alert_level&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="nt">&lt;/alerts&gt;</span></span></span></code></pre></div><p>Después de realizar cambios, reinicia el Wazuh manager para aplicar los nuevos ajustes.</p>
+<h3 id="reenvío-de-alertas">Reenvío de alertas</h3>
+<p>Wazuh puede reenviar alertas a varios sistemas externos, como servidores syslog, direcciones de correo electrónico o plataformas de colaboración como Microsoft Teams.</p>
+<ul>
+<li>Para reenviar alertas a un servidor syslog, agrega un bloque <code>&lt;syslog_output&gt;</code> en el archivo <code>ossec.conf</code>:</li>
+</ul>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;syslog_output&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;server&gt;</span>192.168.1.241<span class="nt">&lt;/server&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">  <span class="nt">&lt;level&gt;</span>9<span class="nt">&lt;/level&gt;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="nt">&lt;/syslog_output&gt;</span></span></span></code></pre></div><p>Esta configuración envía alertas con un nivel de gravedad superior a 9 al servidor syslog especificado.</p>
+<ul>
+<li>Para recibir alertas por correo electrónico, configura los ajustes de correo en la sección <code>&lt;global&gt;</code> de <code>ossec.conf</code>:</li>
+</ul>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="nt">&lt;ossec_config&gt;</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  <span class="nt">&lt;global&gt;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="nt">&lt;email_notification&gt;</span>yes<span class="nt">&lt;/email_notification&gt;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="nt">&lt;email_to&gt;</span>me@test.com<span class="nt">&lt;/email_to&gt;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="nt">&lt;smtp_server&gt;</span>mail.test.com<span class="nt">&lt;/smtp_server&gt;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="nt">&lt;email_from&gt;</span>wazuh@test.com<span class="nt">&lt;/email_from&gt;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">  <span class="nt">&lt;/global&gt;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">  <span class="nt">&lt;alerts&gt;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="nt">&lt;email_alert_level&gt;</span>10<span class="nt">&lt;/email_alert_level&gt;</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">  <span class="nt">&lt;/alerts&gt;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="nt">&lt;/ossec_config&gt;</span></span></span></code></pre></div><p>Esta configuración envía alertas por correo para eventos con un nivel de gravedad de 10 o superior.</p>
+<h4 id="integración-con-teams">Integración con Teams</h4>
+<p>Para integrar las alertas de Wazuh con Microsoft Teams, tenemos varias opciones: usar el <a href="https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook">Webhook de Teams</a>, <a href="https://zapier.com/">Zapier</a>, <a href="https://www.make.com/en">Make.com</a> u otra plataforma similar para enviar alertas a un canal de Teams mediante un webhook. Esto implica crear un script de integración personalizado y configurarlo en <code>ossec.conf</code>.</p>
+<p>Usaré <a href="https://github.com/redanthrax/wazuh-teams-integration">esta</a> integración ya configurada con Teams, créditos a 
+
+<a href="https://github.com/redanthrax">@redanthrax</a>.</p>
+<p>Una vez configurada la integración en el servidor Wazuh, simplemente configúralo así:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;integration&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;name&gt;</span>custom-teams<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">  <span class="nt">&lt;level&gt;</span>9<span class="nt">&lt;/level&gt;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">  <span class="nt">&lt;hook_url&gt;</span>{WEBHOOK URL}<span class="nt">&lt;/hook_url&gt;</span> 
+</span></span><span class="line"><span class="ln">5</span><span class="cl">  <span class="nt">&lt;alert_format&gt;</span>json<span class="nt">&lt;/alert_format&gt;</span> 
+</span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="nt">&lt;/integration&gt;</span></span></span></code></pre></div><p>Ahora recibiremos alertas en un canal de Teams en cada alerta de nivel 9.</p>
+<p><img alt="Notificación de Teams" src="/images/posts/wazuh/teams-alert.png"> &lt;</p>
+<p>center&gt;<b>Notificación de Teams</b></center></p>
+<p>Para extender estas alertas, podemos implementar un sistema SOAR para automatizar la priorización, crear procesos de escalamiento, desarrollar playbooks y respuestas a incidentes. Podríamos usar otra buena solución de código abierto como <a href="https://github.com/shuffle/shuffle/blob/main/.github/install-guide.md">Shuffle</a> para esto.</p>
+<h2 id="pruebas-y-validación">Pruebas y Validación</h2>
+<p>Para validar nuestra implementación de Wazuh y asegurarnos de que las alertas se activen correctamente, usaremos <a href="https://www.atomicredteam.io/">Atomic Red Team</a>, un marco de trabajo versátil y de código abierto que nos permite simular técnicas de ataque reales mapeadas al marco ATT&amp;CK de MITRE. Específicamente, utilizaremos el módulo PowerShell <a href="https://github.com/redcanaryco/invoke-atomicredteam">Invoke-Atomic</a>, que se puede ejecutar en Windows, MacOS y Linux, siendo una herramienta ideal para probar todos nuestros agentes.</p>
+<h3 id="configuración-de-atomic-red-team">Configuración de Atomic Red Team</h3>
+<p>Hagamos algunas pruebas en nuestro servidor Ubuntu; primero instalaremos PowerShell en Linux con <code>sudo snap install powershell --classic</code> y luego ejecutaremos <code>pwsh</code>. Una vez dentro de PowerShell, podemos proceder a instalar tanto el marco de ejecución como la carpeta de pruebas atómicas, que contiene las definiciones de las pruebas; los comandos que el marco de ejecución ejecutará.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">IEX </span><span class="p">(</span><span class="nb">IWR </span><span class="s1">&#39;https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1&#39;</span> <span class="n">-UseBasicParsing</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="nb">Install-AtomicRedTeam</span> <span class="n">-getAtomics</span></span></span></code></pre></div><p>Ahora podemos usar la función <code>Invoke-AtomicTest</code> para realizar pruebas de seguridad controladas. A continuación se presentan ejemplos de técnicas ATT&amp;CK específicas de MITRE que podemos ejecutar para probar nuestra configuración:</p>
+<ul>
+<li>
+<p><strong>Prueba para Transferencia de Herramientas de Ingreso (T1105)</strong>: Simula un intento de transferir archivos desde una fuente remota a tu entorno, lo que podría ser indicativo de una descarga de malware o exfiltración de datos. Esta actividad debería activar alertas si Wazuh monitorea adecuadamente la actividad de red y los movimientos de archivos.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1105</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Prueba de Volcado de Credenciales (T1003)</strong>: Ejecuta una simulación de volcado de credenciales para verificar si Wazuh captura eventos potenciales de acceso a credenciales.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1003</span><span class="p">.</span><span class="py">008</span> <span class="c"># OS Credential Dumping: /etc/passwd and /etc/shadow</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Prueba de Creación de Tareas Programadas (T1053)</strong>: Usa tareas programadas para simular técnicas de persistencia y verificar si Wazuh alerta sobre la creación de tareas.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1053</span><span class="p">.</span><span class="py">003</span> <span class="c"># Scheduled Task/Job: Cron</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Prueba de Ejecución de Intérprete de Comandos y Scripts (T1059)</strong>: Simula actividad de scripting sospechosa que Wazuh debería detectar según los ajustes de umbral.</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">Invoke-AtomicTest</span> <span class="n">T1059</span><span class="p">.</span><span class="py">004</span> <span class="c"># Command and Scripting Interpreter: Unix Shell</span></span></span></code></pre></div></li>
+</ul>
+<h3 id="verificación-de-alertas-en-wazuh">Verificación de Alertas en Wazuh</h3>
+<p>Después de ejecutar cada prueba, navegaremos al panel de Wazuh para verificar las alertas generadas. Podemos ver los eventos correspondientes a cada prueba de Atomic Red Team en <strong>Threat Intelligence</strong> &gt; <strong>MITRE ATT&amp;CK</strong>. Revisa los detalles para confirmar que las alertas coinciden con los umbrales configurados según lo previsto.</p>
+<p><img alt="Pruebas de MITRE ATT&amp;CK detectadas" src="/images/posts/wazuh/mitre.png"> <center><b>Pruebas de MITRE ATT&amp;CK detectadas</b></center></p>
+<p>Al validar con Atomic Red Team, podemos asegurar que nuestra configuración de Wazuh detecta con precisión los eventos de seguridad. Con Wazuh implementado e integrado con alertas automatizadas y pruebas, nuestro SOC está mejor preparado para detectar, escalar y responder a amenazas de manera eficiente.</p>
+<div>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

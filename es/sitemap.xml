@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://gtello.github.io/es/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-US"
@@ -28,6 +28,7 @@
                 />
   </url><url>
     <loc>https://gtello.github.io/es/projects/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-US"
@@ -50,6 +51,123 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/writeups/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/aws/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/aws/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/aws/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/blue-team/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/blue-team/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/blue-team/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/projects/wazuh/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/projects/wazuh/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/projects/wazuh/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/project/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/project/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/project/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/purple-team/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/purple-team/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/purple-team/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/siem/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/siem/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/siem/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/soc/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/soc/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/soc/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/wazuh/</loc>
+    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/wazuh/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/wazuh/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/tags/pentesting/</loc>
@@ -89,19 +207,6 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/writeups/steelmountain/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/tags/tryhackme/</loc>

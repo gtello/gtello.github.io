@@ -9,35 +9,49 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Thu, 10 Oct 2024 16:10:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 12 Nov 2024 16:10:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/soar/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Implementing Wazuh &#43; SOAR (Shuffle)</title>
       <link>http://localhost:1313/projects/wazuh/</link>
-      <pubDate>Thu, 10 Oct 2024 16:10:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Tue, 12 Nov 2024 16:10:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>http://localhost:1313/projects/wazuh/</guid>
-      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;This project aims to showcase the setup and integration of &lt;a href=&#34;https://wazuh.com/&#34;&gt;Wazuh&lt;/a&gt; with &lt;a href=&#34;https://github.com/Shuffle/Shuffle&#34;&gt;Shuffle&lt;/a&gt; in a professional environment to enhance security operations. In here, I&amp;rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.&lt;/p&gt;&#xA;&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;&#xA;&lt;p&gt;To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.&lt;/p&gt;&#xA;&lt;div style=&#34;text-align: center;&#34;&gt;&#xD;&#xA;  &lt;img src=&#34;http://localhost:1313/images/posts/wazuh/ec2-specs.png&#34; alt=&#34;EC2 Specs&#34; /&gt;&#xD;&#xA;&lt;/div&gt;&#xD;&#xA;&lt;center&gt;EC2 Instance Specs&lt;/center&gt;&#xD;&#xA;&lt;p&gt;Once our server is up-to-date we run the following command to install Wazuh:&#xA;&lt;code&gt;curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh &amp;amp;&amp;amp; sudo bash ./wazuh-install.sh -a&lt;/code&gt;&lt;/p&gt;</description>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;This project aims to showcase the setup and integration of &lt;a href=&#34;https://wazuh.com/&#34;&gt;Wazuh&lt;/a&gt; with &lt;a href=&#34;https://github.com/Shuffle/Shuffle&#34;&gt;Shuffle&lt;/a&gt; in a professional environment to enhance security operations. In here, I&amp;rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.&lt;/p&gt;&#xA;&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;&#xA;&lt;p&gt;To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.&#xA;&lt;img alt=&#34;EC2 Specs&#34; src=&#34;http://localhost:1313/images/posts/wazuh/ec2-specs.png&#34;&gt;&lt;/p&gt;&#xA;&lt;center&gt;&lt;b&gt;EC2 Instance Specs&lt;/b&gt;&lt;/center&gt;&#xD;&#xA;&lt;p&gt;Once our server is up-to-date we run the following command to install Wazuh:&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">
 <p>This project aims to showcase the setup and integration of <a href="https://wazuh.com/">Wazuh</a> with <a href="https://github.com/Shuffle/Shuffle">Shuffle</a> in a professional environment to enhance security operations. In here, I&rsquo;ll walk through the steps, configurations, challenges, and the resulting improvements in security automation and incident response.</p>
 <h2 id="installation">Installation</h2>
-<p>To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.</p>
-<div style="text-align: center;">
-  <img src="/images/posts/wazuh/ec2-specs.png" alt="EC2 Specs" />
-</div>
-<center>EC2 Instance Specs</center>
-<p>Once our server is up-to-date we run the following command to install Wazuh:
-<code>curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh &amp;&amp; sudo bash ./wazuh-install.sh -a</code></p>
-<p>This will take care of the setup and configuration of all core components. The process begins by checking system requirements and installing essential dependencies. Next, the script configures Wazuh’s security by generating certificates for the root, admin, indexer, Filebeat, and dashboard components, ensuring secure data handling across the ecosystem.</p>
+<p>To host the setup, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.
+<img alt="EC2 Specs" src="/images/posts/wazuh/ec2-specs.png"></p>
+<center><b>EC2 Instance Specs</b></center>
+<p>Once our server is up-to-date we run the following command to install Wazuh:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh <span class="o">&amp;&amp;</span> sudo bash ./wazuh-install.sh -a</span></span></code></pre></div><p>This will take care of the setup and configuration of all core components. The process begins by checking system requirements and installing essential dependencies. Next, the script configures Wazuh’s security by generating certificates for the root, admin, indexer, Filebeat, and dashboard components, ensuring secure data handling across the ecosystem.</p>
 <p>Once dependencies and configurations are set, the script sequentially installs and starts key Wazuh services: the Wazuh Indexer for data storage, the Wazuh Manager for threat detection, Filebeat for log forwarding, and the Wazuh Dashboard for monitoring. The dashboard is accessible at <code>https://&lt;wazuh-dashboard-ip&gt;:443</code> with default login credentials provided at the end of the installation.</p>
-<div style="text-align: center;">
-  <img src="/images/posts/wazuh/wazuh-setup-loading.png" alt="Wazuh Setup" />
-</div>
-<center>Wazuh Setup</center>
-<p>Once we access our Wazuh dashboard for the first time, we&rsquo;ll move on to deploying our Wazuh agent.</p>
-<h2 id="agent-deployment">Agent deployment</h2>
-<h3 id="step-by-step-setup">Step-by-Step Setup</h3>
+<p><img alt="Wazuh Setup" src="/images/posts/wazuh/wazuh-setup-loading.png"> <center><b>Wazuh Setup</b></center></p>
+<p>Once we access our Wazuh dashboard for the first time, first thing we ought to do is create groups to better manage our agents.</p>
+<p>To create agent groups from the Wazuh dashboard:</p>
 <ol>
-<li><strong>Install Wazuh</strong>: Walk through the installation process, including repository setup and configuration.</li>
+<li>Navigate to <strong>Management</strong> &gt; <strong>Groups</strong> and click the <strong>Add new group</strong> button.</li>
+<li>Enter a name for the agent group and click on the <strong>Save new group</strong> button.</li>
+</ol>
+<p><img alt="Agent group" src="/images/posts/wazuh/agent-group.gif"> <center><b>Adding a new group</b></center></p>
+<p>Now we&rsquo;ll move on to deploying our agents.</p>
+<h2 id="agent-deployment">Agent deployment</h2>
+<p>To add a new agent we&rsquo;ll click on the burger menu and go to <strong>Endpoints Summary</strong>, and click on <strong>Deploy new agent</strong>. Simply follow the wizard&rsquo;s instructions to deploy an agent:</p>
+<p><img alt="Wazuh Agent Setup" src="/images/posts/wazuh/wazuh-agent-setup.png"> <center><b>Adding a new agent</b></center></p>
+<p>If you&rsquo;re setting up a Wazuh agent on an AWS EC2 instance and experiencing connectivity issues, check your Security Group settings applied to your instance and ensure the Security Group attached to your Wazuh manager instance allows inbound traffic on these ports:</p>
+<ul>
+<li><strong>1514/TCP</strong> – Agent communication</li>
+<li><strong>1515/TCP</strong> – Agent registration</li>
+<li><strong>55000/TCP</strong> – API access</li>
+</ul>
+<p><img alt="First agent added" src="/images/posts/wazuh/first-agent-added.png"> <center><b>First agent added</b></center></p>
+<p>For my first agent I added a AWS Lightsail instance I want to keep track of.</p>
+<ol start="2">
 <li><strong>Configuration</strong>: Overview of key settings configured in <code>ossec.conf</code>, such as enabling modules (e.g., rootkit detection, file integrity monitoring).</li>
 <li><strong>Agent Deployment</strong>: Methods for installing Wazuh agents on endpoints (Windows, Linux, macOS).</li>
 <li><strong>Testing and Validation</strong>: How we verified the installation and checked agent connectivity.</li>

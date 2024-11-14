@@ -9,8 +9,102 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Thu, 31 Oct 2024 16:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 Nov 2024 14:43:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Game Zone (THM)</title>
+      <link>https://gtello.github.io/writeups/gamezone/</link>
+      <pubDate>Thu, 14 Nov 2024 14:43:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/gamezone/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup for the &lt;a href=&#34;https://tryhackme.com/r/room/gamezone&#34;&gt;Game Zone&lt;/a&gt; machine on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;This writeup covers breaching a vulnerable web environment, gaining access via SQL Injection, and escalating privileges to root using a Webmin exploit. It includes techniques for data collection, hash cracking, and use of tools such as &lt;em&gt;nmap&lt;/em&gt;, &lt;em&gt;Burp Suite&lt;/em&gt;, &lt;em&gt;sqlmap&lt;/em&gt;, and &lt;em&gt;John the Ripper&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h2&gt;&#xA;&lt;p&gt;The first step was a network scan with nmap to discover active ports and services.&lt;/p&gt;&#xA;&lt;p&gt;&lt;img alt=&#34;Nmap results&#34; src=&#34;https://gtello.github.io/images/posts/gamezone/image1.png&#34;&gt; &lt;center&gt;&lt;b&gt;Nmap command and results&lt;/b&gt;&lt;/center&gt;&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup for the <a href="https://tryhackme.com/r/room/gamezone">Game Zone</a> machine on TryHackMe.</p>
+<h2 id="summary">Summary</h2>
+<p>This writeup covers breaching a vulnerable web environment, gaining access via SQL Injection, and escalating privileges to root using a Webmin exploit. It includes techniques for data collection, hash cracking, and use of tools such as <em>nmap</em>, <em>Burp Suite</em>, <em>sqlmap</em>, and <em>John the Ripper</em>.</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>The first step was a network scan with nmap to discover active ports and services.</p>
+<p><img alt="Nmap results" src="/images/posts/gamezone/image1.png"> <center><b>Nmap command and results</b></center></p>
+<h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu 16.04.6</td>
+          <td style="text-align: left">10.10.254.53</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="exploitation">Exploitation</h2>
+<p>Upon finding port 80 open, we accessed the Game Zone homepage through the browser.</p>
+<p><img alt="Game Zone homepage" src="/images/posts/gamezone/image2.png"> <center><b>Game Zone homepage</b></center></p>
+<p>The TryHackMe room invited us to try SQL Injection (SQLi) in the login field. Using the statement <code>' or 1=1 limit 1;#</code> in the username field and leaving the password blank, we successfully authenticated to the portal. However, further manual SQLi attempts yielded no additional results, so we captured the <strong>POST request</strong> from the search with <strong>Burp Suite</strong> to run automated SQLi tests with <strong>SQLmap</strong>.</p>
+<p><img alt="POST request capture" src="/images/posts/gamezone/image3.png"> <center><b>POST request capture</b></center></p>
+<p>We used the command <code>sqlmap -r POST.txt --dump</code> to verify and exploit SQL Injection vulnerabilities. SQLmap revealed the presence of a MySQL database and displayed the <code>user</code> table&rsquo;s contents with hashed passwords. We applied <strong>John the Ripper</strong> to crack the password hash for the user <code>agent47</code>.</p>
+<p><img alt="SQLmap execution" src="/images/posts/gamezone/image4.png"> <center><b>SQLmap execution</b></center><br><br>
+<img alt="Hash cracking" src="/images/posts/gamezone/image5.png"> <center><b>Hash cracking</b></center></p>
+<p>With the credentials, we accessed the machine via SSH.</p>
+<p><img alt="SSH access" src="/images/posts/gamezone/image6.png"> <center><b>SSH access</b></center></p>
+<h3 id="privilege-escalation">Privilege Escalation</h3>
+<p>On the machine, we ran <code>ss -tulpn</code> to identify additional ports and services. We noted that port 10000 was blocked by a firewall, so we set up an SSH tunnel with <code>ssh -L 10000:127.0.0.1:10000 agent47@10.10.254.53</code>. This allowed us to access a CMS called <strong>Webmin</strong>, version 1.580.</p>
+<p><img alt="Port 10000 blocked by firewall" src="/images/posts/gamezone/image7.png"> <center><b>Port 10000 blocked by firewall</b></center><br><br>
+<img alt="Webmin portal" src="/images/posts/gamezone/image8.png"> <center><b>Webmin portal</b></center></p>
+<p>Upon researching possible vulnerabilities in Webmin, we found the exploit <a href="https://github.com/JohnHammond/CVE-2012-2982">CVE-2012-2982</a>. Using this exploit, we gained root access to the machine.</p>
+<p><img alt="Exploit usage" src="/images/posts/gamezone/image9.png"> <center><b>Exploit usage</b></center><br><br>
+<img alt="Root access" src="/images/posts/gamezone/image10.png"> <center><b>Root access</b></center></p>
+<h2 id="flags">Flags</h2>
+<p>With root privileges, we located the two flags:</p>
+<ul>
+<li><code>user.txt</code>: 649ac17b1480ac13ef1e4fa579dac95c</li>
+<li><code>root.txt</code>: a4b945830144bdd71908d12d902adeee</li>
+</ul>
+<h2 id="tools-used">Tools Used</h2>
+<p>During this analysis, we used the following tools:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Network scanning and open port detection.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Capturing and analyzing HTTP requests for SQLi.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>sqlmap</strong></td>
+          <td style="text-align: left">SQLi testing and data extraction from the database.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>John the Ripper</strong></td>
+          <td style="text-align: left">Used to crack the user <code>agent47</code> password hash for SSH access.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
+          <td style="text-align: left">Webmin vulnerability enabling root access.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recommendations">Recommendations</h2>
+<ul>
+<li><strong>Update critical systems and applications</strong>, especially Webmin and Ubuntu, to address known vulnerabilities.</li>
+<li><strong>Firewall restrictions</strong> on internal services and <strong>input sanitization</strong> to prevent SQL injections.</li>
+<li>Implement a <strong>patch management system</strong> and promote the use of <strong>strong passwords</strong> to reduce privilege escalation risks.</li>
+</ul>
+</div>
+]]></content:encoded>
+    </item>
     <item>
       <title>Bolt Machine</title>
       <link>https://gtello.github.io/writeups/bolt/</link>

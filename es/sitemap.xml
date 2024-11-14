@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://gtello.github.io/es/</loc>
-    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-US"
@@ -41,7 +41,7 @@
                 />
   </url><url>
     <loc>https://gtello.github.io/es/writeups/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-US"
@@ -51,6 +51,123 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/writeups/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/writeups/gamezone/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/writeups/gamezone/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/writeups/gamezone/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/hash-cracking/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/hash-cracking/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/hash-cracking/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/linux/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/linux/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/linux/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/pentesting/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/pentesting/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/pentesting/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/red-team/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/red-team/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/red-team/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/sql-injection/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/sql-injection/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/sql-injection/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/tryhackme/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/tryhackme/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/tryhackme/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/writeup/</loc>
+    <lastmod>2024-11-14T14:43:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/writeup/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/writeup/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/tags/aws/</loc>
@@ -144,19 +261,6 @@
                 href="https://gtello.github.io/es/tags/soc/"
                 />
   </url><url>
-    <loc>https://gtello.github.io/es/tags/</loc>
-    <lastmod>2024-11-13T15:10:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/"
-                />
-  </url><url>
     <loc>https://gtello.github.io/es/tags/wazuh/</loc>
     <lastmod>2024-11-13T15:10:00+00:00</lastmod>
     <xhtml:link
@@ -168,32 +272,6 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/tags/wazuh/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/pentesting/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/pentesting/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/pentesting/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/red-team/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/red-team/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/red-team/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/writeups/steelmountain/</loc>
@@ -209,19 +287,6 @@
                 href="https://gtello.github.io/es/writeups/steelmountain/"
                 />
   </url><url>
-    <loc>https://gtello.github.io/es/tags/tryhackme/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/tryhackme/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/tryhackme/"
-                />
-  </url><url>
     <loc>https://gtello.github.io/es/tags/windows/</loc>
     <lastmod>2024-11-12T11:40:00+00:00</lastmod>
     <xhtml:link
@@ -233,19 +298,6 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/tags/windows/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/writeup/</loc>
-    <lastmod>2024-11-12T11:40:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/writeup/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/writeup/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/tags/cms/</loc>
@@ -274,19 +326,6 @@
                 href="https://gtello.github.io/es/tags/lfi/"
                 />
   </url><url>
-    <loc>https://gtello.github.io/es/tags/linux/</loc>
-    <lastmod>2024-10-31T16:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/linux/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/linux/"
-                />
-  </url><url>
     <loc>https://gtello.github.io/es/writeups/bolt/</loc>
     <lastmod>2024-10-31T16:00:00+00:00</lastmod>
     <xhtml:link
@@ -311,19 +350,6 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/tags/ftp/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/hash-cracking/</loc>
-    <lastmod>2024-10-24T21:22:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/hash-cracking/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/hash-cracking/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/writeups/academy/</loc>

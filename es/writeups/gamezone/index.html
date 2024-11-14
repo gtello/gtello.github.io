@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es-EC">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="https://gtello.github.io/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://gtello.github.io/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://gtello.github.io/images/favicon-16x16.png" />
+<link rel="manifest" href="https://gtello.github.io/images/site.webmanifest" />
+
+<link rel="shortcut icon" href="https://gtello.github.io/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#4385BE" />
+
+
+<title>Game Zone (THM) | Gabriel Tello</title>
+<meta name="title" content="Game Zone (THM)" />
+<meta name="description" content="Writeup de Game Zone." />
+<meta name="keywords" content="linux,pentesting,red team,tryhackme,hash cracking,sql injection,writeup," />
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Game Zone (THM)" />
+<meta property="og:description" content="Writeup de Game Zone." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gtello.github.io/es/writeups/gamezone/" />
+
+<meta property="og:image" content="https://gtello.github.io/images/social_card_bg_hu12274958521818442506.webp"/><meta property="article:section" content="writeups" />
+<meta property="article:published_time" content="2024-11-14T14:43:00+00:00" />
+<meta property="article:modified_time" content="2024-11-14T14:43:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="fb:admins" content="0000000000" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://gtello.github.io/images/social_card_bg_hu12274958521818442506.webp"/>
+<meta name="twitter:title" content="Game Zone (THM)"/>
+<meta name="twitter:description" content="Writeup de Game Zone."/>
+<meta name="twitter:site" content="@example"/>
+
+
+
+<meta itemprop="name" content="Game Zone (THM)">
+<meta itemprop="description" content="Writeup de Game Zone."><meta itemprop="datePublished" content="2024-11-14T14:43:00+00:00" />
+<meta itemprop="dateModified" content="2024-11-14T14:43:00+00:00" />
+<meta itemprop="wordCount" content="485">
+
+<meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu12274958521818442506.webp"/>
+
+
+<meta itemprop="keywords" content="linux,pentesting,red team,tryhackme,hash cracking,sql injection,writeup," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  
+  <link href="/style.min.css" rel="stylesheet">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
+    <link href="/toc.min.css" rel="stylesheet">
+  
+
+  
+</head>
+
+<body>
+  <header><a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+
+<a href="/es/" class="title"><h1>Gabriel Tello</h1></a>
+<nav>
+  <a href="/es/">Inicio</a>
+
+  <a href="/es/posts/">Publicaciones</a>
+
+  <a href="/es/projects/">Proyectos</a>
+
+  <a href="/es/writeups/">Reportes</a>
+
+<a href='https://gtello.github.io/index.xml'>RSS</a>
+
+
+
+
+  
+
+
+
+
+  
+    <a href="https://gtello.github.io/writeups/gamezone/">English</a>
+  
+
+</nav>
+</header>
+  <main id="main-content">
+
+<h1>Game Zone (THM)</h1>
+<p class="byline" style="color: gray; font-size: 0.9rem">
+  Fecha de publicación:
+  <time datetime='14/11/2024, 14:43' pubdate>
+    14/11/2024, 14:43
+  </time>
+  
+  
+  |
+  <span>500</span> 
+  palabras
+  |
+  <span>3</span>
+  <span>mins</span>
+</p>
+
+
+<article class="article">
+  
+  <aside class="sidebar">
+    <div class="toc-container">
+      <div style="font-weight: bold; margin-bottom: 0.4rem">Tabla de Contenidos</div>
+      <div class="toc"></div>
+    </div>
+  </aside>
+  
+
+  <content class="content">
+    <div style="text-align: justify;">
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/gamezone">Game Zone</a> de TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Este writeup cubre la intrusión en un entorno web vulnerable, la obtención de acceso mediante SQL Injection, y la escalación de privilegios a root utilizando un exploit de Webmin. Incluye técnicas de recolección de datos, cracking de hashes y uso de herramientas como <em>nmap</em>, <em>Burp Suite</em>, <em>sqlmap</em>, y <em>John the Ripper</em>.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>El primer paso fue un escaneo de red con nmap para descubrir puertos y servicios activos.</p>
+<p><img alt="Resultado nmap" src="/images/posts/gamezone/image1.png"> <center><b>Comando nmap y resultados</b></center></p>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu 16.04.6</td>
+          <td style="text-align: left">10.10.254.53</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="explotación">Explotación</h2>
+<p>Al encontrar el puerto 80 abierto, accedimos a la página de inicio de Game Zone desde el navegador.</p>
+<p><img alt="Página de inicio de Game Zone" src="/images/posts/gamezone/image2.png"> <center><b>Página de inicio de Game Zone</b></center></p>
+<p>El cuarto en TryHackMe invitaba a probar SQL Injection (SQLi) en el campo de login. Usando la sentencia <code>' or 1=1 limit 1;#</code> en el campo de usuario y dejando la contraseña en blanco, logramos autenticarnos exitosamente al portal. Sin embargo, al probar más inyecciones manualmente, no tuvimos resultados adicionales, así que decidimos capturar el <strong>POST request</strong> de la búsqueda con <strong>Burp Suite</strong> para con eso automatizar pruebas de SQLi con <strong>SQLmap</strong>.</p>
+<p><img alt="Captura de POST request" src="/images/posts/gamezone/image3.png"> <center><b>Captura de POST request</b></center></p>
+<p>Utilizamos el comando <code>sqlmap -r POST.txt --dump</code> para verificar y explotar vulnerabilidades de inyección SQL. SQLmap reveló la presencia de una base de datos MySQL y mostró el contenido de la tabla de <code>users</code> con contraseñas hasheadas. Aplicamos <strong>John the Ripper</strong> para descifrar el hash de la contraseña del usuario <code>agent47</code>.</p>
+<p><img alt="Ejecución de SQLmap" src="/images/posts/gamezone/image4.png"> <center><b>Ejecución de SQLmap</b></center><br>
+<img alt="Crack del hash" src="/images/posts/gamezone/image5.png"> <center><b>Crack del hash</b></center></p>
+<p>Con las credenciales, logramos acceder a la máquina vía SSH.</p>
+<p><img alt="Ingreso mediante ssh" src="/images/posts/gamezone/image6.png"> <center><b>Ingreso mediante ssh</b></center></p>
+<h3 id="escalación-de-privilegios">Escalación de Privilegios</h3>
+<p>Dentro de la máquina, ejecutamos <code>ss -tulpn</code> para identificar puertos y servicios adicionales. Observamos que el puerto 10000 estaba bloqueado por un firewall, así que configuramos un túnel SSH con <code>ssh -L 10000:127.0.0.1:10000 agent47@10.10.254.53</code>. Esto nos permitió acceder a un CMS llamado <strong>Webmin</strong>, versión 1.580.</p>
+<p><img alt="Puerto 10000 bloqueado por firewall" src="/images/posts/gamezone/image7.png"> <center><b>Puerto 10000 bloqueado por firewall</b></center><br>
+<img alt="Portal Webmin" src="/images/posts/gamezone/image8.png"> <center><b>Portal Webmin</b></center></p>
+<p>Investigando posibles vulnerabilidades en Webmin, encontramos el exploit <a href="https://github.com/JohnHammond/CVE-2012-2982">CVE-2012-2982</a>. Al ejecutar este exploit, conseguimos acceso root en la máquina.</p>
+<p><img alt="Uso de exploit" src="/images/posts/gamezone/image9.png"> <center><b>Uso de exploit</b></center><br>
+<img alt="Acceso a usuario root" src="/images/posts/gamezone/image10.png"> <center><b>Acceso a usuario root</b></center></p>
+<h2 id="banderas">Banderas</h2>
+<p>Ya con privilegios de root, localizamos las dos banderas:</p>
+<ul>
+<li><code>user.txt</code>: 649ac17b1480ac13ef1e4fa579dac95c</li>
+<li><code>root.txt</code>: a4b945830144bdd71908d12d902adeee</li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<p>Durante este análisis, empleamos las siguientes herramientas:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de puertos abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Captura y análisis de solicitudes HTTP para SQLi automatizado.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>sqlmap</strong></td>
+          <td style="text-align: left">Pruebas de SQLi y extracción de datos de la base de datos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>John the Ripper</strong></td>
+          <td style="text-align: left">Descifrado del hash de la contraseña del usuario <code>agent47</code> para acceso SSH.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
+          <td style="text-align: left">Vulnerabilidad en Webmin que permitió escalación de privilegios a root.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Actualización de sistemas y aplicaciones críticas</strong>, especialmente Webmin y Ubuntu, para corregir vulnerabilidades conocidas.</li>
+<li><strong>Restricciones de firewall</strong> en servicios internos y <strong>sanitización de inputs</strong> para prevenir inyecciones SQL.</li>
+<li>Implementar un sistema de <strong>gestión de parches</strong> y fomentar el uso de <strong>contraseñas seguras</strong> para reducir el riesgo de escalación de privilegios.</li>
+</ul>
+</div>
+
+    
+    <p class="tags-section">
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/linux/">#Linux</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/pentesting/">#Pentesting</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/red-team/">#Red Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/tryhackme/">#Tryhackme</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/hash-cracking/">#Hash Cracking</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/sql-injection/">#Sql Injection</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+      
+    </p>
+  </content>
+</article>
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="gtello/gtello.github.io"
+        data-repo-id="R_kgDONAQNkQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDONAQNkc4CjaoW"
+        data-mapping='og:title'
+        data-strict="0"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position='top'
+        data-theme='preferred_color_scheme'
+        data-lang='en'
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <p>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reponder%20a%20"Game%20Zone%20%28THM%29"'>
+      Responder a este post por correo ↪
+    </a>
+  </p>
+
+
+
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  cornerOffset: 32,
+  diameter: 48,
+  backgroundColor: "var(--flexoki-dark-blue)",
+  textColor: "var(--flexoki-50)",
+  showWhenScrollTopIs: 512, 
+})</script>
+
+
+
+  </main>
+  <footer><small>
+  <a href="https://github.com/gtello">Gabriel Tello</a> © 2024 | Hecho con <a href="https://github.com/Pagliacii/hugo-bearberry">Bear Berry</a>
+</small>
+</footer>
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
+    
+    <script src="/js/toc.min.js"></script>
+  
+
+    
+</body>
+
+</html>

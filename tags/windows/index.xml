@@ -9,16 +9,16 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Tue, 12 Nov 2024 11:40:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 12 Nov 2024 22:40:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/tags/windows/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Steel Mountain (THM)</title>
       <link>https://gtello.github.io/writeups/steelmountain/</link>
-      <pubDate>Tue, 12 Nov 2024 11:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Tue, 12 Nov 2024 22:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/writeups/steelmountain/</guid>
-      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup for the &lt;a href=&#34;https://www.tryhackme.com/room/steelmountain&#34;&gt;Steel Mountain&lt;/a&gt; machine on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;We found several vulnerabilities that allowed us unauthorized access to the system. First, we discovered services on ports 80 and 8080 that exposed sensitive information. Then, using an exploit on one of these services, we gained access to the system with a reverse shell.&lt;/p&gt;&#xA;&lt;p&gt;After that, we escalated privileges and obtained administrator permissions due to misconfigured permissions in one of the system services, which gave us access to critical files and allowed us to reach confidential information.&lt;/p&gt;</description>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup for the &lt;a href=&#34;https://www.tryhackme.com/room/steelmountain&#34;&gt;Steel Mountain&lt;/a&gt; room on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;We found several vulnerabilities that allowed us unauthorized access to the system. First, we discovered services on ports 80 and 8080 that exposed sensitive information. Then, using an exploit on one of these services, we gained access to the system with a reverse shell.&lt;/p&gt;&#xA;&lt;p&gt;After that, we escalated privileges and obtained administrator permissions due to misconfigured permissions in one of the system services, which gave us access to critical files and allowed us to reach confidential information.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">
-<p>Writeup for the <a href="https://www.tryhackme.com/room/steelmountain">Steel Mountain</a> machine on TryHackMe.</p>
+<p>Writeup for the <a href="https://www.tryhackme.com/room/steelmountain">Steel Mountain</a> room on TryHackMe.</p>
 <h2 id="summary">Summary</h2>
 <p>We found several vulnerabilities that allowed us unauthorized access to the system. First, we discovered services on ports 80 and 8080 that exposed sensitive information. Then, using an exploit on one of these services, we gained access to the system with a reverse shell.</p>
 <p>After that, we escalated privileges and obtained administrator permissions due to misconfigured permissions in one of the system services, which gave us access to critical files and allowed us to reach confidential information.</p>

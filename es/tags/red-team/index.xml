@@ -9,12 +9,12 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Thu, 14 Nov 2024 14:43:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 Nov 2024 20:43:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/es/tags/red-team/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Game Zone (THM)</title>
       <link>https://gtello.github.io/es/writeups/gamezone/</link>
-      <pubDate>Thu, 14 Nov 2024 14:43:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Thu, 14 Nov 2024 20:43:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/es/writeups/gamezone/</guid>
       <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/gamezone&#34;&gt;Game Zone&lt;/a&gt; de TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Este writeup cubre la intrusión en un entorno web vulnerable, la obtención de acceso mediante SQL Injection, y la escalación de privilegios a root utilizando un exploit de Webmin. Incluye técnicas de recolección de datos, cracking de hashes y uso de herramientas como &lt;em&gt;nmap&lt;/em&gt;, &lt;em&gt;Burp Suite&lt;/em&gt;, &lt;em&gt;sqlmap&lt;/em&gt;, y &lt;em&gt;John the Ripper&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;El primer paso fue un escaneo de red con nmap para descubrir puertos y servicios activos.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">
@@ -108,7 +108,7 @@
     <item>
       <title>Steel Mountain (THM)</title>
       <link>https://gtello.github.io/es/writeups/steelmountain/</link>
-      <pubDate>Tue, 12 Nov 2024 11:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Tue, 12 Nov 2024 22:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/es/writeups/steelmountain/</guid>
       <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://www.tryhackme.com/room/steelmountain&#34;&gt;Steel Mountain&lt;/a&gt; de TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Encontramos varias vulnerabilidades que nos permitieron obtener acceso no autorizado al sistema. Primero, encontramos servicios en los puertos 80 y 8080 que exponían información sensible. Luego, usando un exploit en uno de estos servicios, conseguimos acceso al sistema con una reverse shell.&lt;/p&gt;&#xA;&lt;p&gt;Después, escalamos privilegios y logramos permisos de administrador gracias a una mala configuración de permisos en uno de los servicios del sistema, lo cual nos dio acceso a archivos críticos y nos permitió llegar hasta información confidencial.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">
@@ -225,7 +225,7 @@
     <item>
       <title>Máquina Bolt</title>
       <link>https://gtello.github.io/es/writeups/bolt/</link>
-      <pubDate>Thu, 31 Oct 2024 16:00:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Thu, 31 Oct 2024 18:03:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/es/writeups/bolt/</guid>
       <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;Esta es una guía paso a paso presentada en formato de reporte profesional sobre una prueba de penetración realizada en una máquina Debian.&#xD;&#xA;&lt;h2 id=&#34;resumen-ejecutivo&#34;&gt;Resumen ejecutivo&lt;/h2&gt;&#xA;&lt;p&gt;Este informe describe una evaluación de seguridad en la que se identificaron y explotaron varias vulnerabilidades críticas en la máquina Bolt. Durante el reconocimiento, se encontraron servicios expuestos, como un error en Bolt CMS y una página de información de PHP. Estos descubrimientos llevaron a la extracción de credenciales sensibles y a la explotación de una vulnerabilidad que permitió acceder a archivos importantes del sistema.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">

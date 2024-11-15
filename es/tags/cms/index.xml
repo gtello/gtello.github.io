@@ -9,12 +9,12 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Thu, 31 Oct 2024 16:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 31 Oct 2024 18:03:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/es/tags/cms/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Máquina Bolt</title>
       <link>https://gtello.github.io/es/writeups/bolt/</link>
-      <pubDate>Thu, 31 Oct 2024 16:00:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Thu, 31 Oct 2024 18:03:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/es/writeups/bolt/</guid>
       <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;Esta es una guía paso a paso presentada en formato de reporte profesional sobre una prueba de penetración realizada en una máquina Debian.&#xD;&#xA;&lt;h2 id=&#34;resumen-ejecutivo&#34;&gt;Resumen ejecutivo&lt;/h2&gt;&#xA;&lt;p&gt;Este informe describe una evaluación de seguridad en la que se identificaron y explotaron varias vulnerabilidades críticas en la máquina Bolt. Durante el reconocimiento, se encontraron servicios expuestos, como un error en Bolt CMS y una página de información de PHP. Estos descubrimientos llevaron a la extracción de credenciales sensibles y a la explotación de una vulnerabilidad que permitió acceder a archivos importantes del sistema.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">

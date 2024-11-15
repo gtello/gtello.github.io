@@ -9,12 +9,12 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Wed, 13 Nov 2024 15:10:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 13 Nov 2024 19:10:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/tags/wazuh/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Implementing Wazuh (SIEM)</title>
       <link>https://gtello.github.io/projects/wazuh/</link>
-      <pubDate>Wed, 13 Nov 2024 15:10:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <pubDate>Wed, 13 Nov 2024 19:10:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/projects/wazuh/</guid>
       <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;This project aims to showcase the setup and integration of &lt;a href=&#34;https://wazuh.com/&#34;&gt;Wazuh&lt;/a&gt; in a professional environment to enhance security operations. Here, I&amp;rsquo;ll guide you through the installation, agent management, alert configuration, integration with Microsoft Teams, and finally, testing with Atomic Red Team for validation.&lt;/p&gt;&#xA;&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;&#xA;&lt;p&gt;To host our Wazuh server, we’ll use an AWS EC2 instance running Ubuntu 24.04. This setup is chosen for flexibility, scalability, and ease of maintenance in a cloud-based infrastructure.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">

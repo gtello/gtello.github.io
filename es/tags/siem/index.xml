@@ -39,7 +39,7 @@
 </ol>
 <p><img alt="Grupo de agentes" src="/images/posts/wazuh/agent-group.gif"> <center><b>Agregando un nuevo grupo</b></center></p>
 <p>Ahora pasaremos al despliegue de nuestros agentes.</p>
-<h2 id="despliegue-de-agentes">Despliegue de agentes</h2>
+<h2 id="despliegue-de-agentes">Despliegue de Agentes</h2>
 <p>Para agregar un nuevo agente, hacemos clic en el menú y vamos a <strong>Endpoints Summary</strong> y seleccionamos <strong>Deploy new agent</strong>. Sigue las instrucciones del asistente para desplegar un agente:</p>
 <p><img alt="Configuración del agente Wazuh" src="/images/posts/wazuh/wazuh-agent-setup.png"> <center><b>Agregando un nuevo agente</b></center></p>
 <p>Si estás configurando un agente de Wazuh en una instancia EC2 de AWS y experimentas problemas de conectividad, revisa la configuración del grupo de seguridad aplicado a tu instancia y asegúrate de que el Security Group adjunto a tu instancia de Wazuh manager permita el tráfico entrante en estos puertos:</p>
@@ -50,7 +50,7 @@
 </ul>
 <p><img alt="Primer agente añadido" src="/images/posts/wazuh/first-agent-added.png"> <center><b>Primer agente añadido</b></center></p>
 <p>Añadí como primer agente una instancia de AWS Lightsail que quiero monitorear. Ahora podemos avanzar a configuraciones adicionales, como detección de vulnerabilidades y rootkits, monitoreo de integridad de archivos, etc.</p>
-<h2 id="detección-de-vulnerabilidades">Detección de vulnerabilidades</h2>
+<h2 id="detección-de-vulnerabilidades">Detección de Vulnerabilidades</h2>
 <p>A la fecha de publicación, Wazuh viene por defecto con el módulo de detección de vulnerabilidades activado. Para confirmarlo, revisa el <a href="https://documentation.wazuh.com/current/user-manual/reference/ossec-conf/index.html">archivo de configuración</a> ubicado en <code>/var/ossec/etc/ossec.conf</code></p>
 
 
@@ -90,8 +90,58 @@
 
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;alerts&gt;</span>
 </span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;log_alert_level&gt;</span>5<span class="nt">&lt;/log_alert_level&gt;</span>
-</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="nt">&lt;/alerts&gt;</span></span></span></code></pre></div><p>Después de realizar cambios en el archivo de configuración, reinicia el Wazuh manager con <code>sudo systemctl restart wazuh-manager</code> para aplicar los nuevos ajustes.</p>
-<h3 id="reenvío-de-alertas">Reenvío de alertas</h3>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="nt">&lt;/alerts&gt;</span></span></span></code></pre></div><p>Después de realizar cambios en el archivo de configuración, reinicia Wazuh manager para aplicar los nuevos ajustes con:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo systemctl restart wazuh-manager</span></span></code></pre></div><h3 id="filtrado-de-alertas">Filtrado de Alertas</h3>
+<p>Para optimizar el sistema de alertas, se puede implementar reglas de filtrado de alertas en Wazuh para suprimir eventos específicos, como intentos de fuerza bruta SSH hacia usuarios inexistentes. Sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Identifica el ID de la Regla</strong>: Determina el ID de la regla asociada con la alerta que deseas anular. Puedes encontrar este ID en los registros de alertas o revisando el conjunto de reglas de Wazuh.</p>
+<ul>
+<li>
+<p>Para intentos de fuerza bruta en SSH en Linux, puedes encontrar estos eventos con <code>rule.id:(5551 OR 5712)</code>. Otras reglas relacionadas son <code>5710</code>, <code>5711</code>, <code>5716</code>, <code>5720</code>, <code>5503</code>, <code>5504</code>.</p>
+</li>
+<li>
+<p>Para fallos de inicio de sesión en Windows, puedes encontrar esos eventos con <code>rule.id:(60122 OR 60204)</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Crea una Regla Local para Anular Alertas</strong>: Creando una regla local con un nivel de severidad más bajo, puedes evitar que la alerta sea enviada.</p>
+<ul>
+<li>
+<p>Navega al directorio de reglas de Wazuh, ubicado en <code>/var/ossec/etc/rules/local_rules.xml</code>.</p>
+</li>
+<li>
+<p>Agrega la siguiente regla para suprimir la alerta específica:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="ln">1</span><span class="cl"><span class="nt">&lt;group</span> <span class="na">name=</span><span class="s">&#34;sshd,&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">  <span class="nt">&lt;rule</span> <span class="na">id=</span><span class="s">&#34;100002&#34;</span> <span class="na">level=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">    <span class="nt">&lt;if_sid&gt;</span>5716<span class="nt">&lt;/if_sid&gt;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">    <span class="nt">&lt;description&gt;</span>Ignorar alertas de fuerza bruta SSH hacia usuarios inexistentes<span class="nt">&lt;/description&gt;</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">  <span class="nt">&lt;/rule&gt;</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="nt">&lt;/group&gt;</span></span></span></code></pre></div><p>Esta regla establece el nivel de alerta en 0 para el evento especificado, suprimiéndolo. Para un ejemplo más detallado, consulta el <a href="https://github.com/ossec/ossec-hids/blob/master/etc/rules/local_rules.xml">archivo de ejemplo de ossec</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Reinicia el Administrador de Wazuh</strong>: Aplica los cambios reiniciando Wazuh manager:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo systemctl restart wazuh-manager</span></span></code></pre></div></li>
+</ol>
+<h3 id="reenvío-de-alertas">Reenvío de Alertas</h3>
 <p>Wazuh puede reenviar alertas a varios sistemas externos, como servidores syslog, direcciones de correo electrónico o plataformas de colaboración como Microsoft Teams.</p>
 <ul>
 <li>Para reenviar alertas a un servidor syslog, agrega un bloque <code>&lt;syslog_output&gt;</code> en el archivo <code>ossec.conf</code>:</li>

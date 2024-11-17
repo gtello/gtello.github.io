@@ -28,16 +28,16 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Ubuntu 16.04.6</td>
-          <td style="text-align: left">10.10.254.53</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
+          <td>Ubuntu 16.04.6</td>
+          <td>10.10.254.53</td>
+          <td>22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -69,30 +69,30 @@
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left"><strong>nmap</strong></td>
-          <td style="text-align: left">Network scanning and open port detection.</td>
+          <td><strong>nmap</strong></td>
+          <td>Network scanning and open port detection.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>Burp Suite</strong></td>
-          <td style="text-align: left">Capturing and analyzing HTTP requests for SQLi.</td>
+          <td><strong>Burp Suite</strong></td>
+          <td>Capturing and analyzing HTTP requests for SQLi.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>sqlmap</strong></td>
-          <td style="text-align: left">SQLi testing and data extraction from the database.</td>
+          <td><strong>sqlmap</strong></td>
+          <td>SQLi testing and data extraction from the database.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>John the Ripper</strong></td>
-          <td style="text-align: left">Used to crack the user <code>agent47</code> password hash for SSH access.</td>
+          <td><strong>John the Ripper</strong></td>
+          <td>Used to crack the user <code>agent47</code> password hash for SSH access.</td>
       </tr>
       <tr>
-          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
-          <td style="text-align: left">Webmin vulnerability enabling root access.</td>
+          <td><strong>Exploit CVE-2012-2982</strong></td>
+          <td>Webmin vulnerability enabling root access.</td>
       </tr>
   </tbody>
 </table>
@@ -124,16 +124,16 @@ This is a step-by-step guide presented in a professional report format covering 
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian</td>
-          <td style="text-align: left">192.168.138.132</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
+          <td>Debian</td>
+          <td>192.168.138.132</td>
+          <td>22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
       </tr>
   </tbody>
 </table>
@@ -178,26 +178,26 @@ This is a step-by-step guide presented in a professional report format covering 
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">nmap</td>
-          <td style="text-align: left">Used for network scanning and detecting open ports and services on the target machine.</td>
+          <td>nmap</td>
+          <td>Used for network scanning and detecting open ports and services on the target machine.</td>
       </tr>
       <tr>
-          <td style="text-align: left">fcrackzip</td>
-          <td style="text-align: left">Tool used to perform a brute-force attack on zip files.</td>
+          <td>fcrackzip</td>
+          <td>Tool used to perform a brute-force attack on zip files.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Used for brute-forcing web directories, discovering sensitive paths.</td>
+          <td>wfuzz</td>
+          <td>Used for brute-forcing web directories, discovering sensitive paths.</td>
       </tr>
       <tr>
-          <td style="text-align: left">GTFObins</td>
-          <td style="text-align: left">Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
+          <td>GTFObins</td>
+          <td>Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
       </tr>
   </tbody>
 </table>
@@ -228,16 +228,16 @@ This is a step-by-step guide presented in a professional report format on a pene
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian 10</td>
-          <td style="text-align: left">192.168.138.128</td>
-          <td style="text-align: left">21 (FTP), 22 (SSH), 80 (HTTP)</td>
+          <td>Debian 10</td>
+          <td>192.168.138.128</td>
+          <td>21 (FTP), 22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -314,30 +314,30 @@ This is a step-by-step guide presented in a professional report format on a pene
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Nmap</td>
-          <td style="text-align: left">Used for network scanning and detection of open ports and services on the target machine.</td>
+          <td>Nmap</td>
+          <td>Used for network scanning and detection of open ports and services on the target machine.</td>
       </tr>
       <tr>
-          <td style="text-align: left">hashcat</td>
-          <td style="text-align: left">Used to crack the MD5 hash obtained from the FTP server.</td>
+          <td>hashcat</td>
+          <td>Used to crack the MD5 hash obtained from the FTP server.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Used for brute-forcing web directories, discovering sensitive paths.</td>
+          <td>wfuzz</td>
+          <td>Used for brute-forcing web directories, discovering sensitive paths.</td>
       </tr>
       <tr>
-          <td style="text-align: left">pspy</td>
-          <td style="text-align: left">Program used to monitor processes on Linux without needing root permissions.</td>
+          <td>pspy</td>
+          <td>Program used to monitor processes on Linux without needing root permissions.</td>
       </tr>
       <tr>
-          <td style="text-align: left">LinPEAS</td>
-          <td style="text-align: left">Script used to identify potential privilege escalation paths on the server.</td>
+          <td>LinPEAS</td>
+          <td>Script used to identify potential privilege escalation paths on the server.</td>
       </tr>
   </tbody>
 </table>

@@ -30,16 +30,16 @@ This is a step-by-step guide presented in a professional report format covering 
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Operating System</th>
-          <th style="text-align: left">IP Address</th>
-          <th style="text-align: left">Open Ports</th>
+          <th>Operating System</th>
+          <th>IP Address</th>
+          <th>Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">Debian</td>
-          <td style="text-align: left">192.168.138.132</td>
-          <td style="text-align: left">22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
+          <td>Debian</td>
+          <td>192.168.138.132</td>
+          <td>22 (SSH), 80 (HTTP), 111 (RPCbind), 2049 (NFS), 8080 (HTTP Alternate)</td>
       </tr>
   </tbody>
 </table>
@@ -84,26 +84,26 @@ This is a step-by-step guide presented in a professional report format covering 
 <table>
   <thead>
       <tr>
-          <th style="text-align: left">Tool</th>
-          <th style="text-align: left">Description</th>
+          <th>Tool</th>
+          <th>Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: left">nmap</td>
-          <td style="text-align: left">Used for network scanning and detecting open ports and services on the target machine.</td>
+          <td>nmap</td>
+          <td>Used for network scanning and detecting open ports and services on the target machine.</td>
       </tr>
       <tr>
-          <td style="text-align: left">fcrackzip</td>
-          <td style="text-align: left">Tool used to perform a brute-force attack on zip files.</td>
+          <td>fcrackzip</td>
+          <td>Tool used to perform a brute-force attack on zip files.</td>
       </tr>
       <tr>
-          <td style="text-align: left">wfuzz</td>
-          <td style="text-align: left">Used for brute-forcing web directories, discovering sensitive paths.</td>
+          <td>wfuzz</td>
+          <td>Used for brute-forcing web directories, discovering sensitive paths.</td>
       </tr>
       <tr>
-          <td style="text-align: left">GTFObins</td>
-          <td style="text-align: left">Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
+          <td>GTFObins</td>
+          <td>Online resource that provided the method for privilege escalation using the <code>zip</code> binary with sudo permissions.</td>
       </tr>
   </tbody>
 </table>

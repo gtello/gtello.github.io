@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es-EC">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="https://gtello.github.io/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://gtello.github.io/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://gtello.github.io/images/favicon-16x16.png" />
+<link rel="manifest" href="https://gtello.github.io/images/site.webmanifest" />
+
+<link rel="shortcut icon" href="https://gtello.github.io/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#4385BE" />
+
+
+<title>Mr. Robot (THM) | Gabriel Tello</title>
+<meta name="title" content="Mr. Robot (THM)" />
+<meta name="description" content="Writeup de Mr. Robot en TryHackMe." />
+<meta name="keywords" content="linux,pentesting,red team,tryhackme,thm,wordpress,writeup," />
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Mr. Robot (THM)" />
+<meta property="og:description" content="Writeup de Mr. Robot en TryHackMe." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gtello.github.io/es/writeups/mrrobot/" />
+
+<meta property="og:image" content="https://gtello.github.io/images/social_card_bg_hu14934359162175385831.webp"/><meta property="article:section" content="writeups" />
+<meta property="article:published_time" content="2024-11-25T10:32:00+00:00" />
+<meta property="article:modified_time" content="2024-11-25T10:32:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="fb:admins" content="0000000000" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://gtello.github.io/images/social_card_bg_hu14934359162175385831.webp"/>
+<meta name="twitter:title" content="Mr. Robot (THM)"/>
+<meta name="twitter:description" content="Writeup de Mr. Robot en TryHackMe."/>
+<meta name="twitter:site" content="@example"/>
+
+
+
+<meta itemprop="name" content="Mr. Robot (THM)">
+<meta itemprop="description" content="Writeup de Mr. Robot en TryHackMe."><meta itemprop="datePublished" content="2024-11-25T10:32:00+00:00" />
+<meta itemprop="dateModified" content="2024-11-25T10:32:00+00:00" />
+<meta itemprop="wordCount" content="540">
+
+<meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu14934359162175385831.webp"/>
+
+
+<meta itemprop="keywords" content="linux,pentesting,red team,tryhackme,thm,wordpress,writeup," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  
+  <link href="/style.min.css" rel="stylesheet">
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
+    <link href="/toc.min.css" rel="stylesheet">
+  
+
+  
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-94K1F50W02"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-94K1F50W02');
+</script>
+
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "p3b2egz3xe");
+</script></head>
+
+<body>
+  <header><a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+
+<a href="/es/" class="title"><h1>Gabriel Tello</h1></a>
+<nav>
+  <a href="/es/">Inicio</a>
+
+  <a href="/es/posts/">Publicaciones</a>
+
+  <a href="/es/projects/">Proyectos</a>
+
+  <a href="/es/writeups/">Reportes</a>
+
+<a href='https://gtello.github.io/index.xml'>RSS</a>
+
+
+
+
+  
+
+
+
+
+  
+    <a href="https://gtello.github.io/writeups/mrrobot/">English</a>
+  
+
+</nav>
+</header>
+  <main id="main-content">
+
+<h1>Mr. Robot (THM)</h1>
+<p class="byline" style="color: gray; font-size: 0.9rem">
+  Fecha de publicación:
+  <time datetime='25/11/2024, 10:32' pubdate>
+    25/11/2024, 10:32
+  </time>
+  
+  
+  |
+  <span>600</span> 
+  palabras
+  |
+  <span>3</span>
+  <span>mins</span>
+</p>
+
+
+<article class="article">
+  
+  <aside class="sidebar">
+    <div class="toc-container">
+      <div style="font-weight: bold; margin-bottom: 0.4rem">Tabla de Contenidos</div>
+      <div class="toc"></div>
+    </div>
+  </aside>
+  
+
+  <content class="content">
+    <div style="text-align: justify;">  
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/mrrobot">Mr. Robot</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Este writeup detalla la explotación de la máquina Mr. Robot. Incluye el reconocimiento para descubrir directorios ocultos, fuerza bruta de credenciales para WordPress, ejecución de una reverse shell y escalada de privilegios hasta <code>root</code>. Se emplearon herramientas como <em>nmap</em>, <em>wfuzz</em>, <em>Burp Suite</em>, <em>Hydra</em>, <em>WPScan</em> y <em>LINpeas.sh</em>.</p>
+<div class="alert alert-note">
+  <p class="alert-title">
+    <span class="alert-icon alert-note-icon">
+      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+      </svg>
+      Note
+    </span>
+  </p>
+  <p class="alert-text">Este tutorial está basado en una versión modificada de la máquina CTF Mr. Robot, alojada en TryHackMe. Aunque la metodología para rootear esta máquina se alinea con la original, algunos flags y detalles específicos han sido alterados.</p>
+</div>
+
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>El proceso comenzó con un escaneo de red para identificar puertos y servicios abiertos.</p>
+<p><img alt="Resultados de Rustscan" src="/images/posts/mrrobot/image1.png"> <center><b>Resultados de Rustscan</b></center></p>
+<h3 id="resultados-del-reconocimiento">Resultados del Reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Linux</td>
+          <td style="text-align: left">192.168.2.114</td>
+          <td style="text-align: left">80 (HTTP), 443 (HTTPS)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Al visitar el servidor web, la página de inicio hacía referencia al programa de TV <em>Mr. Robot</em>. Se descubrió un directorio oculto <code>/robots</code> usando <strong>wfuzz</strong>, que contenía un archivo de diccionario y el primer flag.</p>
+<p><img alt="Contenido de Robots.txt" src="/images/posts/mrrobot/image4.png"> <center><b>Contenido de /robots</b></center></p>
+<h2 id="explotación">Explotación</h2>
+<p>Con evidencia de que el sistema usaba WordPress como CMS, lanzamos un ataque de fuerza bruta en el portal de inicio de sesión.</p>
+<h3 id="inicio-de-sesión-en-wordpress">Inicio de Sesión en WordPress</h3>
+<p>Las credenciales fueron obtenidas usando <strong>Burp Suite</strong> para capturar la solicitud de inicio de sesión y <strong>Hydra</strong> para realizar fuerza bruta sobre la cuenta de administrador utilizando el archivo de diccionario descubierto.</p>
+<p><img alt="Solicitud capturada en Burp Suite" src="/images/posts/mrrobot/image5.png"> <center><b>Captura de solicitud en Burp Suite</b></center><br>
+<img alt="Ejecución de Hydra" src="/images/posts/mrrobot/image6.png"> <center><b>Fuerza bruta de login con Hydra</b></center></p>
+<p>Con el usuario &ldquo;Angela&rdquo; y la contraseña descubierta, obtuvimos acceso al panel de administración de WordPress. Desde allí, reemplazamos un archivo de plantilla PHP con una reverse shell, permitiendo acceso remoto.</p>
+<h3 id="reverse-shell">Reverse Shell</h3>
+<p>Una vez ejecutada la payload, establecimos una shell como el usuario <code>daemon</code>.</p>
+<p><img alt="Conexión de reverse shell" src="/images/posts/mrrobot/image9.png"> <center><b>Conexión de reverse shell</b></center></p>
+<p>Al explorar el sistema de archivos, encontramos una contraseña cifrada en el directorio <code>/home/robot</code>. Este hash fue descifrado usando <a href="https://crackstation.net/">Crackstation</a>, resultando en la contraseña <code>sayajin23</code>. Con esta contraseña, obtuvimos acceso al usuario <code>robot</code>.</p>
+<h2 id="escalada-de-privilegios">Escalada de Privilegios</h2>
+<p>La escalada de privilegios se logró utilizando <a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LINpeas.sh</a> para identificar configuraciones incorrectas.</p>
+<h3 id="explotación-de-nmap">Explotación de nmap</h3>
+<p>LINpeas resaltó que <code>nmap</code> tenía privilegios elevados. Usando <a href="https://gtfobins.github.io/gtfobins/nmap/">GTFObins</a>, construimos un comando para explotar el modo interactivo de <code>nmap</code> y escalar a root.</p>
+<p><img alt="Escalada de privilegios" src="/images/posts/mrrobot/image14.png"> <center><b>Usando nmap para escalada de privilegios</b></center></p>
+<p>Después de ejecutar los comandos exitosamente, obtuvimos acceso a la máquina como usuario root.</p>
+<h2 id="flags">Flags</h2>
+<p>Se encontraron tres flags durante la explotación:</p>
+<ul>
+<li><strong>Flag 1:</strong> b8a2bd7f70b405df8823bd4442892c6c</li>
+<li><strong>Flag 2:</strong> c6ad356a6d4ab0c2c9d033caadf28469</li>
+<li><strong>Flag 3:</strong> 6c6b1c7089af9c9bb7ac78f06c3c1685</li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>Rustscan</strong></td>
+          <td style="text-align: left">Escaneo rápido de puertos para identificar servicios activos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>wfuzz</strong></td>
+          <td style="text-align: left">Fuerza bruta en directorios para descubrir rutas ocultas.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Intercepción de solicitudes HTTP para análisis y pruebas.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Hydra</strong></td>
+          <td style="text-align: left">Fuerza bruta de inicio de sesión en WordPress.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>WPScan</strong></td>
+          <td style="text-align: left">Enumeración de usuarios y vulnerabilidades en WordPress.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>LINpeas.sh</strong></td>
+          <td style="text-align: left">Script de enumeración para escalada de privilegios.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>GTFObins</strong></td>
+          <td style="text-align: left">Explotación de <code>nmap</code> para escalada de privilegios.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Proteger archivos sensibles</strong>: Evitar exponer rutas críticas en <code>robots.txt</code> que conduzcan a recursos sensibles.</li>
+<li><strong>Implementar contraseñas robustas</strong>: Utilizar contraseñas complejas y monitorizar intentos de fuerza bruta.</li>
+<li><strong>Restringir binarios privilegiados</strong>: Limitar el acceso a binarios como <code>nmap</code> que puedan ser explotados para escalada de privilegios.</li>
+<li><strong>Actualizar y asegurar WordPress</strong>: Mantener WordPress, plugins y temas actualizados, restringiendo el acceso al panel de administración.</li>
+<li><strong>Realizar auditorías de seguridad</strong>: Auditar sistemas regularmente con herramientas como <strong>LINpeas</strong> para identificar y mitigar vulnerabilidades.</li>
+</ul>
+</div>
+    
+    <p class="tags-section">
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/linux/">#Linux</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/pentesting/">#Pentesting</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/red-team/">#Red Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/tryhackme/">#Tryhackme</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/thm/">#Thm</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/wordpress/">#Wordpress</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+      
+    </p>
+  </content>
+</article>
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="gtello/gtello.github.io"
+        data-repo-id="R_kgDONAQNkQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDONAQNkc4CjaoW"
+        data-mapping='og:title'
+        data-strict="0"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position='top'
+        data-theme='preferred_color_scheme'
+        data-lang='en'
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <p>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reponder%20a%20"Mr.%20Robot%20%28THM%29"'>
+      Responder a este post por correo ↪
+    </a>
+  </p>
+
+
+
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  cornerOffset: 32,
+  diameter: 48,
+  backgroundColor: "var(--flexoki-dark-blue)",
+  textColor: "var(--flexoki-50)",
+  showWhenScrollTopIs: 512, 
+})</script>
+
+
+
+  </main>
+  <footer><small>
+  <a href="https://github.com/gtello">Gabriel Tello</a> © 2024 | Hecho con <a href="https://github.com/Pagliacii/hugo-bearberry">Bear Berry</a>
+</small>
+</footer>
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
+    
+    <script src="/js/toc.min.js"></script>
+  
+
+    
+</body>
+
+</html>

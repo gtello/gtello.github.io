@@ -27,16 +27,16 @@
 <table>
   <thead>
       <tr>
-          <th>Operating System</th>
-          <th>IP Address</th>
-          <th>Open Ports</th>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows Server</td>
-          <td>10.10.149.26</td>
-          <td>80, 3389, 8080</td>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
       </tr>
   </tbody>
 </table>
@@ -84,26 +84,26 @@
 <table>
   <thead>
       <tr>
-          <th>Tool</th>
-          <th>What it Did</th>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">What it Did</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><strong>nmap</strong></td>
-          <td>Scanned the network and identified open services.</td>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Scanned the network and identified open services.</td>
       </tr>
       <tr>
-          <td><strong>Jenkins</strong></td>
-          <td>Exploited using default credentials to execute commands.</td>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Exploited using default credentials to execute commands.</td>
       </tr>
       <tr>
-          <td><strong>msfvenom/metasploit</strong></td>
-          <td>Generated payloads and escalated privileges with the incognito module.</td>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generated payloads and escalated privileges with the incognito module.</td>
       </tr>
       <tr>
-          <td><strong>certutil</strong></td>
-          <td>Transferred the payload to the target machine.</td>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferred the payload to the target machine.</td>
       </tr>
   </tbody>
 </table>
@@ -138,16 +138,16 @@
 <table>
   <thead>
       <tr>
-          <th>Operating System</th>
-          <th>IP Address</th>
-          <th>Open Ports</th>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows Server 2008</td>
-          <td>10.10.128.109</td>
-          <td>80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+          <td style="text-align: left">Windows Server 2008</td>
+          <td style="text-align: left">10.10.128.109</td>
+          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
       </tr>
   </tbody>
 </table>
@@ -184,26 +184,26 @@
 <table>
   <thead>
       <tr>
-          <th>Tool</th>
-          <th>Description</th>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>nmap</td>
-          <td>For initial reconnaissance and detection of open ports and services.</td>
+          <td style="text-align: left">nmap</td>
+          <td style="text-align: left">For initial reconnaissance and detection of open ports and services.</td>
       </tr>
       <tr>
-          <td>metasploit</td>
-          <td>To launch the exploit against the Rejetto HTTP server.</td>
+          <td style="text-align: left">metasploit</td>
+          <td style="text-align: left">To launch the exploit against the Rejetto HTTP server.</td>
       </tr>
       <tr>
-          <td>PowerUp.ps1</td>
-          <td>PowerShell script for analyzing privilege configurations on Windows systems.</td>
+          <td style="text-align: left">PowerUp.ps1</td>
+          <td style="text-align: left">PowerShell script for analyzing privilege configurations on Windows systems.</td>
       </tr>
       <tr>
-          <td>msfvenom</td>
-          <td>To generate the reverse shell payload used to obtain administrator permissions.</td>
+          <td style="text-align: left">msfvenom</td>
+          <td style="text-align: left">To generate the reverse shell payload used to obtain administrator permissions.</td>
       </tr>
   </tbody>
 </table>
@@ -239,16 +239,16 @@ This is a step-by-step guide presented in a professional report format about a p
 <table>
   <thead>
       <tr>
-          <th>Operating System</th>
-          <th>IP Address</th>
-          <th>Open Ports</th>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows 7 x64 SP 1</td>
-          <td>192.168.1.167</td>
-          <td>135, 139, 445, 49152-49158</td>
+          <td style="text-align: left">Windows 7 x64 SP 1</td>
+          <td style="text-align: left">192.168.1.167</td>
+          <td style="text-align: left">135, 139, 445, 49152-49158</td>
       </tr>
   </tbody>
 </table>
@@ -334,18 +334,18 @@ In this case, a persistence script was configured using the <code>windows/local/
 <table>
   <thead>
       <tr>
-          <th>Flag</th>
-          <th>Hash</th>
+          <th style="text-align: left">Flag</th>
+          <th style="text-align: left">Hash</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>flag1.txt</td>
-          <td>0ef3b7d488b11e3e800f547a0765da8e</td>
+          <td style="text-align: left">flag1.txt</td>
+          <td style="text-align: left">0ef3b7d488b11e3e800f547a0765da8e</td>
       </tr>
       <tr>
-          <td>flag2.txt</td>
-          <td>a63c1c39c0c7fd570053343451667939</td>
+          <td style="text-align: left">flag2.txt</td>
+          <td style="text-align: left">a63c1c39c0c7fd570053343451667939</td>
       </tr>
   </tbody>
 </table>
@@ -353,30 +353,30 @@ In this case, a persistence script was configured using the <code>windows/local/
 <table>
   <thead>
       <tr>
-          <th>Tool</th>
-          <th>Description</th>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Nmap</td>
-          <td>Used for the initial system scan and to identify open ports and services on the target.</td>
+          <td style="text-align: left">Nmap</td>
+          <td style="text-align: left">Used for the initial system scan and to identify open ports and services on the target.</td>
       </tr>
       <tr>
-          <td>Metasploit</td>
-          <td>Used to exploit the EternalBlue vulnerability (CVE-2017-0144) with a reverse shell payload.</td>
+          <td style="text-align: left">Metasploit</td>
+          <td style="text-align: left">Used to exploit the EternalBlue vulnerability (CVE-2017-0144) with a reverse shell payload.</td>
       </tr>
       <tr>
-          <td>Mimikatz/kiwi</td>
-          <td>Used within Meterpreter to extract Windows system credential hashes.</td>
+          <td style="text-align: left">Mimikatz/kiwi</td>
+          <td style="text-align: left">Used within Meterpreter to extract Windows system credential hashes.</td>
       </tr>
       <tr>
-          <td>CrackMapExec and PTH</td>
-          <td>Allowed lateral movement in the machine without needing plaintext passwords, using only hashes.</td>
+          <td style="text-align: left">CrackMapExec and PTH</td>
+          <td style="text-align: left">Allowed lateral movement in the machine without needing plaintext passwords, using only hashes.</td>
       </tr>
       <tr>
-          <td>Persistence with Metasploit</td>
-          <td>Persistence configuration using the windows/local/persistence_service module to ensure continuous access.</td>
+          <td style="text-align: left">Persistence with Metasploit</td>
+          <td style="text-align: left">Persistence configuration using the windows/local/persistence_service module to ensure continuous access.</td>
       </tr>
   </tbody>
 </table>

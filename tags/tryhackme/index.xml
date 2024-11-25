@@ -9,8 +9,126 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Fri, 15 Nov 2024 15:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 25 Nov 2024 10:32:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mr. Robot (THM)</title>
+      <link>https://gtello.github.io/writeups/mrrobot/</link>
+      <pubDate>Mon, 25 Nov 2024 10:32:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/mrrobot/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup for the &lt;a href=&#34;https://tryhackme.com/r/room/mrrobot&#34;&gt;Mr. Robot&lt;/a&gt; room on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;This writeup walks through the exploitation of the Mr. Robot machine. It involves reconnaissance to uncover hidden directories, brute-forcing credentials for WordPress, executing a reverse shell, and privilege escalation to root. It showcases techniques using tools such as &lt;em&gt;nmap&lt;/em&gt;, &lt;em&gt;wfuzz&lt;/em&gt;, &lt;em&gt;Burp Suite&lt;/em&gt;, &lt;em&gt;Hydra&lt;/em&gt;, &lt;em&gt;WPScan&lt;/em&gt;, and &lt;em&gt;LINpeas.sh&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;div class=&#34;alert alert-note&#34;&gt;&#xD;&#xA;  &lt;p class=&#34;alert-title&#34;&gt;&#xD;&#xA;    &lt;span class=&#34;alert-icon alert-note-icon&#34;&gt;&#xD;&#xA;      &lt;svg class=&#34;octicon&#34; viewBox=&#34;0 0 16 16&#34; version=&#34;1.1&#34; width=&#34;16&#34; height=&#34;16&#34; aria-hidden=&#34;true&#34;&gt;&#xD;&#xA;        &lt;path d=&#34;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&#34;&gt;&lt;/path&gt;&#xD;&#xA;      &lt;/svg&gt;&#xD;&#xA;      Note&#xD;&#xA;    &lt;/span&gt;&#xD;&#xA;  &lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup for the <a href="https://tryhackme.com/r/room/mrrobot">Mr. Robot</a> room on TryHackMe.</p>
+<h2 id="summary">Summary</h2>
+<p>This writeup walks through the exploitation of the Mr. Robot machine. It involves reconnaissance to uncover hidden directories, brute-forcing credentials for WordPress, executing a reverse shell, and privilege escalation to root. It showcases techniques using tools such as <em>nmap</em>, <em>wfuzz</em>, <em>Burp Suite</em>, <em>Hydra</em>, <em>WPScan</em>, and <em>LINpeas.sh</em>.</p>
+<div class="alert alert-note">
+  <p class="alert-title">
+    <span class="alert-icon alert-note-icon">
+      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+      </svg>
+      Note
+    </span>
+  </p>
+  <p class="alert-text">This walkthrough is based on a modified version of the Mr. Robot CTF machine, hosted on TryHackMe. While the methodology to root this box aligns with the original, some flags and specific details have been altered.</p>
+</div>
+
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>The journey began with a network scan to identify open ports and services.</p>
+<p><img alt="Rustscan results" src="/images/posts/mrrobot/image1.png"> <center><b>Rustscan results</b></center></p>
+<h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Linux</td>
+          <td style="text-align: left">192.168.2.114</td>
+          <td style="text-align: left">80 (HTTP), 443 (HTTPS)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Upon visiting the web server, the homepage referenced the TV show <em>Mr. Robot</em>. A hidden directory <code>/robots</code> was discovered using <strong>wfuzz</strong>, which contained a dictionary file and the first flag.</p>
+<p><img alt="Robots.txt contents" src="/images/posts/mrrobot/image4.png"> <center><b>Contents of /robots</b></center></p>
+<h2 id="exploitation">Exploitation</h2>
+<p>With evidence pointing to WordPress as the Content Management System (CMS), we launched a brute-force attack on the login portal.</p>
+<h3 id="wordpress-login">WordPress Login</h3>
+<p>The credentials were obtained using <strong>Burp Suite</strong> to capture the login request and <strong>Hydra</strong> to brute-force the admin account with the discovered dictionary file.</p>
+<p><img alt="Burp Suite request" src="/images/posts/mrrobot/image5.png"> <center><b>Burp Suite request capture</b></center><br>
+<img alt="Hydra execution" src="/images/posts/mrrobot/image6.png"> <center><b>Hydra login brute force</b></center></p>
+<p>Using the user &ldquo;Angela&rdquo; and the cracked password, we gained access to the WordPress admin dashboard. From there, we replaced a PHP template file with a reverse shell payload, enabling remote access.</p>
+<h3 id="reverse-shell">Reverse Shell</h3>
+<p>Once the payload was executed, we established a shell as the <code>daemon</code> user.</p>
+<p><img alt="Reverse shell connection" src="/images/posts/mrrobot/image9.png"> <center><b>Reverse shell connection</b></center></p>
+<p>Exploring the file system revealed a hashed password in the <code>/home/robot</code> directory. The hash was cracked using <a href="https://crackstation.net/">Crackstation</a>, resulting in the password <code>sayajin23</code>. With this password, we gained access to the <code>robot</code> account.</p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Privilege escalation was achieved using <a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LINpeas.sh</a> to identify misconfigurations.</p>
+<h3 id="exploiting-nmap">Exploiting nmap</h3>
+<p>LINpeas highlighted that <code>nmap</code> had elevated privileges. Using <a href="https://gtfobins.github.io/gtfobins/nmap/">GTFObins</a>, we crafted a command to exploit <code>nmap</code>&rsquo;s interactive mode and escalate to root.</p>
+<p><img alt="Privilege escalation" src="/images/posts/mrrobot/image14.png"> <center><b>Using nmap for privilege escalation</b></center></p>
+<p>After successfully executing the commands, we accessed the machine as the root user.</p>
+<h2 id="flags">Flags</h2>
+<p>Three flags were found during the engagement:</p>
+<ul>
+<li><strong>Flag 1:</strong> b8a2bd7f70b405df8823bd4442892c6c</li>
+<li><strong>Flag 2:</strong> c6ad356a6d4ab0c2c9d033caadf28469</li>
+<li><strong>Flag 3:</strong> 6c6b1c7089af9c9bb7ac78f06c3c1685</li>
+</ul>
+<h2 id="tools-used">Tools Used</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>Rustscan</strong></td>
+          <td style="text-align: left">Fast port scanning to identify active services.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>wfuzz</strong></td>
+          <td style="text-align: left">Directory brute-forcing to uncover hidden paths.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Intercepting HTTP requests for analysis and testing.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Hydra</strong></td>
+          <td style="text-align: left">Login brute-forcing for WordPress credentials.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>WPScan</strong></td>
+          <td style="text-align: left">WordPress vulnerability and user enumeration.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>LINpeas.sh</strong></td>
+          <td style="text-align: left">Privilege escalation enumeration script.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>GTFObins</strong></td>
+          <td style="text-align: left">Exploitation of <code>nmap</code> to escalate privileges.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recommendations">Recommendations</h2>
+<ul>
+<li><strong>Protect sensitive files</strong>: Avoid exposing paths in <code>robots.txt</code> that lead to critical resources or sensitive files.</li>
+<li><strong>Enforce strong credentials</strong>: Use complex passwords and monitor for brute-force attempts.</li>
+<li><strong>Restrict privileged binaries</strong>: Limit access to binaries like <code>nmap</code> that can be exploited for privilege escalation.</li>
+<li><strong>Update and secure WordPress</strong>: Regularly update WordPress, plugins, and themes, and restrict access to the admin dashboard.</li>
+<li><strong>Implement security audits</strong>: Regularly audit systems with tools like <strong>LINpeas</strong> to uncover misconfigurations or vulnerabilities.</li>
+</ul>
+</div>  
+]]></content:encoded>
+    </item>
     <item>
       <title>Alfred (THM)</title>
       <link>https://gtello.github.io/writeups/alfred/</link>
@@ -27,16 +145,16 @@
 <table>
   <thead>
       <tr>
-          <th>Operating System</th>
-          <th>IP Address</th>
-          <th>Open Ports</th>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows Server</td>
-          <td>10.10.149.26</td>
-          <td>80, 3389, 8080</td>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
       </tr>
   </tbody>
 </table>
@@ -84,26 +202,26 @@
 <table>
   <thead>
       <tr>
-          <th>Tool</th>
-          <th>What it Did</th>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">What it Did</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><strong>nmap</strong></td>
-          <td>Scanned the network and identified open services.</td>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Scanned the network and identified open services.</td>
       </tr>
       <tr>
-          <td><strong>Jenkins</strong></td>
-          <td>Exploited using default credentials to execute commands.</td>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Exploited using default credentials to execute commands.</td>
       </tr>
       <tr>
-          <td><strong>msfvenom/metasploit</strong></td>
-          <td>Generated payloads and escalated privileges with the incognito module.</td>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generated payloads and escalated privileges with the incognito module.</td>
       </tr>
       <tr>
-          <td><strong>certutil</strong></td>
-          <td>Transferred the payload to the target machine.</td>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferred the payload to the target machine.</td>
       </tr>
   </tbody>
 </table>
@@ -136,16 +254,16 @@
 <table>
   <thead>
       <tr>
-          <th>Operating System</th>
-          <th>IP Address</th>
-          <th>Open Ports</th>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Ubuntu 16.04.6</td>
-          <td>10.10.254.53</td>
-          <td>22 (SSH), 80 (HTTP)</td>
+          <td style="text-align: left">Ubuntu 16.04.6</td>
+          <td style="text-align: left">10.10.254.53</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
       </tr>
   </tbody>
 </table>
@@ -177,30 +295,30 @@
 <table>
   <thead>
       <tr>
-          <th>Tool</th>
-          <th>Description</th>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><strong>nmap</strong></td>
-          <td>Network scanning and open port detection.</td>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Network scanning and open port detection.</td>
       </tr>
       <tr>
-          <td><strong>Burp Suite</strong></td>
-          <td>Capturing and analyzing HTTP requests for SQLi.</td>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Capturing and analyzing HTTP requests for SQLi.</td>
       </tr>
       <tr>
-          <td><strong>sqlmap</strong></td>
-          <td>SQLi testing and data extraction from the database.</td>
+          <td style="text-align: left"><strong>sqlmap</strong></td>
+          <td style="text-align: left">SQLi testing and data extraction from the database.</td>
       </tr>
       <tr>
-          <td><strong>John the Ripper</strong></td>
-          <td>Used to crack the user <code>agent47</code> password hash for SSH access.</td>
+          <td style="text-align: left"><strong>John the Ripper</strong></td>
+          <td style="text-align: left">Used to crack the user <code>agent47</code> password hash for SSH access.</td>
       </tr>
       <tr>
-          <td><strong>Exploit CVE-2012-2982</strong></td>
-          <td>Webmin vulnerability enabling root access.</td>
+          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
+          <td style="text-align: left">Webmin vulnerability enabling root access.</td>
       </tr>
   </tbody>
 </table>
@@ -232,16 +350,16 @@
 <table>
   <thead>
       <tr>
-          <th>Operating System</th>
-          <th>IP Address</th>
-          <th>Open Ports</th>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows Server 2008</td>
-          <td>10.10.128.109</td>
-          <td>80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+          <td style="text-align: left">Windows Server 2008</td>
+          <td style="text-align: left">10.10.128.109</td>
+          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
       </tr>
   </tbody>
 </table>
@@ -278,26 +396,26 @@
 <table>
   <thead>
       <tr>
-          <th>Tool</th>
-          <th>Description</th>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>nmap</td>
-          <td>For initial reconnaissance and detection of open ports and services.</td>
+          <td style="text-align: left">nmap</td>
+          <td style="text-align: left">For initial reconnaissance and detection of open ports and services.</td>
       </tr>
       <tr>
-          <td>metasploit</td>
-          <td>To launch the exploit against the Rejetto HTTP server.</td>
+          <td style="text-align: left">metasploit</td>
+          <td style="text-align: left">To launch the exploit against the Rejetto HTTP server.</td>
       </tr>
       <tr>
-          <td>PowerUp.ps1</td>
-          <td>PowerShell script for analyzing privilege configurations on Windows systems.</td>
+          <td style="text-align: left">PowerUp.ps1</td>
+          <td style="text-align: left">PowerShell script for analyzing privilege configurations on Windows systems.</td>
       </tr>
       <tr>
-          <td>msfvenom</td>
-          <td>To generate the reverse shell payload used to obtain administrator permissions.</td>
+          <td style="text-align: left">msfvenom</td>
+          <td style="text-align: left">To generate the reverse shell payload used to obtain administrator permissions.</td>
       </tr>
   </tbody>
 </table>

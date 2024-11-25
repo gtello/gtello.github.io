@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Wordpress on Gabriel Tello</title>
+    <link>https://gtello.github.io/es/tags/wordpress/</link>
+    <description>Recent content in Wordpress on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-EC</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Mon, 25 Nov 2024 10:32:00 +0000</lastBuildDate>
+    <atom:link href="https://gtello.github.io/es/tags/wordpress/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mr. Robot (THM)</title>
+      <link>https://gtello.github.io/es/writeups/mrrobot/</link>
+      <pubDate>Mon, 25 Nov 2024 10:32:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/mrrobot/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/mrrobot&#34;&gt;Mr. Robot&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Este writeup detalla la explotación de la máquina Mr. Robot. Incluye el reconocimiento para descubrir directorios ocultos, fuerza bruta de credenciales para WordPress, ejecución de una reverse shell y escalada de privilegios hasta &lt;code&gt;root&lt;/code&gt;. Se emplearon herramientas como &lt;em&gt;nmap&lt;/em&gt;, &lt;em&gt;wfuzz&lt;/em&gt;, &lt;em&gt;Burp Suite&lt;/em&gt;, &lt;em&gt;Hydra&lt;/em&gt;, &lt;em&gt;WPScan&lt;/em&gt; y &lt;em&gt;LINpeas.sh&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;div class=&#34;alert alert-note&#34;&gt;&#xD;&#xA;  &lt;p class=&#34;alert-title&#34;&gt;&#xD;&#xA;    &lt;span class=&#34;alert-icon alert-note-icon&#34;&gt;&#xD;&#xA;      &lt;svg class=&#34;octicon&#34; viewBox=&#34;0 0 16 16&#34; version=&#34;1.1&#34; width=&#34;16&#34; height=&#34;16&#34; aria-hidden=&#34;true&#34;&gt;&#xD;&#xA;        &lt;path d=&#34;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&#34;&gt;&lt;/path&gt;&#xD;&#xA;      &lt;/svg&gt;&#xD;&#xA;      Note&#xD;&#xA;    &lt;/span&gt;&#xD;&#xA;  &lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/mrrobot">Mr. Robot</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Este writeup detalla la explotación de la máquina Mr. Robot. Incluye el reconocimiento para descubrir directorios ocultos, fuerza bruta de credenciales para WordPress, ejecución de una reverse shell y escalada de privilegios hasta <code>root</code>. Se emplearon herramientas como <em>nmap</em>, <em>wfuzz</em>, <em>Burp Suite</em>, <em>Hydra</em>, <em>WPScan</em> y <em>LINpeas.sh</em>.</p>
+<div class="alert alert-note">
+  <p class="alert-title">
+    <span class="alert-icon alert-note-icon">
+      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+      </svg>
+      Note
+    </span>
+  </p>
+  <p class="alert-text">Este tutorial está basado en una versión modificada de la máquina CTF Mr. Robot, alojada en TryHackMe. Aunque la metodología para rootear esta máquina se alinea con la original, algunos flags y detalles específicos han sido alterados.</p>
+</div>
+
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>El proceso comenzó con un escaneo de red para identificar puertos y servicios abiertos.</p>
+<p><img alt="Resultados de Rustscan" src="/images/posts/mrrobot/image1.png"> <center><b>Resultados de Rustscan</b></center></p>
+<h3 id="resultados-del-reconocimiento">Resultados del Reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Linux</td>
+          <td style="text-align: left">192.168.2.114</td>
+          <td style="text-align: left">80 (HTTP), 443 (HTTPS)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Al visitar el servidor web, la página de inicio hacía referencia al programa de TV <em>Mr. Robot</em>. Se descubrió un directorio oculto <code>/robots</code> usando <strong>wfuzz</strong>, que contenía un archivo de diccionario y el primer flag.</p>
+<p><img alt="Contenido de Robots.txt" src="/images/posts/mrrobot/image4.png"> <center><b>Contenido de /robots</b></center></p>
+<h2 id="explotación">Explotación</h2>
+<p>Con evidencia de que el sistema usaba WordPress como CMS, lanzamos un ataque de fuerza bruta en el portal de inicio de sesión.</p>
+<h3 id="inicio-de-sesión-en-wordpress">Inicio de Sesión en WordPress</h3>
+<p>Las credenciales fueron obtenidas usando <strong>Burp Suite</strong> para capturar la solicitud de inicio de sesión y <strong>Hydra</strong> para realizar fuerza bruta sobre la cuenta de administrador utilizando el archivo de diccionario descubierto.</p>
+<p><img alt="Solicitud capturada en Burp Suite" src="/images/posts/mrrobot/image5.png"> <center><b>Captura de solicitud en Burp Suite</b></center><br>
+<img alt="Ejecución de Hydra" src="/images/posts/mrrobot/image6.png"> <center><b>Fuerza bruta de login con Hydra</b></center></p>
+<p>Con el usuario &ldquo;Angela&rdquo; y la contraseña descubierta, obtuvimos acceso al panel de administración de WordPress. Desde allí, reemplazamos un archivo de plantilla PHP con una reverse shell, permitiendo acceso remoto.</p>
+<h3 id="reverse-shell">Reverse Shell</h3>
+<p>Una vez ejecutada la payload, establecimos una shell como el usuario <code>daemon</code>.</p>
+<p><img alt="Conexión de reverse shell" src="/images/posts/mrrobot/image9.png"> <center><b>Conexión de reverse shell</b></center></p>
+<p>Al explorar el sistema de archivos, encontramos una contraseña cifrada en el directorio <code>/home/robot</code>. Este hash fue descifrado usando <a href="https://crackstation.net/">Crackstation</a>, resultando en la contraseña <code>sayajin23</code>. Con esta contraseña, obtuvimos acceso al usuario <code>robot</code>.</p>
+<h2 id="escalada-de-privilegios">Escalada de Privilegios</h2>
+<p>La escalada de privilegios se logró utilizando <a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LINpeas.sh</a> para identificar configuraciones incorrectas.</p>
+<h3 id="explotación-de-nmap">Explotación de nmap</h3>
+<p>LINpeas resaltó que <code>nmap</code> tenía privilegios elevados. Usando <a href="https://gtfobins.github.io/gtfobins/nmap/">GTFObins</a>, construimos un comando para explotar el modo interactivo de <code>nmap</code> y escalar a root.</p>
+<p><img alt="Escalada de privilegios" src="/images/posts/mrrobot/image14.png"> <center><b>Usando nmap para escalada de privilegios</b></center></p>
+<p>Después de ejecutar los comandos exitosamente, obtuvimos acceso a la máquina como usuario root.</p>
+<h2 id="flags">Flags</h2>
+<p>Se encontraron tres flags durante la explotación:</p>
+<ul>
+<li><strong>Flag 1:</strong> b8a2bd7f70b405df8823bd4442892c6c</li>
+<li><strong>Flag 2:</strong> c6ad356a6d4ab0c2c9d033caadf28469</li>
+<li><strong>Flag 3:</strong> 6c6b1c7089af9c9bb7ac78f06c3c1685</li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>Rustscan</strong></td>
+          <td style="text-align: left">Escaneo rápido de puertos para identificar servicios activos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>wfuzz</strong></td>
+          <td style="text-align: left">Fuerza bruta en directorios para descubrir rutas ocultas.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Intercepción de solicitudes HTTP para análisis y pruebas.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Hydra</strong></td>
+          <td style="text-align: left">Fuerza bruta de inicio de sesión en WordPress.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>WPScan</strong></td>
+          <td style="text-align: left">Enumeración de usuarios y vulnerabilidades en WordPress.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>LINpeas.sh</strong></td>
+          <td style="text-align: left">Script de enumeración para escalada de privilegios.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>GTFObins</strong></td>
+          <td style="text-align: left">Explotación de <code>nmap</code> para escalada de privilegios.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Proteger archivos sensibles</strong>: Evitar exponer rutas críticas en <code>robots.txt</code> que conduzcan a recursos sensibles.</li>
+<li><strong>Implementar contraseñas robustas</strong>: Utilizar contraseñas complejas y monitorizar intentos de fuerza bruta.</li>
+<li><strong>Restringir binarios privilegiados</strong>: Limitar el acceso a binarios como <code>nmap</code> que puedan ser explotados para escalada de privilegios.</li>
+<li><strong>Actualizar y asegurar WordPress</strong>: Mantener WordPress, plugins y temas actualizados, restringiendo el acceso al panel de administración.</li>
+<li><strong>Realizar auditorías de seguridad</strong>: Auditar sistemas regularmente con herramientas como <strong>LINpeas</strong> para identificar y mitigar vulnerabilidades.</li>
+</ul>
+</div>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

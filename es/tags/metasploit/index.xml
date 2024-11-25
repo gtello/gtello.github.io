@@ -16,9 +16,9 @@
       <link>https://gtello.github.io/es/writeups/alfred/</link>
       <pubDate>Fri, 15 Nov 2024 15:30:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
       <guid>https://gtello.github.io/es/writeups/alfred/</guid>
-      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Aquí tienes el writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/alfred&#34;&gt;Alfred&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;Lo primero fue realizar un escaneo de red con &lt;code&gt;nmap&lt;/code&gt; para identificar puertos y servicios abiertos.&lt;/p&gt;</description>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/alfred&#34;&gt;Alfred&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;Lo primero fue realizar un escaneo de red con &lt;code&gt;nmap&lt;/code&gt; para identificar puertos y servicios abiertos.&lt;/p&gt;</description>
       <content:encoded><![CDATA[<div style="text-align: justify;">
-<p>Aquí tienes el writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
 <h2 id="resumen">Resumen</h2>
 <p>Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.</p>
 <h2 id="reconocimiento">Reconocimiento</h2>
@@ -27,16 +27,16 @@
 <table>
   <thead>
       <tr>
-          <th>Sistema Operativo</th>
-          <th>Dirección IP</th>
-          <th>Puertos Abiertos</th>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows Server</td>
-          <td>10.10.149.26</td>
-          <td>80, 3389, 8080</td>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
       </tr>
   </tbody>
 </table>
@@ -44,7 +44,7 @@
 <center><b>Comando nmap y resultados</b></center>
 <p>Los puertos 80 y 8080 fueron analizados en el navegador. En el puerto 8080, encontré un portal de inicio de sesión de Jenkins, una herramienta ampliamente usada para CI/CD.</p>
 <h2 id="explotación">Explotación</h2>
-<p>¡Manos a la obra! Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
+<p>Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
 <p><img alt="Dashboard de Jenkins" src="/images/posts/alfred/image2.png"></p>
 <center><b>Dashboard de Jenkins</b></center>
 <p>En la configuración del proyecto, utilicé la sección &ldquo;Build&rdquo; para ejecutar comandos. Usé este <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1">script</a> de PowerShell para establecer una reverse shell:</p>
@@ -84,26 +84,26 @@
 <table>
   <thead>
       <tr>
-          <th>Herramienta</th>
-          <th>Descripción</th>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><strong>nmap</strong></td>
-          <td>Escaneo de red y detección de servicios abiertos.</td>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de servicios abiertos.</td>
       </tr>
       <tr>
-          <td><strong>Jenkins</strong></td>
-          <td>Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
       </tr>
       <tr>
-          <td><strong>msfvenom/metasploit</strong></td>
-          <td>Generación de payloads y escalación de privilegios con el módulo incognito.</td>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generación de payloads y escalación de privilegios con el módulo incognito.</td>
       </tr>
       <tr>
-          <td><strong>certutil</strong></td>
-          <td>Transferencia del payload a la máquina objetivo.</td>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferencia del payload a la máquina objetivo.</td>
       </tr>
   </tbody>
 </table>
@@ -139,16 +139,16 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <table>
   <thead>
       <tr>
-          <th>Sistema Operativo</th>
-          <th>Dirección IP</th>
-          <th>Puertos Abiertos</th>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows 7 x64 SP 1</td>
-          <td>192.168.1.167</td>
-          <td>135, 139, 445, 49152-49158</td>
+          <td style="text-align: left">Windows 7 x64 SP 1</td>
+          <td style="text-align: left">192.168.1.167</td>
+          <td style="text-align: left">135, 139, 445, 49152-49158</td>
       </tr>
   </tbody>
 </table>
@@ -234,18 +234,18 @@ En este caso, se configuró un script de persistencia con el módulo <code>windo
 <table>
   <thead>
       <tr>
-          <th>Bandera</th>
-          <th>Hash</th>
+          <th style="text-align: left">Bandera</th>
+          <th style="text-align: left">Hash</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>bandera1.txt</td>
-          <td>0ef3b7d488b11e3e800f547a0765da8e</td>
+          <td style="text-align: left">bandera1.txt</td>
+          <td style="text-align: left">0ef3b7d488b11e3e800f547a0765da8e</td>
       </tr>
       <tr>
-          <td>bandera2.txt</td>
-          <td>a63c1c39c0c7fd570053343451667939</td>
+          <td style="text-align: left">bandera2.txt</td>
+          <td style="text-align: left">a63c1c39c0c7fd570053343451667939</td>
       </tr>
   </tbody>
 </table>
@@ -253,30 +253,30 @@ En este caso, se configuró un script de persistencia con el módulo <code>windo
 <table>
   <thead>
       <tr>
-          <th>Herramienta</th>
-          <th>Descripción</th>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Nmap</td>
-          <td>Utilizado para el escaneo inicial del sistema y para identificar puertos y servicios abiertos en el objetivo.</td>
+          <td style="text-align: left">Nmap</td>
+          <td style="text-align: left">Utilizado para el escaneo inicial del sistema y para identificar puertos y servicios abiertos en el objetivo.</td>
       </tr>
       <tr>
-          <td>Metasploit</td>
-          <td>Empleado para explotar la vulnerabilidad EternalBlue (CVE-2017-0144) con un payload de tipo reverse shell.</td>
+          <td style="text-align: left">Metasploit</td>
+          <td style="text-align: left">Empleado para explotar la vulnerabilidad EternalBlue (CVE-2017-0144) con un payload de tipo reverse shell.</td>
       </tr>
       <tr>
-          <td>Mimikatz/kiwi</td>
-          <td>Usado dentro de Meterpreter para la extracción del hash de credenciales del sistema Windows.</td>
+          <td style="text-align: left">Mimikatz/kiwi</td>
+          <td style="text-align: left">Usado dentro de Meterpreter para la extracción del hash de credenciales del sistema Windows.</td>
       </tr>
       <tr>
-          <td>CrackMapExec y PTH</td>
-          <td>Permitió movimiento lateral en la máquina sin necesidad de contraseñas en texto plano, usando solo hashes.</td>
+          <td style="text-align: left">CrackMapExec y PTH</td>
+          <td style="text-align: left">Permitió movimiento lateral en la máquina sin necesidad de contraseñas en texto plano, usando solo hashes.</td>
       </tr>
       <tr>
-          <td>Persistencia con Metasploit</td>
-          <td>Configuración de persistencia mediante módulo windows/local/persistence_service para garantizar acceso continuo.</td>
+          <td style="text-align: left">Persistencia con Metasploit</td>
+          <td style="text-align: left">Configuración de persistencia mediante módulo windows/local/persistence_service para garantizar acceso continuo.</td>
       </tr>
   </tbody>
 </table>

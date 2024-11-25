@@ -16,7 +16,7 @@
 <title>Alfred (THM) | Gabriel Tello</title>
 <meta name="title" content="Alfred (THM)" />
 <meta name="description" content="Writeup de Alfred." />
-<meta name="keywords" content="windows,pentesting,metasploit,red team,tryhackme,writeup," />
+<meta name="keywords" content="windows,pentesting,metasploit,red team,tryhackme,thm,writeup," />
 
 
 
@@ -64,12 +64,12 @@
 <meta itemprop="name" content="Alfred (THM)">
 <meta itemprop="description" content="Writeup de Alfred."><meta itemprop="datePublished" content="2024-11-15T15:30:00+00:00" />
 <meta itemprop="dateModified" content="2024-11-15T15:30:00+00:00" />
-<meta itemprop="wordCount" content="440">
+<meta itemprop="wordCount" content="433">
 
 <meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu630580420990700532.webp"/>
 
 
-<meta itemprop="keywords" content="windows,pentesting,metasploit,red team,tryhackme,writeup," />
+<meta itemprop="keywords" content="windows,pentesting,metasploit,red team,tryhackme,thm,writeup," />
 
 <meta name="referrer" content="no-referrer-when-downgrade" />
 
@@ -169,7 +169,7 @@
 
   <content class="content">
     <div style="text-align: justify;">
-<p>Aquí tienes el writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/alfred">Alfred</a> en TryHackMe.</p>
 <h2 id="resumen">Resumen</h2>
 <p>Vamos a ver cómo explotar una máquina Windows con un servicio Jenkins expuesto. Usando credenciales por defecto, logramos ejecutar comandos remotos a través de la funcionalidad de construcción de Jenkins y obtenimos un acceso inicial. A partir de ahí, escalamos privilegios utilizando técnicas de suplantación de tokens, alcanzando finalmente control administrativo total del sistema.</p>
 <h2 id="reconocimiento">Reconocimiento</h2>
@@ -178,16 +178,16 @@
 <table>
   <thead>
       <tr>
-          <th>Sistema Operativo</th>
-          <th>Dirección IP</th>
-          <th>Puertos Abiertos</th>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td>Windows Server</td>
-          <td>10.10.149.26</td>
-          <td>80, 3389, 8080</td>
+          <td style="text-align: left">Windows Server</td>
+          <td style="text-align: left">10.10.149.26</td>
+          <td style="text-align: left">80, 3389, 8080</td>
       </tr>
   </tbody>
 </table>
@@ -195,7 +195,7 @@
 <center><b>Comando nmap y resultados</b></center>
 <p>Los puertos 80 y 8080 fueron analizados en el navegador. En el puerto 8080, encontré un portal de inicio de sesión de Jenkins, una herramienta ampliamente usada para CI/CD.</p>
 <h2 id="explotación">Explotación</h2>
-<p>¡Manos a la obra! Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
+<p>Probé credenciales por defecto (<code>admin:admin</code>) en el portal de Jenkins, y sorpresa: funcionaron. Esto me dio acceso al dashboard.</p>
 <p><img alt="Dashboard de Jenkins" src="/images/posts/alfred/image2.png"></p>
 <center><b>Dashboard de Jenkins</b></center>
 <p>En la configuración del proyecto, utilicé la sección &ldquo;Build&rdquo; para ejecutar comandos. Usé este <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1">script</a> de PowerShell para establecer una reverse shell:</p>
@@ -235,26 +235,26 @@
 <table>
   <thead>
       <tr>
-          <th>Herramienta</th>
-          <th>Descripción</th>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><strong>nmap</strong></td>
-          <td>Escaneo de red y detección de servicios abiertos.</td>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Escaneo de red y detección de servicios abiertos.</td>
       </tr>
       <tr>
-          <td><strong>Jenkins</strong></td>
-          <td>Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
+          <td style="text-align: left"><strong>Jenkins</strong></td>
+          <td style="text-align: left">Plataforma explotada con credenciales por defecto para ejecutar comandos.</td>
       </tr>
       <tr>
-          <td><strong>msfvenom/metasploit</strong></td>
-          <td>Generación de payloads y escalación de privilegios con el módulo incognito.</td>
+          <td style="text-align: left"><strong>msfvenom/metasploit</strong></td>
+          <td style="text-align: left">Generación de payloads y escalación de privilegios con el módulo incognito.</td>
       </tr>
       <tr>
-          <td><strong>certutil</strong></td>
-          <td>Transferencia del payload a la máquina objetivo.</td>
+          <td style="text-align: left"><strong>certutil</strong></td>
+          <td style="text-align: left">Transferencia del payload a la máquina objetivo.</td>
       </tr>
   </tbody>
 </table>
@@ -281,6 +281,8 @@
         <a class="blog-tags" href="https://gtello.github.io/es/tags/red-team/">#Red Team</a>&nbsp;&nbsp;
       
         <a class="blog-tags" href="https://gtello.github.io/es/tags/tryhackme/">#Tryhackme</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/thm/">#Thm</a>&nbsp;&nbsp;
       
         <a class="blog-tags" href="https://gtello.github.io/es/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
       

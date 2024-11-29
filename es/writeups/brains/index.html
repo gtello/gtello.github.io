@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es-EC">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="https://gtello.github.io/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://gtello.github.io/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://gtello.github.io/images/favicon-16x16.png" />
+<link rel="manifest" href="https://gtello.github.io/images/site.webmanifest" />
+
+<link rel="shortcut icon" href="https://gtello.github.io/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#4385BE" />
+
+
+<title>Brains (THM) | Gabriel Tello</title>
+<meta name="title" content="Brains (THM)" />
+<meta name="description" content="Writeup de Brains en TryHackMe." />
+<meta name="keywords" content="linux,pentesting,red team,blue team,purple team,tryhackme,thm,metasploit,writeup," />
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Brains (THM)" />
+<meta property="og:description" content="Writeup de Brains en TryHackMe." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gtello.github.io/es/writeups/brains/" />
+
+<meta property="og:image" content="https://gtello.github.io/images/social_card_bg_hu16542963253174871255.webp"/><meta property="article:section" content="writeups" />
+<meta property="article:published_time" content="2024-11-29T14:50:00+00:00" />
+<meta property="article:modified_time" content="2024-11-29T14:50:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="fb:admins" content="0000000000" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://gtello.github.io/images/social_card_bg_hu16542963253174871255.webp"/>
+<meta name="twitter:title" content="Brains (THM)"/>
+<meta name="twitter:description" content="Writeup de Brains en TryHackMe."/>
+<meta name="twitter:site" content="@example"/>
+
+
+
+<meta itemprop="name" content="Brains (THM)">
+<meta itemprop="description" content="Writeup de Brains en TryHackMe."><meta itemprop="datePublished" content="2024-11-29T14:50:00+00:00" />
+<meta itemprop="dateModified" content="2024-11-29T14:50:00+00:00" />
+<meta itemprop="wordCount" content="522">
+
+<meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu16542963253174871255.webp"/>
+
+
+<meta itemprop="keywords" content="linux,pentesting,red team,blue team,purple team,tryhackme,thm,metasploit,writeup," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  
+  <link href="/style.min.css" rel="stylesheet">
+
+  
+    
+    <link href="/syntax.min.css" rel="stylesheet">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
+    <link href="/toc.min.css" rel="stylesheet">
+  
+
+  
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-94K1F50W02"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-94K1F50W02');
+</script>
+
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "p3b2egz3xe");
+</script></head>
+
+<body>
+  <header><a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+
+<a href="/es/" class="title"><h1>Gabriel Tello</h1></a>
+<nav>
+  <a href="/es/">Inicio</a>
+
+  <a href="/es/posts/">Publicaciones</a>
+
+  <a href="/es/projects/">Proyectos</a>
+
+  <a href="/es/writeups/">Reportes</a>
+
+<a href='https://gtello.github.io/index.xml'>RSS</a>
+
+
+
+
+  
+
+
+
+
+  
+    <a href="https://gtello.github.io/writeups/brains/">English</a>
+  
+
+</nav>
+</header>
+  <main id="main-content">
+
+<h1>Brains (THM)</h1>
+<p class="byline" style="color: gray; font-size: 0.9rem">
+  Fecha de publicación:
+  <time datetime='29/11/2024, 14:50' pubdate>
+    29/11/2024, 14:50
+  </time>
+  
+  
+  |
+  <span>600</span> 
+  palabras
+  |
+  <span>3</span>
+  <span>mins</span>
+</p>
+
+
+<article class="article">
+  
+  <aside class="sidebar">
+    <div class="toc-container">
+      <div style="font-weight: bold; margin-bottom: 0.4rem">Tabla de Contenidos</div>
+      <div class="toc"></div>
+    </div>
+  </aside>
+  
+
+  <content class="content">
+    <div style="text-align: justify;">  
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/brains">Brains</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En la máquina <strong>Brains</strong>, exploramos una vulnerabilidad en TeamCity (<a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>), asumiendo roles tanto del <strong><span style="color: red;">Red Team</span></strong> como del <strong>Blue Team</strong>. Como parte del Red Team, explotamos la vulnerabilidad para lograr ejecución remota de código (RCE) y capturar la bandera. Luego, cambiamos al enfoque del Blue Team, utilizando Splunk para analizar logs e investigar las acciones del atacante que había explotado la misma vulnerabilidad para comprometer la máquina. Este enfoque dual nos brinda experiencia práctica en técnicas de seguridad ofensiva y defensiva.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Empecé con un escaneo de red con nmap para identificar puertos y servicios abiertos:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">nmap -A -T4 -p- 10.10.63.31</span></span></code></pre></div><h3 id="resultados-del-reconocimiento">Resultados del Reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu</td>
+          <td style="text-align: left">10.10.63.31</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP), 50000 (<a href="https://www.jetbrains.com/teamcity/">TeamCity</a>)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Al visitar el servidor web, la página de inicio muestra que está en mantenimiento:</p>
+<p><img alt="Página en mantenimiento" src="/images/posts/brains/image1.png"> <center><b>Página en mantenimiento</b></center></p>
+<p>En el puerto 50000, se encuentra la página de login de TeamCity, e inmediatamente al ver la versión 2023.11.4 recuerdo que esta es vulnerable al exploit <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</p>
+<p><img alt="Login de TeamCity" src="/images/posts/brains/image2.png"> <center><b>Login de TeamCity</b></center></p>
+<h2 id="explotación">Explotación</h2>
+<p>Para nuestra facilidad, hay un script listo en <a href="https://www.rapid7.com/blog/post/2024/03/04/etr-cve-2024-27198-and-cve-2024-27199-jetbrains-teamcity-multiple-authentication-bypass-vulnerabilities-fixed/">metasploit</a> que automatiza el exploit:</p>
+<p><img alt="Ejecución de exploit en metasploit" src="/images/posts/brains/image3.png"> <center><b>Ejecución de exploit en metasploit</b></center></p>
+<p>Una vez dentro, agarramos la bandera:</p>
+<p><img alt="Bandera" src="/images/posts/brains/image4.png"> <center><b>Bandera</b></center></p>
+<h2 id="análisis-de-logs">Análisis de Logs</h2>
+<p>Ahora nos movemos al <strong>Blue Team</strong>, en esta segunda parte, nos metemos en Splunk para analizar logs y descubrir que alguien ya había comprometido esta máquina y podemos investigar el caso.</p>
+<h3 id="identificando-al-usuario-creado">Identificando al Usuario Creado</h3>
+<p>Primero nos solicitan identificar el nombre de usuario creado en el servidor tras la explotación. Para encontrar esta información, podemos revisar los registros relacionados con la actividad de usuarios en el archivo <code>/var/log/auth.log</code>.</p>
+<p><img alt="Usuario creado" src="/images/posts/brains/image5.png"> <center><b>Usuario creado</b></center></p>
+<p>Una vez conseguido el lapso de tiempo en el que el atacante entró a la máquina se nos hará más fácil responder las siguientes preguntas.</p>
+<h3 id="encontrando-el-paquete-malicioso">Encontrando el Paquete Malicioso</h3>
+<p>El siguiente paso es determinar si el atacante instaló algún paquete malicioso en el servidor. Para ello, aprovechamos el <a href="https://docs.splunk.com/Splexicon:Sourcetype">sourcetype</a> <code>packages</code> en Splunk, el cual clasifica y estructura los registros de la gestión de paquetes en el sistema. Este sourcetype incluye información detallada sobre paquetes instalados, actualizados o eliminados, permitiéndonos rastrear cualquier actividad sospechosa.</p>
+<p><img alt="Paquete malicioso instalado" src="/images/posts/brains/image6.png"> <center><b>Paquete malicioso instalado</b></center></p>
+<h3 id="identificando-el-plugin-instalado">Identificando el Plugin Instalado</h3>
+<p>Para esto, utilizamos un sencillo query en Splunk con el término clave <code>*plugin*</code> combinado con el lapso de tiempo previamente definido. Esta consulta nos permitió encontrar rápidamente el plugin malicioso instalado en el sistema.</p>
+<p><img alt="Plugin malicioso instalado" src="/images/posts/brains/image7.png"> <center><b>Plugin malicioso instalado</b></center></p>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Herramienta de escaneo de red utilizada para identificar puertos y servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Metasploit</strong></td>
+          <td style="text-align: left">Utilizado para automatizar la explotación de la vulnerabilidad <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Splunk</strong></td>
+          <td style="text-align: left">Plataforma utilizada para analizar logs del sistema y rastrear actividades sospechosas.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<p>Para mitigar riesgos similares a los explorados en esta máquina, se recomienda aplicar actualizaciones de seguridad tan pronto como estén disponibles, especialmente en plataformas críticas como TeamCity. Implementar controles de acceso estrictos y limitar los servicios expuestos al Internet. Además, se deben monitorear constantemente los logs del sistema mediante herramientas como Splunk para detectar actividades sospechosas, como creación de usuarios o instalación de paquetes maliciosos. Finalmente, realizar pruebas periódicas de penetración ayuda a identificar vulnerabilidades antes de que puedan ser explotadas por un atacante.</p>
+</div>
+    
+    <p class="tags-section">
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/linux/">#Linux</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/pentesting/">#Pentesting</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/red-team/">#Red Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/blue-team/">#Blue Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/purple-team/">#Purple Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/tryhackme/">#Tryhackme</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/thm/">#Thm</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/metasploit/">#Metasploit</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/es/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+      
+    </p>
+  </content>
+</article>
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="gtello/gtello.github.io"
+        data-repo-id="R_kgDONAQNkQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDONAQNkc4CjaoW"
+        data-mapping='og:title'
+        data-strict="0"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position='top'
+        data-theme='preferred_color_scheme'
+        data-lang='en'
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <p>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reponder%20a%20"Brains%20%28THM%29"'>
+      Responder a este post por correo ↪
+    </a>
+  </p>
+
+
+
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  cornerOffset: 32,
+  diameter: 48,
+  backgroundColor: "var(--flexoki-dark-blue)",
+  textColor: "var(--flexoki-50)",
+  showWhenScrollTopIs: 512, 
+})</script>
+
+  
+  <script src="/js/copy-code-button.min.js"></script>
+
+
+
+  </main>
+  <footer><small>
+  <a href="https://github.com/gtello">Gabriel Tello</a> © 2024 | Hecho con <a href="https://github.com/Pagliacii/hugo-bearberry">Bear Berry</a>
+</small>
+</footer>
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
+    
+    <script src="/js/toc.min.js"></script>
+  
+
+    
+</body>
+
+</html>

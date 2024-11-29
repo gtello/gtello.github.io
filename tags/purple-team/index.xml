@@ -9,8 +9,91 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Wed, 13 Nov 2024 19:10:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 29 Nov 2024 14:20:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/tags/purple-team/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Brains (THM)</title>
+      <link>https://gtello.github.io/writeups/brains/</link>
+      <pubDate>Fri, 29 Nov 2024 14:20:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/writeups/brains/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup for the room &lt;a href=&#34;https://tryhackme.com/r/room/brains&#34;&gt;Brains&lt;/a&gt; on TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;&#xA;&lt;p&gt;On the &lt;strong&gt;Brains&lt;/strong&gt; room, we explored a vulnerability in TeamCity (&lt;a href=&#34;https://nvd.nist.gov/vuln/detail/CVE-2024-27198&#34;&gt;CVE-2024-27198&lt;/a&gt;), assuming roles as both the &lt;strong&gt;&lt;span style=&#34;color: red;&#34;&gt;Red Team&lt;/span&gt;&lt;/strong&gt; and the &lt;strong&gt;Blue Team&lt;/strong&gt;. As part of the Red Team, we exploited the vulnerability to achieve remote code execution (RCE) and capture the flag. Then, we switched to the Blue Team&amp;rsquo;s perspective, using Splunk to analyze logs and investigate the attacker’s actions, who had exploited the same vulnerability to compromise the system. This dual approach provided practical experience in both offensive and defensive security techniques.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup for the room <a href="https://tryhackme.com/r/room/brains">Brains</a> on TryHackMe.</p>
+<h2 id="summary">Summary</h2>
+<p>On the <strong>Brains</strong> room, we explored a vulnerability in TeamCity (<a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>), assuming roles as both the <strong><span style="color: red;">Red Team</span></strong> and the <strong>Blue Team</strong>. As part of the Red Team, we exploited the vulnerability to achieve remote code execution (RCE) and capture the flag. Then, we switched to the Blue Team&rsquo;s perspective, using Splunk to analyze logs and investigate the attacker’s actions, who had exploited the same vulnerability to compromise the system. This dual approach provided practical experience in both offensive and defensive security techniques.</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>We started with a network scan using nmap to identify open ports and services:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">nmap -A -T4 -p- 10.10.63.31</span></span></code></pre></div><h3 id="reconnaissance-results">Reconnaissance Results</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Operating System</th>
+          <th style="text-align: left">IP Address</th>
+          <th style="text-align: left">Open Ports</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu</td>
+          <td style="text-align: left">10.10.63.31</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP), 50000 (<a href="https://www.jetbrains.com/teamcity/">TeamCity</a>)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Visiting the web server showed a maintenance page:</p>
+<p><img alt="Maintenance Page" src="/images/posts/brains/image1.png"> <center><b>Maintenance Page</b></center></p>
+<p>On port 50000, we found the TeamCity login page. Upon noticing the version 2023.11.4, I remembered it was vulnerable to the exploit <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</p>
+<p><img alt="TeamCity Login" src="/images/posts/brains/image2.png"> <center><b>TeamCity Login</b></center></p>
+<h2 id="exploitation">Exploitation</h2>
+<p>For our convenience, there is a ready-made script in <a href="https://www.rapid7.com/blog/post/2024/03/04/etr-cve-2024-27198-and-cve-2024-27199-jetbrains-teamcity-multiple-authentication-bypass-vulnerabilities-fixed/">Metasploit</a> that automates the exploit:</p>
+<p><img alt="Exploit Execution in Metasploit" src="/images/posts/brains/image3.png"> <center><b>Exploit Execution in Metasploit</b></center></p>
+<p>Once inside, we captured the flag:</p>
+<p><img alt="Flag" src="/images/posts/brains/image4.png"> <center><b>Flag</b></center></p>
+<h2 id="log-analysis">Log Analysis</h2>
+<p>We then switched to the <strong>Blue Team</strong> role. In this second part, we used Splunk to analyze logs and discovered that someone had already compromised this system. Our task was to investigate the case further.</p>
+<h3 id="identifying-the-created-user">Identifying the Created User</h3>
+<p>The first task was to identify the username created on the server after exploitation. To find this information, we reviewed user activity logs in the <code>/var/log/auth.log</code> file.</p>
+<p><img alt="Created User" src="/images/posts/brains/image5.png"> <center><b>Created User</b></center></p>
+<p>After determining the time window during which the attacker accessed the server, it became easier to answer the questions that follow.</p>
+<h3 id="finding-the-malicious-package">Finding the Malicious Package</h3>
+<p>The next step was to determine whether the attacker had installed any malicious packages on the server. To do this, we used the <a href="https://docs.splunk.com/Splexicon:Sourcetype">sourcetype</a> <code>packages</code> in Splunk, which classifies and organizes package management logs in the system. This sourcetype includes detailed information about installed, updated, or removed packages, allowing us to trace any suspicious activity.</p>
+<p><img alt="Malicious Package Installed" src="/images/posts/brains/image6.png"> <center><b>Malicious Package Installed</b></center></p>
+<h3 id="identifying-the-installed-plugin">Identifying the Installed Plugin</h3>
+<p>Using a simple query in Splunk with the keyword <code>*plugin*</code> combined with the previously identified time window, we quickly located the malicious plugin installed on the system.</p>
+<p><img alt="Malicious Plugin Installed" src="/images/posts/brains/image7.png"> <center><b>Malicious Plugin Installed</b></center></p>
+<h2 id="tools-used">Tools Used</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Tool</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Network scanning tool used to identify open ports and services.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Metasploit</strong></td>
+          <td style="text-align: left">Used to automate the exploitation of the vulnerability <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Splunk</strong></td>
+          <td style="text-align: left">Platform used to analyze system logs and trace suspicious activities.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recommendations">Recommendations</h2>
+<p>To mitigate similar risks, it is essential to apply security updates as soon as they are available, especially for critical platforms like TeamCity. Implement strict access controls and limit publicly exposed services. Regularly monitor system logs with tools like Splunk to detect suspicious activities, such as user creation or malicious package installation. Finally, conduct periodic penetration testing to identify vulnerabilities before attackers can exploit them.</p>
+</div>
+]]></content:encoded>
+    </item>
     <item>
       <title>Implementing Wazuh (SIEM)</title>
       <link>https://gtello.github.io/projects/wazuh/</link>

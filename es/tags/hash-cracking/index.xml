@@ -120,7 +120,7 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <p>Se realizó un escaneo de red utilizando la herramienta nmap para identificar puertos y servicios abiertos en la máquina.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image1.png" alt="Resultado nmap" />
-</div>
+</div><br>
 <center><em>Figura 1:</em> Resultado nmap</center>
 <h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
 <table>
@@ -143,70 +143,70 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <p>El escaneo de nmap mostró que el servicio FTP en el puerto 21 permitía un inicio de sesión anónimo, por lo que se realizó la prueba.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image2.png" alt="inicio sesion ftp" />
-</div>
+</div><br>
 <center><em>Figura 2:</em> Inicio de sesión FTP como usuario anónimo</center>
 <p>La conexión a FTP se encontró abierta para el usuario anonymous, lo que permitió acceder a una nota dejada en el servidor.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image3.png" alt="nota desarrollador" />
-</div>
+</div><br>
 <center><em>Figura 3:</em> Nota del desarrollador</center>
 <p>Se pudo observar que el desarrollador dejó una nota en el servidor FTP, en donde se mencionó que tuvo que recurrir a usar una sentencia SQL para la creación de un nuevo usuario para el sitio web de la academia. El valor en el campo <code>password</code> es un hash MD5, se procedió a crackear el hash en hashcat.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image4.png" alt="resultado hashcat 1" />
     <img src="/images/posts/academy/image4_1.png" alt="resultado hashcat 2" />
-</div>
+</div><br>
 <center><em>Figura 4:</em> Resultado hashcat</center>
 <p>El crackeo del hash fue exitoso, y se determinó que la contraseña del usuario <code>HackerMentor</code> es <code>junior01</code>. Para proceder, se empezó a analizar el puerto 80 abierto que sugería que había una página web sirviendo contenido desde la máquina.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image5.png" alt="apache web server" />
-</div>
+</div><br>
 <center><em>Figura 5:</em> Servicio de Apache Web Server</center>
 <p>Se encontró la página web por defecto de Apache, lo que nos confirma que esta máquina está alojando un servicio web. Se procedió a hacer fuerza bruta en los directorios web.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image6.png" alt="wfuzz" />
-</div>
+</div><br>
 <center><em>Figura 6:</em> Fuerza bruta en directorios web con wfuzz</center>
 <p>Se descubrieron los directorios web, uno de <code>/phpmyadmin</code> y un directorio <code>/monkey</code>.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image7.png" alt="portal de academy" />
-</div>
+</div><br>
 <center><em>Figura 7:</em> Portal de inicio de sesión de Academy</center>
 <p>Se utilizaron las credenciales descubiertas anteriormente, y se consiguió iniciar sesión dentro del portal de Monkey. Se procedió a revisar detenidamente esta página web y se encontró un apartado de inscripción de estudiantes, el cual permitía hacer subida de imágenes. Se probó un ataque llamado <a href="https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload">subida de archivos no restringida</a> para de esta manera intentar ejecutar código PHP en el servidor web y conseguir un reverse shell.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image8.png" alt="código php" />
-</div>
+</div><br>
 <center><em>Figura 8:</em> Código para reverse shell en PHP</center>
 <p>Se subió este archivo .php al servidor y como previamente se hizo una prueba subiendo un archivo de imagen, se descubrió que la ruta donde quedan alojadas las imágenes es <code>http://192.168.138.128/monkey/studentphoto/imagen.jpg</code>. Una vez subida la imagen se ejecutó el código y se abrió una conexión con netcat en el puerto 1234.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image9.png" alt="conexión reverse shell" />
-</div>
+</div><br>
 <center><em>Figura 9:</em> Conexión de tipo reverse shell establecida</center>
 <p>El exploit funcionó correctamente y se consiguió acceso al servidor a través del usuario www-data, para hacer escalación de privilegios, se utilizó el script <a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LINpeas.sh</a>. Para realizar la transferencia del archivo hacia el servidor, se creó un servidor HTTP básico con Python con el comando python3 -m http.server 80 para descargar el archivo desde el servidor. Se ejecutó el script para descubrir vías para escalación de permisos y se hicieron los siguientes hallazgos.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image10.png" alt="contraseña mysql" />
-</div>
+</div><br>
 <center><em>Figura 10:</em> Contraseña en texto plano de base de datos MySQL</center>
 <p>Una vez encontrada la contraseña se intentó usar en conjunto con el usuario ya conocido dentro del portal web de la academia para conectarse a ese usuario mediante SSH.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image11.png" alt="ssh session" />
-</div>
+</div><br>
 <center><em>Figura 11:</em> Conexión por SSH al usuario hackermentor</center>
 <p>Se encontró una bandera y un script en bash llamado backup.sh que hace un respaldo a los archivos del sitio web de la academia. Se usó el comando <code>ls -l</code> y se nota que esta script se ejecuta a través del usuario administrador, revisando con <code>crontab</code> y <code>systemd</code> no se pudo determinar si este script se encuentra automatizado, para confirmación se utilizó el programa <a href="https://github.com/DominicBreuker/pspy">pspy</a>, que sirve para monitorear procesos en Linux sin permisos root.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image12.png" alt="monitoreo de procesos" />
-</div>
+</div><br>
 <center><em>Figura 12:</em> Monitoreo de procesos con pspy mostrando la ejecución del script</center>
 <p>Se pudo observar que el script está siendo ejecutado como usuario root. Debido a que el usuario <code>hackermentor</code> tiene permisos para editar este archivo, se pudo modificar este script para hacer que se ejecute un reverse shell, y ya que este script se ejecuta como usuario root, se obtuvo conexión a la máquina como usuario administrador.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image13.png" alt="backup.sh modificado" />
-</div>
+</div><br>
 <center><em>Figura 13:</em> backup.sh modificado</center>
 <pre>
 
 </pre>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image14.png" alt="conexión a root" />
-</div>
+</div><br>
 <center><em>Figura 14:</em> Conexión a usuario root</center>
 <h2 id="herramientas-utilizadas">Herramientas utilizadas</h2>
 <table>

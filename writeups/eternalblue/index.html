@@ -173,7 +173,7 @@ This is a step-by-step guide presented in a professional report format about a p
 <p>A network scan was performed using the nmap tool to identify open ports and services on the machine.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image1.png" alt="nmap command" />
-</div>
+</div><br>
 <center><em>Figure 1:</em> Nmap command and results</center>
 <h3 id="reconnaissance-results">Reconnaissance Results</h3>
 <table>
@@ -196,79 +196,79 @@ This is a step-by-step guide presented in a professional report format about a p
 <p>The SMB service running on port 445 on a Windows 7 machine indicates a potential vulnerability to the EternalBlue exploit. An additional scan with an nmap script revealed that the system was indeed vulnerable to CVE-2017-0144 (EternalBlue).</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image2.png" alt="nmap confirmation" />
-</div>
+</div><br>
 <center><em>Figure 2:</em> EternalBlue vulnerability confirmation</center>
 <h2 id="exploitation">Exploitation</h2>
 <p>The Metasploit framework was used to exploit the vulnerability. The EternalBlue module was selected and configured.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image3.png" alt="exploit configuration" />
-</div>
+</div><br>
 <center><em>Figure 3:</em> Exploit configuration</center>
 <p>A reverse shell payload was configured, allowing a remote connection with full system control. The exploit provided SYSTEM privileges, so no additional elevation was needed.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image4.png" alt="exploit execution" />
-</div>
+</div><br>
 <center><em>Figure 4:</em> Exploit execution results</center>
 <h2 id="post-exploitation">Post-Exploitation</h2>
 <p>Once the meterpreter session was established, post-exploitation activities were carried out.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image5.png" alt="user enumeration" />
-</div>
+</div><br>
 <center><em>Figure 5:</em> User enumeration</center>
 <h3 id="credential-extraction">Credential Extraction</h3>
 <p>The Mimikatz tool was used through the kiwi module to extract credentials such as passwords and hashes from the Windows operating system.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image6.png" alt="mimikatz execution" />
-</div>
+</div><br>
 <center><em>Figure 6:</em> Mimikatz execution</center>
 <p>The SAM (Security Account Manager) file stores password hashes for local users on a Windows system. Using the <code>kiwi_cmd lsadump::sam</code> command in meterpreter, the SAM file containing the NTLM hashes of local users&rsquo; passwords was extracted.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image7.png" alt="local user hash dump" />
-</div>
+</div><br>
 <center><em>Figure 7:</em> Local user hash dump</center>
 <h3 id="using-encrypted-credentials">Using Encrypted Credentials</h3>
 <p>Once the password hashes were obtained, the Pass The Hash (PTH) technique was used to access other system resources without needing to know the plaintext passwords. This method allows authentication and lateral movement between Windows systems using only the password hash.<br>
 The <code>crackmapexec</code> tool was used to remotely authenticate to other systems or services on the network using a user&rsquo;s hash.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image8.png" alt="crackmapexec execution" />
-</div>
+</div><br>
 <center><em>Figure 8:</em> CrackMapExec execution</center>
 <h3 id="persistence">Persistence</h3>
 <p>Persistence allows maintaining access to a compromised system even if it is restarted, enabling reconnection in the future without having to repeat the initial exploitation process.<br>
 In this case, a persistence script was configured using the <code>windows/local/persistence_service</code> module, which generates and loads an executable on the remote host and then turns it into a persistent service.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image9.png" alt="persistence execution" />
-</div>
+</div><br>
 <center><em>Figure 9:</em> Persistence service execution</center>
 <p>When this module is executed, meterpreter installs a service on the compromised system that establishes an outbound reverse shell connection every time the system is restarted. This means that even if the attacker loses the initial connection, they can regain access without re-exploiting the system, as long as the system is powered on and the attacker is listening on the configured port.</p>
 <h3 id="persistence-check">Persistence Check</h3>
 <p>To verify that persistence was successfully executed, the open meterpreter sessions were closed.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image10.png" alt="session closure" />
-</div>
+</div><br>
 <center><em>Figure 10:</em> Session closure</center>
 <p>A resource script was created to automate repetitive tasks in Metasploit, making it easier to reconnect to the compromised machine by simply running the script.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image11.png" alt="resource script for metasploit" />
-</div>
+</div><br>
 <center><em>Figure 11:</em> Resource script for Metasploit</center>
 <p>Once the script was executed, the payload and module were automatically configured, leading to a reconnection to the machine, confirming that persistence worked correctly.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image12.png" alt="resource script execution" />
-</div>
+</div><br>
 <center><em>Figure 12:</em> Resource script execution</center>
 <h3 id="persistence-cleanup">Persistence Cleanup</h3>
 <p>To clean up the attacked system, the created service named lsass1 was closed and deleted using <code>sc.exe</code> commands, ensuring the removal of the persistence service from the system. Additionally, <code>taskkill.exe</code> was used to forcibly terminate the associated process <code>sdvj.exe</code>, which was linked to the persistence payload.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image13.png" alt="persistence cleanup" />
-</div>
+</div><br>
 <center><em>Figure 13:</em> Persistence cleanup</center>
 <p>After completing these steps, the Meterpreter session was securely closed, confirming the termination of the connection. This ensured that all artifacts of the persistence mechanism were removed, leaving no unauthorized access points on the system.</p>
 <h2 id="flags">Flags</h2>
 <p>A search for flags was carried out using the <code>search</code> command in meterpreter, and the <code>type</code> command was used to display their contents.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image14.png" alt="flags found" />
-</div>
+</div><br>
 <center><em>Figure 14:</em> Flags found</center>
 <p>Thus, the two flags were found, which are:</p>
 <table>

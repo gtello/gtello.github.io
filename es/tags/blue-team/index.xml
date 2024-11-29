@@ -9,8 +9,90 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Wed, 13 Nov 2024 19:10:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 29 Nov 2024 14:50:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/es/tags/blue-team/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Brains (THM)</title>
+      <link>https://gtello.github.io/es/writeups/brains/</link>
+      <pubDate>Fri, 29 Nov 2024 14:50:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/brains/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/brains&#34;&gt;Brains&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;En la máquina &lt;strong&gt;Brains&lt;/strong&gt;, exploramos una vulnerabilidad en TeamCity (&lt;a href=&#34;https://nvd.nist.gov/vuln/detail/CVE-2024-27198&#34;&gt;CVE-2024-27198&lt;/a&gt;), asumiendo roles tanto del &lt;strong&gt;&lt;span style=&#34;color: red;&#34;&gt;Red Team&lt;/span&gt;&lt;/strong&gt; como del &lt;strong&gt;Blue Team&lt;/strong&gt;. Como parte del Red Team, explotamos la vulnerabilidad para lograr ejecución remota de código (RCE) y capturar la bandera. Luego, cambiamos al enfoque del Blue Team, utilizando Splunk para analizar logs e investigar las acciones del atacante que había explotado la misma vulnerabilidad para comprometer la máquina. Este enfoque dual nos brinda experiencia práctica en técnicas de seguridad ofensiva y defensiva.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/brains">Brains</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En la máquina <strong>Brains</strong>, exploramos una vulnerabilidad en TeamCity (<a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>), asumiendo roles tanto del <strong><span style="color: red;">Red Team</span></strong> como del <strong>Blue Team</strong>. Como parte del Red Team, explotamos la vulnerabilidad para lograr ejecución remota de código (RCE) y capturar la bandera. Luego, cambiamos al enfoque del Blue Team, utilizando Splunk para analizar logs e investigar las acciones del atacante que había explotado la misma vulnerabilidad para comprometer la máquina. Este enfoque dual nos brinda experiencia práctica en técnicas de seguridad ofensiva y defensiva.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Empecé con un escaneo de red con nmap para identificar puertos y servicios abiertos:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">nmap -A -T4 -p- 10.10.63.31</span></span></code></pre></div><h3 id="resultados-del-reconocimiento">Resultados del Reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu</td>
+          <td style="text-align: left">10.10.63.31</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP), 50000 (<a href="https://www.jetbrains.com/teamcity/">TeamCity</a>)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Al visitar el servidor web, la página de inicio muestra que está en mantenimiento:</p>
+<p><img alt="Página en mantenimiento" src="/images/posts/brains/image1.png"> <center><b>Página en mantenimiento</b></center></p>
+<p>En el puerto 50000, se encuentra la página de login de TeamCity, e inmediatamente al ver la versión 2023.11.4 recuerdo que esta es vulnerable al exploit <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</p>
+<p><img alt="Login de TeamCity" src="/images/posts/brains/image2.png"> <center><b>Login de TeamCity</b></center></p>
+<h2 id="explotación">Explotación</h2>
+<p>Para nuestra facilidad, hay un script listo en <a href="https://www.rapid7.com/blog/post/2024/03/04/etr-cve-2024-27198-and-cve-2024-27199-jetbrains-teamcity-multiple-authentication-bypass-vulnerabilities-fixed/">metasploit</a> que automatiza el exploit:</p>
+<p><img alt="Ejecución de exploit en metasploit" src="/images/posts/brains/image3.png"> <center><b>Ejecución de exploit en metasploit</b></center></p>
+<p>Una vez dentro, agarramos la bandera:</p>
+<p><img alt="Bandera" src="/images/posts/brains/image4.png"> <center><b>Bandera</b></center></p>
+<h2 id="análisis-de-logs">Análisis de Logs</h2>
+<p>Ahora nos movemos al <strong>Blue Team</strong>, en esta segunda parte, nos metemos en Splunk para analizar logs y descubrir que alguien ya había comprometido esta máquina y podemos investigar el caso.</p>
+<h3 id="identificando-al-usuario-creado">Identificando al Usuario Creado</h3>
+<p>Primero nos solicitan identificar el nombre de usuario creado en el servidor tras la explotación. Para encontrar esta información, podemos revisar los registros relacionados con la actividad de usuarios en el archivo <code>/var/log/auth.log</code>.</p>
+<p><img alt="Usuario creado" src="/images/posts/brains/image5.png"> <center><b>Usuario creado</b></center></p>
+<p>Una vez conseguido el lapso de tiempo en el que el atacante entró a la máquina se nos hará más fácil responder las siguientes preguntas.</p>
+<h3 id="encontrando-el-paquete-malicioso">Encontrando el Paquete Malicioso</h3>
+<p>El siguiente paso es determinar si el atacante instaló algún paquete malicioso en el servidor. Para ello, aprovechamos el <a href="https://docs.splunk.com/Splexicon:Sourcetype">sourcetype</a> <code>packages</code> en Splunk, el cual clasifica y estructura los registros de la gestión de paquetes en el sistema. Este sourcetype incluye información detallada sobre paquetes instalados, actualizados o eliminados, permitiéndonos rastrear cualquier actividad sospechosa.</p>
+<p><img alt="Paquete malicioso instalado" src="/images/posts/brains/image6.png"> <center><b>Paquete malicioso instalado</b></center></p>
+<h3 id="identificando-el-plugin-instalado">Identificando el Plugin Instalado</h3>
+<p>Para esto, utilizamos un sencillo query en Splunk con el término clave <code>*plugin*</code> combinado con el lapso de tiempo previamente definido. Esta consulta nos permitió encontrar rápidamente el plugin malicioso instalado en el sistema.</p>
+<p><img alt="Plugin malicioso instalado" src="/images/posts/brains/image7.png"> <center><b>Plugin malicioso instalado</b></center></p>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Herramienta de escaneo de red utilizada para identificar puertos y servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Metasploit</strong></td>
+          <td style="text-align: left">Utilizado para automatizar la explotación de la vulnerabilidad <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Splunk</strong></td>
+          <td style="text-align: left">Plataforma utilizada para analizar logs del sistema y rastrear actividades sospechosas.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<p>Para mitigar riesgos similares a los explorados en esta máquina, se recomienda aplicar actualizaciones de seguridad tan pronto como estén disponibles, especialmente en plataformas críticas como TeamCity. Implementar controles de acceso estrictos y limitar los servicios expuestos al Internet. Además, se deben monitorear constantemente los logs del sistema mediante herramientas como Splunk para detectar actividades sospechosas, como creación de usuarios o instalación de paquetes maliciosos. Finalmente, realizar pruebas periódicas de penetración ayuda a identificar vulnerabilidades antes de que puedan ser explotadas por un atacante.</p>
+</div>]]></content:encoded>
+    </item>
     <item>
       <title>Implementando Wazuh (SIEM)</title>
       <link>https://gtello.github.io/es/projects/wazuh/</link>

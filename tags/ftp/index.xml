@@ -26,7 +26,7 @@ This is a step-by-step guide presented in a professional report format on a pene
 <p>A network scan was conducted using the nmap tool to identify open ports and services on the machine.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image1.png" alt="nmap result" />
-</div>
+</div><br>
 <center><em>Figure 1:</em> nmap result</center>
 <h3 id="reconnaissance-results">Reconnaissance Results</h3>
 <table>
@@ -49,70 +49,70 @@ This is a step-by-step guide presented in a professional report format on a pene
 <p>The nmap scan showed that the FTP service on port 21 allowed anonymous login, so that was performed.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image2.png" alt="ftp login" />
-</div>
+</div><br>
 <center><em>Figure 2:</em> FTP login as anonymous user</center>
 <p>An FTP connection was made through the <code>anonymous</code> account, which allowed access to a note left on the server.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image3.png" alt="developer note" />
-</div>
+</div><br>
 <center><em>Figure 3:</em> Developer's note</center>
 <p>It was observed that the developer left a note on the FTP server mentioning that they had to resort to using a SQL statement to create a new user for the academy’s website. The value in the <code>password</code> field was an MD5 hash, so we proceeded to crack the hash with hashcat.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image4.png" alt="hashcat result 1" />
     <img src="/images/posts/academy/image4_1.png" alt="hashcat result 2" />
-</div>
+</div><br>
 <center><em>Figure 4:</em> hashcat result</center>
 <p>The hash crack was successful, revealing that the password for the <code>HackerMentor</code> user is <code>junior01</code>. To proceed, the open port 80, suggesting a webpage was serving content from the machine, was analyzed.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image5.png" alt="apache web server" />
-</div>
+</div><br>
 <center><em>Figure 5:</em> Apache Web Server service</center>
 <p>The default Apache webpage was found, confirming that this machine is hosting a web service. Brute force was performed on web directories.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image6.png" alt="wfuzz" />
-</div>
+</div><br>
 <center><em>Figure 6:</em> Brute force on web directories with wfuzz</center>
 <p>The web directories <code>/phpmyadmin</code> and <code>/monkey</code> were discovered.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image7.png" alt="academy portal" />
-</div>
+</div><br>
 <center><em>Figure 7:</em> Academy login portal</center>
 <p>The credentials discovered earlier were used, and login to the Monkey portal was achieved. Detailed inspection of this webpage revealed a student enrollment section allowing image uploads. An attack called <a href="https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload">Unrestricted File Upload</a> was attempted to try executing PHP code on the web server and achieve a reverse shell.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image8.png" alt="php code" />
-</div>
+</div><br>
 <center><em>Figure 8:</em> PHP code for reverse shell</center>
 <p>This .php file was uploaded to the server, and as a test image upload had previously been performed, it was found that images are stored at <code>http://192.168.138.128/monkey/studentphoto/image.jpg</code>. Once the image was uploaded, the code was executed, and a connection with netcat on port 1234 was opened.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image9.png" alt="reverse shell connection" />
-</div>
+</div><br>
 <center><em>Figure 9:</em> Reverse shell connection established</center>
 <p>The exploit worked correctly, gaining access to the server as user <code>www-data</code>. To escalate privileges, the script <a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LINpeas.sh</a> was used. For file transfer to the server, a basic HTTP server was set up with Python using the command <code>python3 -m http.server 80</code> to download the file from the server. The script was run to discover privilege escalation paths with the following findings.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image10.png" alt="mysql password" />
-</div>
+</div><br>
 <center><em>Figure 10:</em> Plaintext password of MySQL database</center>
 <p>Once the password was found, it was tried in conjunction with the known user on the academy’s web portal to connect to that user via SSH.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image11.png" alt="ssh session" />
-</div>
+</div><br>
 <center><em>Figure 11:</em> SSH connection to hackermentor user</center>
 <p>A flag and a bash script named <code>backup.sh</code> that backs up the academy&rsquo;s website files were found. The <code>ls -l</code> command shows that this script runs as an administrator user. Checking with <code>crontab</code> and <code>systemd</code>, it was not possible to determine if this script is automated, so <a href="https://github.com/DominicBreuker/pspy">pspy</a> was used for confirmation. This program monitors Linux processes without needing root permissions.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image12.png" alt="process monitoring" />
-</div>
+</div><br>
 <center><em>Figure 12:</em> Process monitoring with pspy showing script execution</center>
 <p>The script was observed running as the root user. Since the <code>hackermentor</code> user has permissions to edit this file, the script was modified to execute a reverse shell, and as it runs as root, root access to the machine was obtained through this.</p>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image13.png" alt="backup.sh modified" />
-</div>
+</div><br>
 <center><em>Figure 13:</em> Modified backup.sh</center>
 <pre>
 
 </pre>
 <div style="text-align: center;">
   <img src="/images/posts/academy/image14.png" alt="root connection" />
-</div>
+</div><br>
 <center><em>Figure 14:</em> Root user connection</center>
 <h2 id="tools-used">Tools Used</h2>
 <table>

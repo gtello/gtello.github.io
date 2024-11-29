@@ -9,8 +9,90 @@
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Fri, 15 Nov 2024 15:30:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 29 Nov 2024 14:50:00 +0000</lastBuildDate>
     <atom:link href="https://gtello.github.io/es/tags/metasploit/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Brains (THM)</title>
+      <link>https://gtello.github.io/es/writeups/brains/</link>
+      <pubDate>Fri, 29 Nov 2024 14:50:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/writeups/brains/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;  &#xD;&#xA;&lt;p&gt;Writeup de la máquina &lt;a href=&#34;https://tryhackme.com/r/room/brains&#34;&gt;Brains&lt;/a&gt; en TryHackMe.&lt;/p&gt;&#xA;&lt;h2 id=&#34;resumen&#34;&gt;Resumen&lt;/h2&gt;&#xA;&lt;p&gt;En la máquina &lt;strong&gt;Brains&lt;/strong&gt;, exploramos una vulnerabilidad en TeamCity (&lt;a href=&#34;https://nvd.nist.gov/vuln/detail/CVE-2024-27198&#34;&gt;CVE-2024-27198&lt;/a&gt;), asumiendo roles tanto del &lt;strong&gt;&lt;span style=&#34;color: red;&#34;&gt;Red Team&lt;/span&gt;&lt;/strong&gt; como del &lt;strong&gt;Blue Team&lt;/strong&gt;. Como parte del Red Team, explotamos la vulnerabilidad para lograr ejecución remota de código (RCE) y capturar la bandera. Luego, cambiamos al enfoque del Blue Team, utilizando Splunk para analizar logs e investigar las acciones del atacante que había explotado la misma vulnerabilidad para comprometer la máquina. Este enfoque dual nos brinda experiencia práctica en técnicas de seguridad ofensiva y defensiva.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">  
+<p>Writeup de la máquina <a href="https://tryhackme.com/r/room/brains">Brains</a> en TryHackMe.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En la máquina <strong>Brains</strong>, exploramos una vulnerabilidad en TeamCity (<a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>), asumiendo roles tanto del <strong><span style="color: red;">Red Team</span></strong> como del <strong>Blue Team</strong>. Como parte del Red Team, explotamos la vulnerabilidad para lograr ejecución remota de código (RCE) y capturar la bandera. Luego, cambiamos al enfoque del Blue Team, utilizando Splunk para analizar logs e investigar las acciones del atacante que había explotado la misma vulnerabilidad para comprometer la máquina. Este enfoque dual nos brinda experiencia práctica en técnicas de seguridad ofensiva y defensiva.</p>
+<h2 id="reconocimiento">Reconocimiento</h2>
+<p>Empecé con un escaneo de red con nmap para identificar puertos y servicios abiertos:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">nmap -A -T4 -p- 10.10.63.31</span></span></code></pre></div><h3 id="resultados-del-reconocimiento">Resultados del Reconocimiento</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Sistema Operativo</th>
+          <th style="text-align: left">Dirección IP</th>
+          <th style="text-align: left">Puertos Abiertos</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Ubuntu</td>
+          <td style="text-align: left">10.10.63.31</td>
+          <td style="text-align: left">22 (SSH), 80 (HTTP), 50000 (<a href="https://www.jetbrains.com/teamcity/">TeamCity</a>)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Al visitar el servidor web, la página de inicio muestra que está en mantenimiento:</p>
+<p><img alt="Página en mantenimiento" src="/images/posts/brains/image1.png"> <center><b>Página en mantenimiento</b></center></p>
+<p>En el puerto 50000, se encuentra la página de login de TeamCity, e inmediatamente al ver la versión 2023.11.4 recuerdo que esta es vulnerable al exploit <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</p>
+<p><img alt="Login de TeamCity" src="/images/posts/brains/image2.png"> <center><b>Login de TeamCity</b></center></p>
+<h2 id="explotación">Explotación</h2>
+<p>Para nuestra facilidad, hay un script listo en <a href="https://www.rapid7.com/blog/post/2024/03/04/etr-cve-2024-27198-and-cve-2024-27199-jetbrains-teamcity-multiple-authentication-bypass-vulnerabilities-fixed/">metasploit</a> que automatiza el exploit:</p>
+<p><img alt="Ejecución de exploit en metasploit" src="/images/posts/brains/image3.png"> <center><b>Ejecución de exploit en metasploit</b></center></p>
+<p>Una vez dentro, agarramos la bandera:</p>
+<p><img alt="Bandera" src="/images/posts/brains/image4.png"> <center><b>Bandera</b></center></p>
+<h2 id="análisis-de-logs">Análisis de Logs</h2>
+<p>Ahora nos movemos al <strong>Blue Team</strong>, en esta segunda parte, nos metemos en Splunk para analizar logs y descubrir que alguien ya había comprometido esta máquina y podemos investigar el caso.</p>
+<h3 id="identificando-al-usuario-creado">Identificando al Usuario Creado</h3>
+<p>Primero nos solicitan identificar el nombre de usuario creado en el servidor tras la explotación. Para encontrar esta información, podemos revisar los registros relacionados con la actividad de usuarios en el archivo <code>/var/log/auth.log</code>.</p>
+<p><img alt="Usuario creado" src="/images/posts/brains/image5.png"> <center><b>Usuario creado</b></center></p>
+<p>Una vez conseguido el lapso de tiempo en el que el atacante entró a la máquina se nos hará más fácil responder las siguientes preguntas.</p>
+<h3 id="encontrando-el-paquete-malicioso">Encontrando el Paquete Malicioso</h3>
+<p>El siguiente paso es determinar si el atacante instaló algún paquete malicioso en el servidor. Para ello, aprovechamos el <a href="https://docs.splunk.com/Splexicon:Sourcetype">sourcetype</a> <code>packages</code> en Splunk, el cual clasifica y estructura los registros de la gestión de paquetes en el sistema. Este sourcetype incluye información detallada sobre paquetes instalados, actualizados o eliminados, permitiéndonos rastrear cualquier actividad sospechosa.</p>
+<p><img alt="Paquete malicioso instalado" src="/images/posts/brains/image6.png"> <center><b>Paquete malicioso instalado</b></center></p>
+<h3 id="identificando-el-plugin-instalado">Identificando el Plugin Instalado</h3>
+<p>Para esto, utilizamos un sencillo query en Splunk con el término clave <code>*plugin*</code> combinado con el lapso de tiempo previamente definido. Esta consulta nos permitió encontrar rápidamente el plugin malicioso instalado en el sistema.</p>
+<p><img alt="Plugin malicioso instalado" src="/images/posts/brains/image7.png"> <center><b>Plugin malicioso instalado</b></center></p>
+<h2 id="herramientas-utilizadas">Herramientas Utilizadas</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Herramienta</th>
+          <th style="text-align: left">Descripción</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong>nmap</strong></td>
+          <td style="text-align: left">Herramienta de escaneo de red utilizada para identificar puertos y servicios abiertos.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Metasploit</strong></td>
+          <td style="text-align: left">Utilizado para automatizar la explotación de la vulnerabilidad <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-27198">CVE-2024-27198</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong>Splunk</strong></td>
+          <td style="text-align: left">Plataforma utilizada para analizar logs del sistema y rastrear actividades sospechosas.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="recomendaciones">Recomendaciones</h2>
+<p>Para mitigar riesgos similares a los explorados en esta máquina, se recomienda aplicar actualizaciones de seguridad tan pronto como estén disponibles, especialmente en plataformas críticas como TeamCity. Implementar controles de acceso estrictos y limitar los servicios expuestos al Internet. Además, se deben monitorear constantemente los logs del sistema mediante herramientas como Splunk para detectar actividades sospechosas, como creación de usuarios o instalación de paquetes maliciosos. Finalmente, realizar pruebas periódicas de penetración ayuda a identificar vulnerabilidades antes de que puedan ser explotadas por un atacante.</p>
+</div>]]></content:encoded>
+    </item>
     <item>
       <title>Alfred (THM)</title>
       <link>https://gtello.github.io/es/writeups/alfred/</link>
@@ -134,6 +216,7 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image1.png" alt="comando nmap" />
 </div>
+<br>
 <center><em>Figura 1:</em> Comando nmap y resultados</center>
 <h3 id="resultado-del-reconocimiento">Resultado del reconocimiento</h3>
 <table>
@@ -156,79 +239,79 @@ Esta es una guía paso a paso presentada en formato de reporte profesional sobre
 <p>El servicio SMB ejecutándose en el puerto 445 en una máquina Windows 7 indica una potencial vulnerabilidad al exploit EternalBlue. Un escaneo adicional con un script de nmap reveló que el sistema era efectivamente vulnerable a CVE-2017-0144 (EternalBlue).</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image2.png" alt="confirmación de nmap" />
-</div>
+</div><br>
 <center><em>Figura 2:</em> Confirmación de vulnerabilidad EternalBlue</center>
 <h2 id="explotación">Explotación</h2>
 <p>Para explotar la vulnerabilidad se utilizó el framework Metasploit. Se seleccionó y configuró el módulo EternalBlue.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image3.png" alt="configuración de exploit" />
-</div>
+</div><br>
 <center><em>Figura 3:</em> Configuración del exploit</center>
 <p>Se configuró un payload de tipo reverse shell, lo que permitió obtener una conexión remota con control total del sistema. El exploit proporcionó privilegios SYSTEM, por lo que no fue necesaria una elevación adicional.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image4.png" alt="ejecución de exploit" />
-</div>
+</div><br>
 <center><em>Figura 4:</em> Resultado de la ejecución del exploit</center>
 <h2 id="post-explotación">Post-Explotación</h2>
 <p>Una vez establecida la sesión de meterpreter, se procedió a realizar actividades de post-explotación.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image5.png" alt="enumeración de usuarios" />
-</div>
+</div><br>
 <center><em>Figura 5:</em> Enumeración de usuarios</center>
 <h3 id="extracción-de-credenciales">Extracción de credenciales</h3>
 <p>Se utilizó la herramienta Mimikatz mediante el módulo kiwi para extraer credenciales como contraseñas y hashes del sistema operativo Windows.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image6.png" alt="ejecución de mimikatz" />
-</div>
+</div><br>
 <center><em>Figura 6:</em> Ejecución de Mimikatz</center>
 <p>El archivo SAM (Security Account Manager) almacena los hashes de contraseñas de usuarios locales en un sistema Windows. Utilizando el comando <code>kiwi_cmd lsadump::sam</code> en meterpreter, se extrajo el archivo SAM que contiene los hashes NTLM de las contraseñas de los usuarios locales.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image7.png" alt="dump de hashes de usuarios locales" />
-</div>
+</div><br>
 <center><em>Figura 7:</em> Dump de hashes de usuarios locales</center>
 <h3 id="uso-de-credenciales-cifradas">Uso de credenciales cifradas</h3>
 <p>Una vez obtenidos los hashes de contraseñas, se utilizó la técnica de Pass The Hash (PTH) para acceder a otros recursos del sistema sin necesidad de conocer las contraseñas en texto plano. Este método permite autenticarse y moverse lateralmente entre sistemas Windows, utilizando únicamente el hash de la contraseña.
 Se utilizó la herramienta <code>crackmapexec</code> para autenticarse remotamente en otros sistemas o servicios de la red usando el hash de un usuario.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image8.png" alt="ejecución de crackmapexec" />
-</div>
+</div><br>
 <center><em>Figura 8:</em> Ejecución de CrackMapExec</center>
 <h3 id="persistencia">Persistencia</h3>
 <p>A través de la persistencia, se puede mantener el acceso a un sistema comprometido incluso si este se reinicia, lo cual permite restablecer una conexión en el futuro sin tener que repetir el proceso inicial de explotación.
 En este caso, se configuró un script de persistencia con el módulo <code>windows/local/persistence_service</code>, el cual genera y carga un ejecutable en el host remoto y luego lo convertirá en un servicio persistente.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image9.png" alt="ejecución de persistencia" />
-</div>
+</div><br>
 <center><em>Figura 9:</em> Ejecución de servicio de persistencia.</center>
 <p>Al ejecutar este módulo, meterpreter instala un servicio en el sistema comprometido que establece una conexión saliente de tipo reverse shell cada vez que se reinicia el sistema. Esto significa que, incluso si un atacante pierde la conexión inicial, este puede recuperar el acceso sin realizar de nuevo el exploit, siempre que el sistema esté encendido y el atacante esté escuchando en el puerto configurado.</p>
 <h3 id="comprobación-de-persistencia">Comprobación de persistencia</h3>
 <p>Para comprobar que la persistencia fue ejecutada correctamente, se cerraron las sesiones de meterpreter abiertas.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image10.png" alt="cierre de sesiones" />
-</div>
+</div><br>
 <center><em>Figura 10:</em> Cierre de sesiones</center>
 <p>Se creó un resource script para automatizar tareas repetitivas en Metasploit, facilitando la reconexión a la máquina comprometida con tan solo ejecutar el script.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image11.png" alt="resource script para metasploit" />
-</div>
+</div><br>
 <center><em>Figura 11:</em> Resource script para Metasploit</center>
 <p>Una vez ejecutado el script, se observa cómo se configura el payload y el módulo automáticamente para consecuentemente conectarse a la máquina, comprobando que la persistencia funciona correctamente.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image12.png" alt="ejecución del resource script" />
-</div>
+</div><br>
 <center><em>Figura 12:</em> Ejecución del resource script</center>
 <h3 id="limpieza-de-la-persistencia">Limpieza de la persistencia</h3>
 <p>Para realizar la limpieza del sistema atacado, se cerró y eliminó el servicio creado llamado lsass1 mediante comandos <code>sc.exe</code>, lo que garantiza la eliminación del servicio de persistencia en el sistema. Además, se utilizó <code>taskkill.exe</code> para terminar a la fuerza el proceso asociado <code>sdvj.exe</code>, que estaba vinculado al payload de persistencia.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image13.png" alt="limpieza de persistencia" />
-</div>
+</div><br>
 <center><em>Figura 13:</em> Limpieza de persistencia</center>
 <p>Después de completar estos pasos, la sesión de Meterpreter se cerró de forma segura, lo que confirmó la finalización de la conexión. De esta manera se eliminaron todos los artefactos del mecanismo de persistencia, sin dejar puntos de acceso no autorizados en el sistema.</p>
 <h2 id="banderas">Banderas</h2>
 <p>Se procedió a realizar la búsqueda de las banderas con el comando <code>search</code> en meterpreter y se usó el comando <code>type</code> para mostrar su contenido.</p>
 <div style="text-align: center;">
   <img src="/images/posts/eternalblue/image14.png" alt="ejecución de comando type" />
-</div>
+</div><br>
 <center><em>Figura 14:</em> Ejecución del comando type</center>
 <p>De esa manera se encontraron las dos banderas, las cuales son:</p>
 <table>

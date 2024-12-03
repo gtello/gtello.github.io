@@ -2,34 +2,244 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Post on Gabriel Tello</title>
-    <link>http://localhost:1313/es/tags/post/</link>
+    <link>https://gtello.github.io/es/tags/post/</link>
     <description>Recent content in Post on Gabriel Tello</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-EC</language>
     <managingEditor>gabrieltello10@hotmail.com (Gabriel Tello)</managingEditor>
     <webMaster>gabrieltello10@hotmail.com (Gabriel Tello)</webMaster>
     <copyright>[Gabriel Tello](https://github.com/gtello) © 2024</copyright>
-    <lastBuildDate>Wed, 16 Oct 2024 09:51:00 -0500</lastBuildDate>
-    <atom:link href="http://localhost:1313/es/tags/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Dec 2024 17:00:00 +0000</lastBuildDate>
+    <atom:link href="https://gtello.github.io/es/tags/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Mi post</title>
-      <link>http://localhost:1313/es/posts/mypost/</link>
-      <pubDate>Wed, 16 Oct 2024 09:51:00 -0500</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
-      <guid>http://localhost:1313/es/posts/mypost/</guid>
-      <description>&lt;h1 id=&#34;titulo&#34;&gt;Titulo&lt;/h1&gt;&#xA;&lt;p&gt;Este es mi post:&lt;/p&gt;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;hi&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;end&lt;/p&gt;&#xA;&lt;h2 id=&#34;title-2&#34;&gt;Title 2&lt;/h2&gt;&#xA;&lt;p&gt;Another post&lt;/p&gt;&#xA;&lt;h3 id=&#34;title-3&#34;&gt;Title 3&lt;/h3&gt;&#xA;&lt;p&gt;skjdfsd&lt;/p&gt;&#xA;&lt;h5 id=&#34;title-4&#34;&gt;Title 4&lt;/h5&gt;</description>
-      <content:encoded><![CDATA[<h1 id="titulo">Titulo</h1>
-<p>Este es mi post:</p>
+      <title>Cómo Exponer un Servidor Local Detrás de CGNAT Usando WireGuard y un VPS</title>
+      <link>https://gtello.github.io/es/posts/exposing-server-behind-cgnat/</link>
+      <pubDate>Tue, 03 Dec 2024 17:00:00 +0000</pubDate><author>gabrieltello10@hotmail.com (Gabriel Tello)</author>
+      <guid>https://gtello.github.io/es/posts/exposing-server-behind-cgnat/</guid>
+      <description>&lt;div style=&#34;text-align: justify;&#34;&gt;&#xD;&#xA;&lt;p&gt;Si eres como muchos que enfrentan las frustrantes limitaciones del Carrier-Grade NAT (CGNAT), probablemente tengas dificultades para exponer servicios alojados en tu servidor local al Internet. CGNAT hace que sea complicado acceder a tu servidor de forma remota porque no tienes una dirección IP pública. En esta guía, te enseñaré un método para enrutar tráfico a través de un Servidor Privado Virtual (VPS) utilizando WireGuard. Esta solución garantiza una conectividad confiable y segura, incluso detrás de CGNAT.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<div style="text-align: justify;">
+<p>Si eres como muchos que enfrentan las frustrantes limitaciones del Carrier-Grade NAT (CGNAT), probablemente tengas dificultades para exponer servicios alojados en tu servidor local al Internet. CGNAT hace que sea complicado acceder a tu servidor de forma remota porque no tienes una dirección IP pública. En esta guía, te enseñaré un método para enrutar tráfico a través de un Servidor Privado Virtual (VPS) utilizando WireGuard. Esta solución garantiza una conectividad confiable y segura, incluso detrás de CGNAT.</p>
+<h3 id="descripción-general"><strong>Descripción general</strong></h3>
+<p>El objetivo es usar un VPS con una dirección IP pública como punto de relevo para tu tráfico. Utilizaremos WireGuard, una VPN rápida y ligera, para crear un túnel seguro entre el VPS y tu servidor local. Una vez establecido el túnel, configuraremos <code>iptables</code> en el VPS para redirigir el tráfico a tu servidor local. Esta guía está basada en <a href="https://golb.hplar.ch/2019/01/expose-server-vpn.html">este excelente tutorial</a> pero adaptada para mayor claridad y casos de uso específicos.</p>
+<div class="alert alert-note">
+  <p class="alert-title">
+    <span class="alert-icon alert-note-icon">
+      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+      </svg>
+      Note
+    </span>
+  </p>
+  <p class="alert-text">Los pasos de esta guía asumen que tanto el VPS como el servidor local están usando Ubuntu (versión 20.04 o posterior) como SO.</p>
+</div>
+
+<p>Para entender mejor el flujo del tráfico en esta configuración, aquí tienes una representación visual de cómo se establece y mantiene la conexión entre el usuario, el VPS y el servidor local. El VPS actúa como un puente, enrutando el tráfico entre Internet y tu servidor local a través de un túnel de WireGuard:</p>
+<p><img alt="Diagrama" src="/images/posts/exposing-server-behind-cgnat/diagrama.png">
+<br></p>
+<h3 id="qué-se-necesitará"><strong>Qué se necesitará</strong></h3>
+<ol>
+<li>Un <strong>VPS</strong> con una IP pública: Asegúrate de que tu proveedor de VPS soporte máquinas virtuales basadas en Kernel (KVM). Recomiendo estos proveedores:
+<ul>
+<li><a href="https://buyvm.net/">BuyVM</a></li>
+<li><a href="https://www.racknerd.com/">RackNerd</a></li>
+<li><a href="https://www.hetzner.com/">Hetzner</a></li>
+</ul>
+</li>
+<li>Un <strong>servidor local</strong> detrás de CGNAT: Puede ser cualquier dispositivo en tu red local. Me gusta usar las mini PCs EliteDesk de HP como <a href="https://www.amazon.com/HP-EliteDesk-Quad-Core-Professional-Bit-Multi-Language-English/dp/B08KSGKHVS">esta</a>.</li>
+<li><a href="https://www.wireguard.com/">WireGuard</a> instalado tanto en el VPS como en el servidor local.</li>
+<li>Conocimientos básicos de comandos de Linux y redes.</li>
+</ol>
+<h3 id="verificar-la-configuración-de-red-del-vps"><strong>Verificar la configuración de red del VPS</strong></h3>
+<p>Antes de continuar, asegúrate de que tu proveedor de VPS no tenga reglas de firewall o restricciones de red que puedan bloquear el tráfico. Algunos proveedores aplican configuraciones predeterminadas de firewall que podrían impedir conexiones entrantes a la IP pública de tu VPS o interferir con el redireccionamiento de tráfico a través del túnel de WireGuard. Consulta el panel de control de tu VPS o contacta a tu proveedor para confirmar:</p>
+<ul>
+<li><strong>Reglas de entrada</strong>: Asegúrate de que los puertos necesarios (por ejemplo, <code>55107</code> para WireGuard y los puertos para HTTP/SSH) estén abiertos.</li>
+<li><strong>Reglas de salida</strong>: Asegúrate de que tu VPS pueda establecer conexiones salientes con tu servidor local a través del túnel de WireGuard.</li>
+</ul>
+<p>Sin la configuración adecuada, tu sistema puede no funcionar como se espera. Ajusta estas configuraciones según sea necesario antes de continuar.</p>
+<h3 id="habilitar-redirección-de-ip-en-el-vps"><strong>Habilitar redirección de IP en el VPS</strong></h3>
+<p>La redirección de IP permite que el VPS enrute tráfico entre sus interfaces.</p>
+<ul>
+<li>
+<p>Verifica si la redirección de IP está habilitada:</p>
 
 
 
 
 
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hi&#39;</span><span class="p">)</span></span></span></code></pre></div><p>end</p>
-<h2 id="title-2">Title 2</h2>
-<p>Another post</p>
-<h3 id="title-3">Title 3</h3>
-<p>skjdfsd</p>
-<h5 id="title-4">Title 4</h5>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">cat /proc/sys/net/ipv4/ip_forward  </span></span></code></pre></div><p>Si muestra <code>0</code>, está deshabilitada.</p>
+</li>
+<li>
+<p>Habilita la redirección de IP temporalmente:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo sysctl -w net.ipv4.ip_forward<span class="o">=</span><span class="m">1</span>  </span></span></code></pre></div></li>
+<li>
+<p>Haz que la redirección de IP sea persistente tras reinicios:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;net.ipv4.ip_forward = 1&#34;</span> <span class="p">|</span> sudo tee -a /etc/sysctl.conf  
+</span></span><span class="line"><span class="ln">2</span><span class="cl">sudo sysctl -p  </span></span></code></pre></div></li>
+</ul>
+<h3 id="instalar-wireguard"><strong>Instalar WireGuard</strong></h3>
+<p>Instala WireGuard en <strong>el VPS y el servidor local</strong>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo apt install wireguard  </span></span></code></pre></div><h3 id="configurar-wireguard"><strong>Configurar WireGuard</strong></h3>
+<p>En <strong>el VPS y el servidor local</strong>, genera claves de WireGuard:</p>
+<ul>
+<li>
+<p>Crea el archivo de configuración inicial:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl"><span class="nb">umask</span> <span class="m">077</span> <span class="o">&amp;&amp;</span> <span class="nb">printf</span> <span class="s2">&#34;[Interface]\nPrivateKey = &#34;</span> <span class="p">|</span> sudo tee /etc/wireguard/wg0.conf &gt; /dev/null  </span></span></code></pre></div></li>
+<li>
+<p>Genera claves privadas y públicas:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">wg genkey <span class="p">|</span> sudo tee -a /etc/wireguard/wg0.conf <span class="p">|</span> wg pubkey <span class="p">|</span> sudo tee /etc/wireguard/publickey  </span></span></code></pre></div><ul>
+<li><strong><code>wg0.conf</code></strong>: Almacena la clave privada de WireGuard.</li>
+<li><strong><code>publickey</code></strong>: Contiene la clave pública para compartir.</li>
+</ul>
+</li>
+<li>
+<p>Anota ambas claves públicas. Se usarán para configurar el túnel entre el VPS y el servidor local.</p>
+</li>
+</ul>
+<h4 id="en-el-vps"><strong>En el VPS:</strong></h4>
+<p>Edita <code>/etc/wireguard/wg0.conf</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">[Interface]</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="na">PrivateKey</span> <span class="o">=</span> <span class="s">TU_CLAVE_PRIVADA_DEL_VPS</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="na">ListenPort</span> <span class="o">=</span> <span class="s">55107</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="na">Address</span> <span class="o">=</span> <span class="s">192.168.4.1/24</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">
+</span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="k">[Peer]</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="na">PublicKey</span> <span class="o">=</span> <span class="s">CLAVE_PUBLICA_DE_TU_SERVIDOR_LOCAL</span>
+</span></span><span class="line"><span class="ln">8</span><span class="cl"><span class="na">AllowedIPs</span> <span class="o">=</span> <span class="s">192.168.4.2/32</span></span></span></code></pre></div><h4 id="en-el-servidor-local"><strong>En el servidor local:</strong></h4>
+<p>Edita <code>/etc/wireguard/wg0.conf</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">[Interface]</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="na">PrivateKey</span> <span class="o">=</span> <span class="s">TU_CLAVE_PRIVADA_DEL_SERVIDOR_LOCAL</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="na">Address</span> <span class="o">=</span> <span class="s">192.168.4.2/24</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">
+</span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="k">[Peer]</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="na">PublicKey</span> <span class="o">=</span> <span class="s">CLAVE_PUBLICA_DEL_VPS</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="na">AllowedIPs</span> <span class="o">=</span> <span class="s">192.168.4.1/32</span>
+</span></span><span class="line"><span class="ln">8</span><span class="cl"><span class="na">Endpoint</span> <span class="o">=</span> <span class="s">IP_PÚBLICA_DEL_VPS:55107</span>
+</span></span><span class="line"><span class="ln">9</span><span class="cl"><span class="na">PersistentKeepalive</span> <span class="o">=</span> <span class="s">25</span></span></span></code></pre></div><h3 id="iniciar-wireguard"><strong>Iniciar WireGuard</strong></h3>
+<p>Ejecuta estos comandos en <strong>el VPS y el servidor local</strong> para iniciar WireGuard:</p>
+<ul>
+<li>Inicia WireGuard:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo systemctl start wg-quick@wg0</span></span></code></pre></div></li>
+<li>Haz que se inicie automáticamente al arrancar el sistema:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo systemctl <span class="nb">enable</span> wg-quick@wg0</span></span></code></pre></div></li>
+<li>Verifica la conexión:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo wg show</span></span></code></pre></div>Si la configuración es correcta, deberías ver un handshake entre el VPS y el servidor local.</li>
+</ul>
+<h3 id="redirigir-tráfico-con-iptables"><strong>Redirigir tráfico con iptables</strong></h3>
+<p>Este paso debe realizarse <strong>en el VPS</strong> para redirigir el tráfico entrante hacia tu servidor local.</p>
+<h4 id="redirigir-tráfico-http-puerto-80"><strong>Redirigir tráfico HTTP (puerto 80)</strong></h4>
+<p>Añade las siguientes reglas de <code>iptables</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport <span class="m">80</span> -j DNAT --to-destination 192.168.4.2:80
+</span></span><span class="line"><span class="ln">2</span><span class="cl">sudo iptables -t nat -A POSTROUTING -o wg0 -p tcp --dport <span class="m">80</span> -d 192.168.4.2 -j SNAT --to-source 192.168.4.1
+</span></span><span class="line"><span class="ln">3</span><span class="cl">sudo iptables -A FORWARD -i eth0 -o wg0 -p tcp --dport <span class="m">80</span> -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+</span></span><span class="line"><span class="ln">4</span><span class="cl">sudo iptables -A FORWARD -i wg0 -o eth0 -p tcp --sport <span class="m">80</span> -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</span></span></code></pre></div><p>Guarda las reglas con <code>netfilter-persistent</code> para hacerlas persistentes:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo apt install iptables-persistent
+</span></span><span class="line"><span class="ln">2</span><span class="cl">sudo netfilter-persistent save
+</span></span><span class="line"><span class="ln">3</span><span class="cl">sudo netfilter-persistent reload</span></span></code></pre></div><h3 id="redirigir-tráfico-ssh"><strong>Redirigir tráfico SSH</strong></h3>
+<p>Este paso debe realizarse <strong>en el VPS</strong> para permitir acceso SSH a tu servidor local. La redirección SSH permite conectarte a tu servidor local primero accediendo al VPS, que enruta el tráfico SSH a través del túnel WireGuard.</p>
+<h4 id="configurar-la-redirección-ssh"><strong>Configurar la redirección SSH</strong></h4>
+<p>Añade estas reglas de <code>iptables</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport <span class="m">2222</span> -j DNAT --to-destination 192.168.4.2:22
+</span></span><span class="line"><span class="ln">2</span><span class="cl">sudo iptables -t nat -A POSTROUTING -o wg0 -p tcp --dport <span class="m">22</span> -d 192.168.4.2 -j SNAT --to-source 192.168.4.1
+</span></span><span class="line"><span class="ln">3</span><span class="cl">sudo iptables -A FORWARD -i eth0 -o wg0 -p tcp --dport <span class="m">22</span> -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+</span></span><span class="line"><span class="ln">4</span><span class="cl">sudo iptables -A FORWARD -i wg0 -o eth0 -p tcp --sport <span class="m">22</span> -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</span></span></code></pre></div><p>Prueba el acceso SSH a tu servidor local a través del VPS:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">ssh -p <span class="m">2222</span> &lt;nombre_usuario&gt;@&lt;IP_PÚBLICA_DEL_VPS&gt;</span></span></code></pre></div><h4 id="mantener-acceso-directo-al-vps"><strong>Mantener acceso directo al VPS</strong></h4>
+<p>Las reglas de redireccionamiento SSH no afectarán tu capacidad para acceder directamente al VPS a través de su puerto predeterminado (22). Si es necesario, explícitamente permite el acceso SSH directo:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">sudo iptables -A INPUT -p tcp --dport <span class="m">22</span> -j ACCEPT</span></span></code></pre></div><h3 id="prueba-de-la-configuración"><strong>Prueba de la configuración</strong></h3>
+<p>Verifica el tráfico HTTP navegando a la IP pública de tu VPS en un navegador:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">http://&lt;IP_PÚBLICA_DEL_VPS&gt;</span></span></code></pre></div><p>Prueba el acceso SSH conectándote al VPS:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">ssh &lt;nombre_usuario&gt;@&lt;IP_PÚBLICA_DEL_VPS&gt;</span></span></code></pre></div><p>Conéctate a tu servidor local a través del VPS:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">ssh -p <span class="m">2222</span> &lt;nombre_usuario&gt;@&lt;IP_PÚBLICA_DEL_VPS&gt;</span></span></code></pre></div><p>Siguiendo esta guía, habrás logrado exponer un servidor local detrás de CGNAT utilizando WireGuard y un VPS. Esta configuración te permite redirigir tráfico de manera segura hacia tu servidor local, incluyendo HTTP y SSH, mientras mantienes acceso directo a tu VPS.</p>
+</div>
 ]]></content:encoded>
     </item>
   </channel>

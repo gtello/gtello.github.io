@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://gtello.github.io/es/</loc>
-    <lastmod>2024-11-29T14:50:00+00:00</lastmod>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-US"
@@ -16,6 +16,7 @@
                 />
   </url><url>
     <loc>https://gtello.github.io/es/posts/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-US"
@@ -53,6 +54,90 @@
                 href="https://gtello.github.io/es/writeups/"
                 />
   </url><url>
+    <loc>https://gtello.github.io/es/tags/auto-hosting/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://gtello.github.io/es/posts/exposing-server-behind-cgnat/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/posts/exposing-server-behind-cgnat/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/posts/exposing-server-behind-cgnat/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/linux/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/linux/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/linux/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/post/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/post/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/servidor/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/vpn/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/vpn/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/vpn/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/es/tags/vps/</loc>
+    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/vps/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/vps/"
+                />
+  </url><url>
     <loc>https://gtello.github.io/es/tags/blue-team/</loc>
     <lastmod>2024-11-29T14:50:00+00:00</lastmod>
     <xhtml:link
@@ -77,19 +162,6 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/writeups/brains/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/linux/</loc>
-    <lastmod>2024-11-29T14:50:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/linux/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/linux/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/tags/metasploit/</loc>
@@ -142,19 +214,6 @@
                 rel="alternate"
                 hreflang="es-EC"
                 href="https://gtello.github.io/es/tags/red-team/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/es/tags/</loc>
-    <lastmod>2024-11-29T14:50:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/"
                 />
   </url><url>
     <loc>https://gtello.github.io/es/tags/thm/</loc>

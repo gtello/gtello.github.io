@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://gtello.github.io/</loc>
-    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-EC"
@@ -29,7 +29,7 @@
                 />
   </url><url>
     <loc>https://gtello.github.io/projects/</loc>
-    <lastmod>2024-11-13T19:10:00+00:00</lastmod>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-EC"
@@ -54,6 +54,136 @@
                 href="https://gtello.github.io/writeups/"
                 />
   </url><url>
+    <loc>https://gtello.github.io/tags/blue-team/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/blue-team/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/blue-team/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/high-availability/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/high-availability/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/high-availability/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/projects/installing-zabbix/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/projects/installing-zabbix/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/projects/installing-zabbix/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/linux/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/linux/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/linux/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/monitoring/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/monitoring/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/monitoring/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/project/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/project/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/project/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/soc/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/soc/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/soc/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/sysadmin/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/sysadmin/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/sysadmin/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/"
+                />
+  </url><url>
+    <loc>https://gtello.github.io/tags/zabbix/</loc>
+    <lastmod>2024-12-13T17:10:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-EC"
+                href="https://gtello.github.io/es/tags/zabbix/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-US"
+                href="https://gtello.github.io/tags/zabbix/"
+                />
+  </url><url>
     <loc>https://gtello.github.io/posts/exposing-server-behind-cgnat/</loc>
     <lastmod>2024-12-03T17:00:00+00:00</lastmod>
     <xhtml:link
@@ -65,19 +195,6 @@
                 rel="alternate"
                 hreflang="en-US"
                 href="https://gtello.github.io/posts/exposing-server-behind-cgnat/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/tags/linux/</loc>
-    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/linux/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/linux/"
                 />
   </url><url>
     <loc>https://gtello.github.io/tags/post/</loc>
@@ -98,19 +215,6 @@
   </url><url>
     <loc>https://gtello.github.io/tags/server/</loc>
     <lastmod>2024-12-03T17:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://gtello.github.io/tags/</loc>
-    <lastmod>2024-12-03T17:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/"
-                />
   </url><url>
     <loc>https://gtello.github.io/tags/vpn/</loc>
     <lastmod>2024-12-03T17:00:00+00:00</lastmod>
@@ -136,19 +240,6 @@
                 rel="alternate"
                 hreflang="en-US"
                 href="https://gtello.github.io/tags/vps/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/tags/blue-team/</loc>
-    <lastmod>2024-11-29T14:20:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/blue-team/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/blue-team/"
                 />
   </url><url>
     <loc>https://gtello.github.io/writeups/brains/</loc>
@@ -372,19 +463,6 @@
                 href="https://gtello.github.io/projects/wazuh/"
                 />
   </url><url>
-    <loc>https://gtello.github.io/tags/project/</loc>
-    <lastmod>2024-11-13T19:10:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/project/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/project/"
-                />
-  </url><url>
     <loc>https://gtello.github.io/tags/siem/</loc>
     <lastmod>2024-11-13T19:10:00+00:00</lastmod>
     <xhtml:link
@@ -396,19 +474,6 @@
                 rel="alternate"
                 hreflang="en-US"
                 href="https://gtello.github.io/tags/siem/"
-                />
-  </url><url>
-    <loc>https://gtello.github.io/tags/soc/</loc>
-    <lastmod>2024-11-13T19:10:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-EC"
-                href="https://gtello.github.io/es/tags/soc/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-US"
-                href="https://gtello.github.io/tags/soc/"
                 />
   </url><url>
     <loc>https://gtello.github.io/tags/wazuh/</loc>

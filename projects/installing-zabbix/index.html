@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="apple-touch-icon" size="180x180" href="https://gtello.github.io/images/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://gtello.github.io/images/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://gtello.github.io/images/favicon-16x16.png" />
+<link rel="manifest" href="https://gtello.github.io/images/site.webmanifest" />
+
+<link rel="shortcut icon" href="https://gtello.github.io/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#4385BE" />
+
+
+<title>Installing Zabbix with High Availability | Gabriel Tello</title>
+<meta name="title" content="Installing Zabbix with High Availability" />
+<meta name="description" content="Step-by-step guide to installing and configuring Zabbix with high availability, ensuring robust and continuous IT system monitoring for any environment." />
+<meta name="keywords" content="Zabbix,Monitoring,SOC,linux,blue team,High availability,sysadmin,project," />
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Installing Zabbix with High Availability" />
+<meta property="og:description" content="Step-by-step guide to installing and configuring Zabbix with high availability, ensuring robust and continuous IT system monitoring for any environment." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://gtello.github.io/projects/installing-zabbix/" />
+
+<meta property="og:image" content="https://gtello.github.io/images/social_card_bg_hu8119406718749368140.webp"/><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2024-12-13T17:10:00+00:00" />
+<meta property="article:modified_time" content="2024-12-13T17:10:00+00:00" /><meta property="og:site_name" content="Gabriel Tello" />
+<meta property="fb:admins" content="0000000000" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://gtello.github.io/images/social_card_bg_hu8119406718749368140.webp"/>
+<meta name="twitter:title" content="Installing Zabbix with High Availability"/>
+<meta name="twitter:description" content="Step-by-step guide to installing and configuring Zabbix with high availability, ensuring robust and continuous IT system monitoring for any environment."/>
+<meta name="twitter:site" content="@example"/>
+
+
+
+<meta itemprop="name" content="Installing Zabbix with High Availability">
+<meta itemprop="description" content="Step-by-step guide to installing and configuring Zabbix with high availability, ensuring robust and continuous IT system monitoring for any environment."><meta itemprop="datePublished" content="2024-12-13T17:10:00+00:00" />
+<meta itemprop="dateModified" content="2024-12-13T17:10:00+00:00" />
+<meta itemprop="wordCount" content="1358">
+
+<meta itemprop="image" content="https://gtello.github.io/images/social_card_bg_hu8119406718749368140.webp"/>
+
+
+<meta itemprop="keywords" content="Zabbix,Monitoring,SOC,linux,blue team,High availability,sysadmin,project," />
+
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+  
+  <link href="/style.min.css" rel="stylesheet">
+
+  
+    
+    <link href="/syntax.min.css" rel="stylesheet">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
+    <link href="/toc.min.css" rel="stylesheet">
+  
+
+  
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-94K1F50W02"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-94K1F50W02');
+</script>
+
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "p3b2egz3xe");
+</script></head>
+
+<body>
+  <header><a class="skip-link" href="#main-content">Skip to main content</a>
+
+<a href="/" class="title"><h1>Gabriel Tello</h1></a>
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/posts/">Posts</a>
+
+  <a href="/projects/">Projects</a>
+
+  <a href="/writeups/">Write-ups</a>
+
+<a href='https://gtello.github.io/index.xml'>RSS</a>
+
+
+
+
+  
+
+
+
+
+  
+    <a href="https://gtello.github.io/es/projects/installing-zabbix/">Español</a>
+  
+
+</nav>
+</header>
+  <main id="main-content">
+
+<h1>Installing Zabbix with High Availability</h1>
+<p class="byline" style="color: gray; font-size: 0.9rem">
+  Published on:
+  <time datetime='12/13/2024, 05:10 PM' pubdate>
+    12/13/2024, 05:10 PM
+  </time>
+  
+  
+  |
+  <span>1400</span> 
+  words
+  |
+  <span>7</span>
+  <span>mins</span>
+</p>
+
+
+<article class="article">
+  
+  <aside class="sidebar">
+    <div class="toc-container">
+      <div style="font-weight: bold; margin-bottom: 0.4rem">Table of Contents</div>
+      <div class="toc"></div>
+    </div>
+  </aside>
+  
+
+  <content class="content">
+    <div style="text-align: justify;">
+<p>In this project, we’ll focus on installing the Zabbix server and setting it up with high availability (HA). Zabbix is a powerful open-source monitoring solution used for tracking performance and availability of IT systems. By the end of this guide, you will have a fully functional Zabbix server configured for high availability (HA), ensuring continuous monitoring even in case of server failure.</p>
+<p><strong>To summarize, in this project, we will:</strong></p>
+<ul>
+<li>Install the Zabbix server.</li>
+<li>Set up the Zabbix frontend for monitoring.</li>
+<li>Enable Zabbix&rsquo;s server high availability (HA) for fault tolerance.</li>
+</ul>
+<h2 id="technical-requirements">Technical Requirements</h2>
+<p>We&rsquo;ll be starting this project with an fresh Linux virtual machine. Feel free to choose a RHEL or Debian-based Linux distro. Then we&rsquo;ll set up a Zabbix server from scratch on this host.</p>
+<p>I&rsquo;ll be using Rocky Linux 9 and Ubuntu 24.04 in my examples.</p>
+<p>Here’s a table with the hardware requirements for VMs based on Zabbix&rsquo;s documentation:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>Installation Size</strong></th>
+          <th style="text-align: left"><strong>Monitored Metrics</strong></th>
+          <th style="text-align: left"><strong>CPU/vCPU Cores</strong></th>
+          <th style="text-align: left"><strong>Memory (GiB)</strong></th>
+          <th style="text-align: left"><strong>Database</strong></th>
+          <th style="text-align: left"><strong>Amazon EC2 Instance Type</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Small</td>
+          <td style="text-align: left">1,000</td>
+          <td style="text-align: left">2</td>
+          <td style="text-align: left">8</td>
+          <td style="text-align: left">MySQL Server, Percona Server, MariaDB Server, PostgreSQL</td>
+          <td style="text-align: left">m6i.large / m6g.large</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Medium</td>
+          <td style="text-align: left">10,000</td>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">16</td>
+          <td style="text-align: left">MySQL Server, Percona Server, MariaDB Server, PostgreSQL</td>
+          <td style="text-align: left">m6i.xlarge / m6g.xlarge</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Large</td>
+          <td style="text-align: left">100,000</td>
+          <td style="text-align: left">16</td>
+          <td style="text-align: left">64</td>
+          <td style="text-align: left">MySQL Server, Percona Server, MariaDB Server, PostgreSQL</td>
+          <td style="text-align: left">m6i.4xlarge / m6g.4xlarge</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Very Large</td>
+          <td style="text-align: left">1,000,000</td>
+          <td style="text-align: left">32</td>
+          <td style="text-align: left">96</td>
+          <td style="text-align: left">MySQL Server, Percona Server, MariaDB Server, PostgreSQL</td>
+          <td style="text-align: left">m6i.8xlarge / m6g.8xlarge</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>1 Metric = 1 Item + 1 Trigger + 1 Graph</strong></p>
+<p>For example, monitoring a single CPU metric would involve creating:</p>
+<ul>
+<li><strong>1 Item</strong> to collect the data (e.g., CPU usage).</li>
+<li><strong>1 Trigger</strong> to alert when CPU usage exceeds a threshold.</li>
+<li><strong>1 Graph</strong> to visualize CPU usage over time.
+These components collectively count as a single metric.</li>
+</ul>
+<h2 id="installing-the-zabbix-server">Installing the Zabbix Server</h2>
+<p>Before we actually install the Zabbix server, we need to fulfill some prerequisites. We&rsquo;ll be using MariaDB as it&rsquo;s popular and has a lot of information available for use with Zabbix. Run these commands as root.</p>
+<ol>
+<li>
+<p><strong>Add the Zabbix 7.0 repository to your system</strong><br>
+For RHEL-based systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">rpm -Uvh https://repo.zabbix.com/zabbix/7.0/rocky/9/x86_64/zabbix-release-7.0-2.el9.noarch.rpm
+</span></span><span class="line"><span class="ln">2</span><span class="cl">dnf clean all</span></span></code></pre></div><p>For Ubuntu systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.0-1+ubuntu22.04_all.deb
+</span></span><span class="line"><span class="ln">2</span><span class="cl">dpkg -i zabbix-release_7.0-1+ubuntu22.04_all.deb
+</span></span><span class="line"><span class="ln">3</span><span class="cl">apt update</span></span></code></pre></div></li>
+<li>
+<p><strong>Remove the Zabbix EPEL repository packages (if installed) on RHEL systems:</strong><br>
+Edit the file:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/yum.repos.d/epel.repo</span></span></code></pre></div><p>Add the following line:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">[epel]</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="na">...</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="na">excludepkgs</span><span class="o">=</span><span class="s">zabbix*</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Add the MariaDB repository:</strong></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">wget https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+</span></span><span class="line"><span class="ln">2</span><span class="cl">chmod +x mariadb_repo_setup
+</span></span><span class="line"><span class="ln">3</span><span class="cl">./mariadb_repo_setup</span></span></code></pre></div></li>
+<li>
+<p><strong>Install and enable MariaDB:</strong><br>
+For RHEL-based systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install mariadb-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl <span class="nb">enable</span> mariadb
+</span></span><span class="line"><span class="ln">3</span><span class="cl">systemctl start mariadb</span></span></code></pre></div><p>For Ubuntu systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install mariadb-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl <span class="nb">enable</span> mariadb
+</span></span><span class="line"><span class="ln">3</span><span class="cl">systemctl start mariadb</span></span></code></pre></div></li>
+<li>
+<p><strong>Secure your MariaDB installation:</strong></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">mariadb-secure-installation</span></span></code></pre></div><p>Follow the prompts to set a secure root password.</p>
+</li>
+<li>
+<p><strong>Install the Zabbix server with MySQL support:</strong><br>
+For RHEL-based systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install zabbix-server-mysql zabbix-sql-scripts zabbix-selinux-policy</span></span></code></pre></div><p>For Ubuntu systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install zabbix-server-mysql zabbix-sql-scripts</span></span></code></pre></div></li>
+<li>
+<p><strong>Create the Zabbix database:</strong><br>
+Log in to MariaDB:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">mysql -u root -p</span></span></code></pre></div><p>Create the database and user:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="ln">1</span><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">zabbix</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">utf8mb4</span><span class="w"> </span><span class="k">collate</span><span class="w"> </span><span class="n">utf8mb4_bin</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="w"></span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">zabbix</span><span class="o">@</span><span class="n">localhost</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="w"></span><span class="k">grant</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="k">privileges</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">zabbix</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">zabbix</span><span class="o">@</span><span class="n">localhost</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="w"></span><span class="k">set</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="n">log_bin_trust_function_creators</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="w"></span><span class="n">quit</span><span class="p">;</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Import the Zabbix database schema:</strong></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz <span class="p">|</span> mariadb --default-character-set<span class="o">=</span>utf8mb4 -u zabbix -p zabbix</span></span></code></pre></div></li>
+<li>
+<p><strong>Disable <code>log_bin_trust_function_creators</code>:</strong></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">mysql -u root -p
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="nb">set</span> global <span class="nv">log_bin_trust_function_creators</span> <span class="o">=</span> 0<span class="p">;</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">quit<span class="p">;</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Configure the Zabbix server:</strong><br>
+Edit the configuration file:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/zabbix/zabbix_server.conf</span></span></code></pre></div><p>Update the database settings:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="ln">1</span><span class="cl"><span class="na">DBName</span><span class="o">=</span><span class="s">zabbix</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="na">DBUser</span><span class="o">=</span><span class="s">zabbix</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="na">DBPassword</span><span class="o">=</span><span class="s">password</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Start the Zabbix server:</strong></p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">systemctl <span class="nb">enable</span> zabbix-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl start zabbix-server</span></span></code></pre></div><p>Check the server status:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">systemctl status zabbix-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">tail -f /var/log/zabbix/zabbix_server.log</span></span></code></pre></div></li>
+</ol>
+<h2 id="setting-up-the-zabbix-frontend">Setting Up the Zabbix Frontend</h2>
+<p>We will use Nginx to set up the Zabbix frontend.</p>
+<ol>
+<li>
+<p><strong>Install the frontend:</strong><br>
+For RHEL-based systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf module switch-to php:8.3
+</span></span><span class="line"><span class="ln">2</span><span class="cl">dnf install zabbix-web-mysql zabbix-nginx-conf</span></span></code></pre></div><p>For Ubuntu systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install zabbix-frontend-php zabbix-nginx-conf</span></span></code></pre></div></li>
+<li>
+<p><strong>Configure NGINX:</strong><br>
+Edit the configuration file:<br>
+For RHEL systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/nginx/conf.d/zabbix.conf</span></span></code></pre></div><p>For Ubuntu systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/zabbix/nginx.conf</span></span></code></pre></div><p>Update the configuration:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ini" data-lang="ini"><span class="line"><span class="ln">1</span><span class="cl"><span class="na">listen 80;</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="na">server_name 192.168.0.50;</span></span></span></code></pre></div></li>
+<li>
+<p><strong>Restart services:</strong><br>
+For RHEL systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">systemctl <span class="nb">enable</span> nginx php-fpm
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl restart nginx php-fpm</span></span></code></pre></div><p>For Ubuntu systems:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">systemctl <span class="nb">enable</span> nginx
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl restart nginx php-fpm</span></span></code></pre></div></li>
+<li>
+<p><strong>Access the frontend in your browser:</strong><br>
+Navigate to:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">http://&lt;your_server_ip&gt;/</span></span></code></pre></div></li>
+<li>
+<p><strong>Complete the installation in the browser:</strong><br>
+You should see the Zabbix welcome screen, simply follow the prompts to configure the database and server details.</p>
+</li>
+</ol>
+<p><img alt="Zabbix Dashboard" src="/images/posts/installing-zabbix/zabbix-dashboard.png"> <center><b>Zabbix Dashboard</b></center></p>
+<p>Now that we’ve installed our Zabbix frontend, our Zabbix setup is complete and we are ready to start working with it. Our Zabbix frontend will connect to our database to edit the configuration values of our setup, as we can see in the following diagram:</p>
+<p><img alt="Zabbix diagram" src="/images/posts/installing-zabbix/zabbix-diagram.png">
+<br></p>
+<h1 id="enabling-zabbix-server-high-availability-ha">Enabling Zabbix Server High Availability (HA)</h1>
+<p>Introduced in Zabbix 6, the High Availability (HA) feature allows for seamless monitoring through an active/passive cluster setup. This ensures continuous operation even if one Zabbix server fails.</p>
+<h3 id="key-features-of-zabbix-ha">Key Features of Zabbix HA:</h3>
+<ul>
+<li>Supports clustering multiple Zabbix servers.</li>
+<li>Uses an active/passive setup for the Zabbix server.</li>
+<li>Load balancing is supported via Zabbix proxies.</li>
+</ul>
+<h2 id="getting-ready">Getting Ready</h2>
+<p>Creating an HA setup is considered advanced. Before starting:</p>
+<ul>
+<li>Ensure you have three virtual machines:
+<ul>
+<li><strong>zabbix-ha1</strong> (192.168.0.1)</li>
+<li><strong>zabbix-ha2</strong> (192.168.0.2)</li>
+<li><strong>zabbix-ha-db</strong> (192.168.0.10) for the MySQL database</li>
+</ul>
+</li>
+<li>Set up a <strong>Virtual IP</strong> for the cluster: 192.168.0.5.</li>
+</ul>
+<div class="alert alert-note">
+  <p class="alert-title">
+    <span class="alert-icon alert-note-icon">
+      <svg class="octicon" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+      </svg>
+      Note
+    </span>
+  </p>
+  <p class="alert-text">• This setup uses a single MySQL Zabbix database.<br>
+• Configure SELinux/AppArmor and firewalls as needed for production.<br>
+• Proper time synchronization across servers is critical. Use tools like chrony or ntpd to maintain accurate time settings. Misaligned system clocks can adversely affect the performance of distributed systems and lead to issues with monitoring and database operations.</p>
+</div>
+
+<h2 id="setting-up-the-database">Setting Up the Database</h2>
+<ol>
+<li>
+<p>Log in to <strong>zabbix-ha-db</strong> and install the MariaDB repository:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">wget https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+</span></span><span class="line"><span class="ln">2</span><span class="cl">chmod +x mariadb_repo_setup
+</span></span><span class="line"><span class="ln">3</span><span class="cl">./mariadb_repo_setup</span></span></code></pre></div></li>
+<li>
+<p>Install the MariaDB server:</p>
+<ul>
+<li><strong>RHEL-based systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install mariadb-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl <span class="nb">enable</span> mariadb
+</span></span><span class="line"><span class="ln">3</span><span class="cl">systemctl start mariadb</span></span></code></pre></div></li>
+<li><strong>Ubuntu systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install mariadb-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl <span class="nb">enable</span> mariadb
+</span></span><span class="line"><span class="ln">3</span><span class="cl">systemctl start mariadb</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Secure MariaDB:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">mariadb-secure-installation</span></span></code></pre></div></li>
+<li>
+<p>Create the Zabbix database:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="n">mariadb</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="w"></span><span class="k">create</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">zabbix</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">utf8mb4</span><span class="w"> </span><span class="k">collate</span><span class="w"> </span><span class="n">utf8mb4_bin</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="w"></span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">zabbix</span><span class="o">@</span><span class="s1">&#39;192.168.0.1&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="w"></span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">zabbix</span><span class="o">@</span><span class="s1">&#39;192.168.0.2&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="w"></span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">zabbix</span><span class="o">@</span><span class="s1">&#39;192.168.0.5&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="w"></span><span class="k">grant</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="k">privileges</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">zabbix</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;zabbix&#39;</span><span class="o">@</span><span class="s1">&#39;192.168.0.1&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="w"></span><span class="k">grant</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="k">privileges</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">zabbix</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;zabbix&#39;</span><span class="o">@</span><span class="s1">&#39;192.168.0.2&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="w"></span><span class="k">grant</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="k">privileges</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">zabbix</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;zabbix&#39;</span><span class="o">@</span><span class="s1">&#39;192.168.0.5&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="w"></span><span class="k">set</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="n">log_bin_trust_function_creators</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="w"></span><span class="n">quit</span><span class="p">;</span></span></span></code></pre></div></li>
+<li>
+<p>Install the Zabbix SQL scripts module:</p>
+<ul>
+<li><strong>RHEL-based systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install zabbix-sql-scripts</span></span></code></pre></div></li>
+<li><strong>Ubuntu systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install zabbix-sql-scripts</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Import the initial Zabbix database configuration:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">zcat /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz <span class="p">|</span> mysql --default-character-set<span class="o">=</span>utf8mb4 -u root -p zabbix</span></span></code></pre></div></li>
+<li>
+<p>Disable <code>log_bin_trust_function_creators</code>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">mysql</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w">
+</span></span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="w"></span><span class="k">set</span><span class="w"> </span><span class="k">global</span><span class="w"> </span><span class="n">log_bin_trust_function_creators</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">3</span><span class="cl"><span class="w"></span><span class="n">quit</span><span class="p">;</span></span></span></code></pre></div></li>
+</ol>
+<h2 id="setting-up-the-zabbix-server-cluster-nodes">Setting Up the Zabbix Server Cluster Nodes</h2>
+<ol>
+<li>
+<p>Add the Zabbix repository on <strong>zabbix-ha1</strong> and <strong>zabbix-ha2</strong>:</p>
+<ul>
+<li><strong>RHEL-based systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">rpm -Uvh https://repo.zabbix.com/zabbix/7.0/rocky/9/x86_64/zabbix-release-7.0-2.el9.noarch.rpm
+</span></span><span class="line"><span class="ln">2</span><span class="cl">dnf clean all</span></span></code></pre></div></li>
+<li><strong>Ubuntu systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.0-1+ubuntu22.04_all.deb
+</span></span><span class="line"><span class="ln">2</span><span class="cl">dpkg -i zabbix-release_7.0-1+ubuntu22.04_all.deb
+</span></span><span class="line"><span class="ln">3</span><span class="cl">apt update</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Install the Zabbix server application:</p>
+<ul>
+<li><strong>RHEL-based systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install zabbix-server-mysql zabbix-selinux-policy</span></span></code></pre></div></li>
+<li><strong>Ubuntu systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install zabbix-server-mysql</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Configure <strong>zabbix-ha1</strong>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/zabbix/zabbix_server.conf</span></span></code></pre></div><p>Add:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">DBHost=192.168.0.10
+</span></span><span class="line"><span class="ln">2</span><span class="cl">DBPassword=password
+</span></span><span class="line"><span class="ln">3</span><span class="cl">HANodeName=zabbix-ha1
+</span></span><span class="line"><span class="ln">4</span><span class="cl">NodeAddress=192.168.0.1</span></span></code></pre></div></li>
+<li>
+<p>Configure <strong>zabbix-ha2</strong>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/zabbix/zabbix_server.conf</span></span></code></pre></div><p>Add:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">DBHost=192.168.0.10
+</span></span><span class="line"><span class="ln">2</span><span class="cl">DBPassword=password
+</span></span><span class="line"><span class="ln">3</span><span class="cl">HANodeName=zabbix-ha2
+</span></span><span class="line"><span class="ln">4</span><span class="cl">NodeAddress=192.168.0.2</span></span></code></pre></div></li>
+<li>
+<p>Start the Zabbix servers:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">systemctl <span class="nb">enable</span> zabbix-server
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl start zabbix-server</span></span></code></pre></div></li>
+</ol>
+<h2 id="setting-up-nginx-with-ha">Setting Up NGINX with HA</h2>
+<ol>
+<li>
+<p>Install <strong>keepalived</strong> on <strong>zabbix-ha1</strong> and <strong>zabbix-ha2</strong>:</p>
+<ul>
+<li><strong>RHEL-based systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install -y keepalived</span></span></code></pre></div></li>
+<li><strong>Ubuntu systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install keepalived</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Configure <strong>keepalived</strong> on <strong>zabbix-ha1</strong>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/keepalived/keepalived.conf</span></span></code></pre></div><p>Add:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln"> 1</span><span class="cl">vrrp_instance ZBX_1 {
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    state MASTER
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    interface ens192
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    virtual_router_id 51
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    priority 244
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    authentication {
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">        auth_type PASS
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        auth_pass password
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    }
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    virtual_ipaddress {
+</span></span><span class="line"><span class="ln">11</span><span class="cl">        192.168.0.5/24
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    }
+</span></span><span class="line"><span class="ln">13</span><span class="cl">}</span></span></code></pre></div></li>
+<li>
+<p>Configure <strong>keepalived</strong> on <strong>zabbix-ha2</strong>:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">vim /etc/keepalived/keepalived.conf</span></span></code></pre></div><p>Add:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln"> 1</span><span class="cl">vrrp_instance ZBX_1 {
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">    state BACKUP
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    interface ens192
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    virtual_router_id 51
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    priority 243
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    authentication {
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">        auth_type PASS
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        auth_pass password
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    }
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    virtual_ipaddress {
+</span></span><span class="line"><span class="ln">11</span><span class="cl">        192.168.0.5/24
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    }
+</span></span><span class="line"><span class="ln">13</span><span class="cl">}</span></span></code></pre></div></li>
+<li>
+<p>Install the Zabbix frontend:</p>
+<ul>
+<li><strong>RHEL-based systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">dnf install nginx zabbix-web-mysql zabbix-nginx-conf zabbix-selinux-policy</span></span></code></pre></div></li>
+<li><strong>Ubuntu systems</strong>:
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">apt install nginx zabbix-frontend-php zabbix-nginx-conf</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Configure NGINX:</p>
+<ul>
+<li><strong>RHEL</strong>: Edit <code>/etc/nginx/conf.d/zabbix.conf</code></li>
+<li><strong>Ubuntu</strong>: Edit <code>/etc/zabbix/nginx.conf</code>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">listen 80;
+</span></span><span class="line"><span class="ln">2</span><span class="cl">server_name 192.168.0.5;</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Start the web server and keepalived:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">systemctl <span class="nb">enable</span> nginx keepalived
+</span></span><span class="line"><span class="ln">2</span><span class="cl">systemctl start nginx keepalived</span></span></code></pre></div></li>
+<li>
+<p>Configure the Zabbix frontend via your browser by navigating to:</p>
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">http://192.168.0.5/</span></span></code></pre></div></li>
+</ol>
+<h2 id="how-it-works">How It Works</h2>
+<p>The Zabbix HA setup includes two nodes (<strong>zabbix-ha1</strong> and <strong>zabbix-ha2</strong>) connected to a single database (<strong>zabbix-ha-db</strong>) using a VIP (<strong>192.168.0.5</strong>). HA ensures that:</p>
+<ul>
+<li>If one node fails, the other takes over.</li>
+<li>Keepalived monitors NGINX to switch the VIP to the active node.</li>
+</ul>
+<p>For advanced HA, consider using a MySQL master/master replication setup. Learn more in the <a href="https://mariadb.com/kb/en/standard-replication/">MariaDB documentation</a>.</p>
+<hr>
+<p>To wrap up, this guide has taken you through installing Zabbix with high availability to ensure reliable and continuous monitoring.</p>
+<p>Stay tuned for my upcoming post, where I’ll dive into setting up and customizing Zabbix monitoring, creating alerts and triggers, building structured templates, and visualizing your data through dashboards, reports, and more.</p>
+</div>
+    
+    <p class="tags-section">
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/zabbix/">#Zabbix</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/monitoring/">#Monitoring</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/soc/">#SOC</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/linux/">#Linux</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/blue-team/">#Blue Team</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/high-availability/">#High Availability</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/sysadmin/">#Sysadmin</a>&nbsp;&nbsp;
+      
+        <a class="blog-tags" href="https://gtello.github.io/tags/project/">#Project</a>&nbsp;&nbsp;
+      
+    </p>
+  </content>
+</article>
+
+
+<script src="https://giscus.app/client.js"
+        data-repo="gtello/gtello.github.io"
+        data-repo-id="R_kgDONAQNkQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDONAQNkc4CjaoW"
+        data-mapping='og:title'
+        data-strict="0"
+        data-reactions-enabled="0"
+        data-emit-metadata="0"
+        data-input-position='top'
+        data-theme='preferred_color_scheme'
+        data-lang='en'
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <p>
+    <a href='mailto:gabrieltello10@hotmail.com?subject=Reply%20to%20"Installing%20Zabbix%20with%20High%20Availability"'>
+      Reply to this post by email ↪
+    </a>
+  </p>
+
+
+
+<script src="https://unpkg.com/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js"></script>
+<script>addBackToTop({
+  cornerOffset: 32,
+  diameter: 48,
+  backgroundColor: "var(--flexoki-dark-blue)",
+  textColor: "var(--flexoki-50)",
+  showWhenScrollTopIs: 512, 
+})</script>
+
+  
+  <script src="/js/copy-code-button.min.js"></script>
+
+
+
+  </main>
+  <footer><small>
+  <a href="https://github.com/gtello">Gabriel Tello</a> © 2024 | Made with <a href="https://github.com/Pagliacii/hugo-bearberry">Bear Berry</a>
+</small>
+</footer>
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
+    
+    <script src="/js/toc.min.js"></script>
+  
+
+    
+</body>
+
+</html>

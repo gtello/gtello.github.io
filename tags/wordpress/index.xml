@@ -60,7 +60,7 @@
 <h3 id="wordpress-login">WordPress Login</h3>
 <p>The credentials were obtained using <strong>Burp Suite</strong> to capture the login request and <strong>Hydra</strong> to brute-force the admin account with the discovered dictionary file.</p>
 <p><img alt="Burp Suite request" src="/images/posts/mrrobot/image5.png"> <center><b>Burp Suite request capture</b></center><br>
-<img alt="Hydra execution" src="/images/posts/mrrobot/image6.png"> <center><b>Hydra login brute force</b></center></p>
+<img alt="Hydra execution" src="/images/posts/mrrobot/image6.png"> <br> <center><b>Hydra login brute force</b></center></p>
 <p>Using the user &ldquo;Angela&rdquo; and the cracked password, we gained access to the WordPress admin dashboard. From there, we replaced a PHP template file with a reverse shell payload, enabling remote access.</p>
 <h3 id="reverse-shell">Reverse Shell</h3>
 <p>Once the payload was executed, we established a shell as the <code>daemon</code> user.</p>

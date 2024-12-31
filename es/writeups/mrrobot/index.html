@@ -208,7 +208,7 @@
 <h3 id="inicio-de-sesión-en-wordpress">Inicio de Sesión en WordPress</h3>
 <p>Las credenciales fueron obtenidas usando <strong>Burp Suite</strong> para capturar la solicitud de inicio de sesión y <strong>Hydra</strong> para realizar fuerza bruta sobre la cuenta de administrador utilizando el archivo de diccionario descubierto.</p>
 <p><img alt="Solicitud capturada en Burp Suite" src="/images/posts/mrrobot/image5.png"> <center><b>Captura de solicitud en Burp Suite</b></center><br>
-<img alt="Ejecución de Hydra" src="/images/posts/mrrobot/image6.png"> <center><b>Fuerza bruta de login con Hydra</b></center></p>
+<img alt="Ejecución de Hydra" src="/images/posts/mrrobot/image6.png"> <br> <center><b>Fuerza bruta de login con Hydra</b></center></p>
 <p>Con el usuario &ldquo;Angela&rdquo; y la contraseña descubierta, obtuvimos acceso al panel de administración de WordPress. Desde allí, reemplazamos un archivo de plantilla PHP con una reverse shell, permitiendo acceso remoto.</p>
 <h3 id="reverse-shell">Reverse Shell</h3>
 <p>Una vez ejecutada la payload, establecimos una shell como el usuario <code>daemon</code>.</p>
